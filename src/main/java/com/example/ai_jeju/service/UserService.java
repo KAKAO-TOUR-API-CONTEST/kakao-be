@@ -16,13 +16,14 @@ import org.springframework.web.client.RestTemplate;
 import java.time.Duration;
 import java.util.Optional;
 
-
 @Service
 public class UserService {
 
     @Autowired
     private RestTemplate restTemplate;
     public static final Duration ACCESS_TOKEN_DURATION = Duration.ofDays(1);
+    public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(14);
+
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -32,32 +33,38 @@ public class UserService {
         // Check if username or email already exists
         Optional<User> existingUserByEmail = userRepository.findByEmail(signUpRequest.getEmail());
 
-        // Check if username or email already exists
+        // DB에 회원이 있을 때 -> 기존 회원일 경우
+        /*--------------------------------------------------------------------------------------------------*/
         if (existingUserByEmail.isPresent()) {
             User user = this.findByEmail(signUpRequest.getEmail());
             String token = tokenProvider.generateToken(user,ACCESS_TOKEN_DURATION);
             return token;
         }
+        /*--------------------------------------------------------------------------------------------------*/
         // db에 회원정보 없음 -> 새로운 회원 추가
         else{
             //요청에서 들어온 닉네임
             String nick = signUpRequest.getNickname();
-            //Optional<User> existingNickname = userRepository.findByEmail(signUpRequest.getNickname());
-            //닉네임이 존재하지 않을 때
             if(nick==null){
                 System.out.println("nickname is null");
                 nick = new NickNameGenerator().getNickname();
             }
 
+
             // Save new user using builder pattern
             User newUser = User.builder()
                     .name(signUpRequest.getName())
                     .nickname(nick)
+                    .provider(signUpRequest.getProvider())
                     .email(signUpRequest.getEmail())
                     .profile(signUpRequest.getProfile())
+                    .provider(signUpRequest.getProvider())
                     .build();
+
             userRepository.save(newUser);
-            return "User register is needed";
+            String token = tokenProvider.generateToken(newUser,REFRESH_TOKEN_DURATION);
+
+            return token;
         }
     }
 
@@ -68,6 +75,9 @@ public class UserService {
     }
 
 
+
+
+
     //회원 탈퇴하기
     public String withDraw(WithdrawRequest withDrawRequest){
 
@@ -76,13 +86,12 @@ public class UserService {
         //기본 빈 url
         String url ="";
         //provider 추출하기
-        int index = email.indexOf("@");
-        String provider =  email.substring(index);
         //email 기반으로 삭제할 user 객체 찾기
         User delUser = this.findByEmail(withDrawRequest.getEmail());
+        String provider = delUser.getProvider();
+        /*--------------------------------------------------------------------------------------------------*/
         switch (provider){
             case "kakao":
-
                 url = "https://kapi.kakao.com/v1/user/unlink";
                 //헤더 만들기
                 HttpHeaders headers = new HttpHeaders();
@@ -93,7 +102,9 @@ public class UserService {
                 HttpEntity<String> entity = new HttpEntity<>(headers);
 
                 ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
+
                 ResponseEntity<String> result = ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+
                 System.out.println("카카오 탈퇴 결과값 :"+result);
                 //맞을때
                 if(result.equals("200")){
@@ -105,17 +116,21 @@ public class UserService {
                     return("delete fail");
                 }
 
+                /*--------------------------------------------------------------------------------------------------*/
             case "google":
                 url  = "https://accounts.google.com/o/oauth2/revoke?token="+accessToken;
                 ResponseEntity<String> googleRes = restTemplate.getForEntity(url, String.class);
                 ResponseEntity<String> googleResult = ResponseEntity.status(googleRes.getStatusCode()).body(googleRes.getBody());
                 System.out.println("구글 탈퇴 결과값 :"+googleResult);
 
+                /*--------------------------------------------------------------------------------------------------*/
+
                 //맞을때
                 if(googleResult.equals("200")){
                     userRepository.delete(delUser);
                     return("delete success");
                 }
+
                 //아니면 그냥 break..
                 else{
                     return("delete fail");

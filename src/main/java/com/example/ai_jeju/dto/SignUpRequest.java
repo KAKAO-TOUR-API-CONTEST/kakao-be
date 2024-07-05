@@ -11,5 +11,6 @@ public class SignUpRequest {
     private String nickname;
     private String email;
     private String profile;
+    private String provider;
 
 }
