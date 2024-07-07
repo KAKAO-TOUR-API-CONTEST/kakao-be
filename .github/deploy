@@ -1,0 +1,29 @@
+name: front-server
+
+on:
+  push:
+    branches: main
+  #pull_request:
+    #branches: main
+    #types: [closed]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    #if: github.event_name == 'push'
+    steps:
+      - name: main branch
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_SSH_HOST }}
+          username: ${{ secrets.REMOTE_SSH_UESRNAME }}
+          password: ${{ secrets.REMOTE_SSH_PASSWORD }}
+          port: ${{ secrets.REMOTE_SSH_PORT }}
+          script_stop: true
+          script: |
+            cd /server/back-end
+            git restore .
+            git pull
+            ./gradlew build
+            systemctl restart jeju-back
+

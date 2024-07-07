@@ -1,0 +1,212 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.1)
+
+2024-07-07T22:14:18.065+09:00  INFO 2874543 --- [ai_jeju] [           main] com.example.ai_jeju.AiJejuApplication    : Starting AiJejuApplication v0.0.1-SNAPSHOT using Java 21.0.2 with PID 2874543 (/server/back-end/build/libs/ai_jeju-0.0.1-SNAPSHOT.jar started by root in /server/back-end)
+2024-07-07T22:14:18.079+09:00  INFO 2874543 --- [ai_jeju] [           main] com.example.ai_jeju.AiJejuApplication    : No active profile set, falling back to 1 default profile: "default"
+2024-07-07T22:14:20.657+09:00  INFO 2874543 --- [ai_jeju] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-07-07T22:14:20.793+09:00  INFO 2874543 --- [ai_jeju] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 116 ms. Found 1 JPA repository interface.
+2024-07-07T22:14:22.261+09:00  INFO 2874543 --- [ai_jeju] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 7080 (http)
+2024-07-07T22:14:22.292+09:00  INFO 2874543 --- [ai_jeju] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-07-07T22:14:22.292+09:00  INFO 2874543 --- [ai_jeju] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.25]
+2024-07-07T22:14:22.392+09:00  INFO 2874543 --- [ai_jeju] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-07-07T22:14:22.395+09:00  INFO 2874543 --- [ai_jeju] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4072 ms
+2024-07-07T22:14:22.853+09:00  INFO 2874543 --- [ai_jeju] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-07-07T22:14:23.010+09:00  INFO 2874543 --- [ai_jeju] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-07-07T22:14:23.082+09:00  INFO 2874543 --- [ai_jeju] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-07-07T22:14:23.877+09:00  INFO 2874543 --- [ai_jeju] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-07-07T22:14:23.934+09:00  INFO 2874543 --- [ai_jeju] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-07-07T22:14:24.854+09:00  INFO 2874543 --- [ai_jeju] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7c0de229
+2024-07-07T22:14:24.859+09:00  INFO 2874543 --- [ai_jeju] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-07-07T22:14:25.022+09:00  WARN 2874543 --- [ai_jeju] [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-07-07T22:14:27.261+09:00  INFO 2874543 --- [ai_jeju] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-07-07T22:14:27.381+09:00  INFO 2874543 --- [ai_jeju] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-07-07T22:14:31.045+09:00  INFO 2874543 --- [ai_jeju] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 7080 (http) with context path '/'
+2024-07-07T22:14:31.078+09:00  INFO 2874543 --- [ai_jeju] [           main] com.example.ai_jeju.AiJejuApplication    : Started AiJejuApplication in 14.532 seconds (process running for 16.09)
+2024-07-07T22:14:31.093+09:00  INFO 2874543 --- [ai_jeju] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-07-07T22:14:31.097+09:00  INFO 2874543 --- [ai_jeju] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2024-07-07T22:14:31.111+09:00  INFO 2874543 --- [ai_jeju] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.1)
+
+2024-07-07T22:14:37.824+09:00  INFO 2874647 --- [ai_jeju] [           main] com.example.ai_jeju.AiJejuApplication    : Starting AiJejuApplication v0.0.1-SNAPSHOT using Java 21.0.2 with PID 2874647 (/server/back-end/build/libs/ai_jeju-0.0.1-SNAPSHOT.jar started by root in /server/back-end)
+2024-07-07T22:14:37.841+09:00  INFO 2874647 --- [ai_jeju] [           main] com.example.ai_jeju.AiJejuApplication    : No active profile set, falling back to 1 default profile: "default"
+2024-07-07T22:14:40.374+09:00  INFO 2874647 --- [ai_jeju] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-07-07T22:14:40.490+09:00  INFO 2874647 --- [ai_jeju] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 99 ms. Found 1 JPA repository interface.
+2024-07-07T22:14:41.819+09:00  INFO 2874647 --- [ai_jeju] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 7080 (http)
+2024-07-07T22:14:41.849+09:00  INFO 2874647 --- [ai_jeju] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-07-07T22:14:41.850+09:00  INFO 2874647 --- [ai_jeju] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.25]
+2024-07-07T22:14:41.930+09:00  INFO 2874647 --- [ai_jeju] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-07-07T22:14:41.933+09:00  INFO 2874647 --- [ai_jeju] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3806 ms
+2024-07-07T22:14:42.414+09:00  INFO 2874647 --- [ai_jeju] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-07-07T22:14:42.548+09:00  INFO 2874647 --- [ai_jeju] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-07-07T22:14:42.624+09:00  INFO 2874647 --- [ai_jeju] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-07-07T22:14:43.425+09:00  INFO 2874647 --- [ai_jeju] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-07-07T22:14:43.484+09:00  INFO 2874647 --- [ai_jeju] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-07-07T22:14:44.492+09:00  INFO 2874647 --- [ai_jeju] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@27438750
+2024-07-07T22:14:44.498+09:00  INFO 2874647 --- [ai_jeju] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-07-07T22:14:44.645+09:00  WARN 2874647 --- [ai_jeju] [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-07-07T22:14:46.878+09:00  INFO 2874647 --- [ai_jeju] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-07-07T22:14:46.997+09:00  INFO 2874647 --- [ai_jeju] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-07-07T22:14:50.939+09:00  INFO 2874647 --- [ai_jeju] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 7080 (http) with context path '/'
+2024-07-07T22:14:50.975+09:00  INFO 2874647 --- [ai_jeju] [           main] com.example.ai_jeju.AiJejuApplication    : Started AiJejuApplication in 14.579 seconds (process running for 15.983)
+2024-07-07T22:15:19.886+09:00  INFO 2874647 --- [ai_jeju] [nio-7080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-07-07T22:15:19.888+09:00  INFO 2874647 --- [ai_jeju] [nio-7080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-07-07T22:15:19.891+09:00  INFO 2874647 --- [ai_jeju] [nio-7080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2024-07-07T22:15:20.406+09:00 DEBUG 2874647 --- [ai_jeju] [nio-7080-exec-1] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.email,
+        u1_0.name,
+        u1_0.nickname,
+        u1_0.profile,
+        u1_0.provider 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.email,
+        u1_0.name,
+        u1_0.nickname,
+        u1_0.profile,
+        u1_0.provider 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2024-07-07T22:15:20.446+09:00 DEBUG 2874647 --- [ai_jeju] [nio-7080-exec-1] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.email,
+        u1_0.name,
+        u1_0.nickname,
+        u1_0.profile,
+        u1_0.provider 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.email,
+        u1_0.name,
+        u1_0.nickname,
+        u1_0.profile,
+        u1_0.provider 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2024-07-07T22:15:25.628+09:00 DEBUG 2874647 --- [ai_jeju] [nio-7080-exec-2] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.email,
+        u1_0.name,
+        u1_0.nickname,
+        u1_0.profile,
+        u1_0.provider 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.email,
+        u1_0.name,
+        u1_0.nickname,
+        u1_0.profile,
+        u1_0.provider 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2024-07-07T22:15:25.642+09:00 DEBUG 2874647 --- [ai_jeju] [nio-7080-exec-2] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.email,
+        u1_0.name,
+        u1_0.nickname,
+        u1_0.profile,
+        u1_0.provider 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.email,
+        u1_0.name,
+        u1_0.nickname,
+        u1_0.profile,
+        u1_0.provider 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2024-07-07T22:35:58.233+09:00 DEBUG 2874647 --- [ai_jeju] [nio-7080-exec-8] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.email,
+        u1_0.name,
+        u1_0.nickname,
+        u1_0.profile,
+        u1_0.provider 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.email,
+        u1_0.name,
+        u1_0.nickname,
+        u1_0.profile,
+        u1_0.provider 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2024-07-07T22:35:58.244+09:00 DEBUG 2874647 --- [ai_jeju] [nio-7080-exec-8] org.hibernate.SQL                        : 
+    select
+        u1_0.id,
+        u1_0.email,
+        u1_0.name,
+        u1_0.nickname,
+        u1_0.profile,
+        u1_0.provider 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.email,
+        u1_0.name,
+        u1_0.nickname,
+        u1_0.profile,
+        u1_0.provider 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
