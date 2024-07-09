@@ -1,2 +1,5 @@
 # KAKAO-TOUR-API BACKEND
-## AIJEJU
+#### DEVELOPER
+#### SETTING
+#### ERD
+#### EE
