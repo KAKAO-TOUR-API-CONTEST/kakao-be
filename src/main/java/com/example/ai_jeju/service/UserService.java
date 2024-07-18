@@ -30,7 +30,7 @@ public class UserService {
     private TokenProvider tokenProvider;
     public String signUp(SignUpRequest signUpRequest) {
 
-        // Check if username or email already exists
+        // 이미 가입한 회원인지 확인한다.
         Optional<User> existingUserByEmail = userRepository.findByEmail(signUpRequest.getEmail());
 
         // DB에 회원이 있을 때 -> 기존 회원일 경우

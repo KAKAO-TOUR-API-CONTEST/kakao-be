@@ -13,13 +13,10 @@ import java.sql.Date;
 @Builder // 빌더 패턴
 public class Child {
 
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "child_id", updatable = false, unique = true)
     private Long childId;
-
 
     @Column
     private Long userId;
