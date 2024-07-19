@@ -1,13 +1,17 @@
 package com.example.ai_jeju.service;
 
 import com.example.ai_jeju.domain.Child;
+import com.example.ai_jeju.domain.RefreshToken;
 import com.example.ai_jeju.domain.User;
 import com.example.ai_jeju.dto.WithdrawRequest;
 import com.example.ai_jeju.dto.SignUpRequest;
 import com.example.ai_jeju.generator.NickNameGenerator;
+import com.example.ai_jeju.handler.SignUpHandler;
 import com.example.ai_jeju.jwt.TokenProvider;
 import com.example.ai_jeju.repository.ChildRepository;
+import com.example.ai_jeju.repository.RefreshTokenRepository;
 import com.example.ai_jeju.repository.UserRepository;
+import com.example.ai_jeju.util.CookieUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -15,9 +19,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
+
 
 @Service
 public class UserService {
@@ -27,19 +34,19 @@ public class UserService {
     public static final Duration ACCESS_TOKEN_DURATION = Duration.ofDays(1);
     public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(14);
 
-
-
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private TokenProvider tokenProvider;
-
-
     @Autowired
     private ChildRepository childRepository;
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
 
 
-    public String signUp(SignUpRequest signUpRequest) {
+    private SignUpHandler signUpHandler;
+
+    public String signUp(SignUpRequest signUpRequest) throws IOException {
 
         // 이미 가입한 회원인지 확인한다.
         Optional<User> existingUserByEmail = userRepository.findByEmail(signUpRequest.getEmail());
@@ -56,13 +63,15 @@ public class UserService {
         /*--------------------------------------------------------------------------------------------------*/
         // db에 회원정보 없음 -> 새로운 회원 추가
         else{
+
+            /*
             //요청에서 들어온 닉네임
             String nick = signUpRequest.getNickname();
+
             if(nick==null){
-                System.out.println("nickname is null");
+                //System.out.println("nickname is null");
                 nick = new NickNameGenerator().getNickname();
             }
-
 
             // Save new user using builder pattern
             User newUser = User.builder()
@@ -74,15 +83,11 @@ public class UserService {
                     .provider(signUpRequest.getProvider())
                     .build();
 
-
             userRepository.save(newUser);//User정보 저장
 
-
-            //잘 받아오는지 확인했다.
-
+            //동반아동
             List<Child> childList = signUpRequest.getChild();
             //일단 한번 해보자.
-
             for(int i=0; i<childList.size(); i++){
                 Child child = Child.builder()
                         .userId(newUser.getId())
@@ -94,22 +99,22 @@ public class UserService {
                 childRepository.save(child);
             }
 
+            String token = tokenProvider.generateToken(newUser, ACCESS_TOKEN_DURATION);
+            //String형 refresh_token과 RefreshToken형 refreshToken 헷갈리지 말 것
+            String refresh_token = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
 
+            RefreshToken refreshToken = RefreshToken.builder()
+                    .refresh_token(refresh_token)
+                    .userId(newUser.getId())
+                    .build();
 
+            refreshTokenRepository.save(refreshToken);
 
+            return refresh_token;*/
 
+            String accessToken = signUpHandler.successHadler(signUpRequest);
 
-
-
-
-            /*여기서 부터는 잘 모르겠는 부분 */
-            //리프레시 토큰 발급 새로운 유저 객체 + 리프레시 토큰 duration
-            String refreshToken1 = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
-
-
-
-
-            return refreshToken1;
+            return accessToken;
         }
     }
 
