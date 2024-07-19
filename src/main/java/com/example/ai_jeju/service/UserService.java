@@ -1,10 +1,12 @@
 package com.example.ai_jeju.service;
 
+import com.example.ai_jeju.domain.Child;
 import com.example.ai_jeju.domain.User;
 import com.example.ai_jeju.dto.WithdrawRequest;
 import com.example.ai_jeju.dto.SignUpRequest;
 import com.example.ai_jeju.generator.NickNameGenerator;
 import com.example.ai_jeju.jwt.TokenProvider;
+import com.example.ai_jeju.repository.ChildRepository;
 import com.example.ai_jeju.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,10 +27,18 @@ public class UserService {
     public static final Duration ACCESS_TOKEN_DURATION = Duration.ofDays(1);
     public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(14);
 
+
+
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private TokenProvider tokenProvider;
+
+
+    @Autowired
+    private ChildRepository childRepository;
+
+
     public String signUp(SignUpRequest signUpRequest) {
 
         // 이미 가입한 회원인지 확인한다.
@@ -38,6 +49,8 @@ public class UserService {
         if (existingUserByEmail.isPresent()) {
             User user = this.findByEmail(signUpRequest.getEmail());
             String token = tokenProvider.generateToken(user,ACCESS_TOKEN_DURATION);
+            //accessToken반환
+            //여기 부분 바꿔야함.
             return token;
         }
         /*--------------------------------------------------------------------------------------------------*/
@@ -61,10 +74,42 @@ public class UserService {
                     .provider(signUpRequest.getProvider())
                     .build();
 
-            userRepository.save(newUser);
-            String token = tokenProvider.generateToken(newUser,REFRESH_TOKEN_DURATION);
 
-            return token;
+            userRepository.save(newUser);//User정보 저장
+
+
+            //잘 받아오는지 확인했다.
+
+            List<Child> childList = signUpRequest.getChild();
+            //일단 한번 해보자.
+
+            for(int i=0; i<childList.size(); i++){
+                Child child = Child.builder()
+                        .userId(newUser.getId())
+                        .childName(childList.get(i).getChildName())
+                        .birthDate(childList.get(i).getBirthDate())
+                        .gender(childList.get(i).getGender())
+                        .build();
+
+                childRepository.save(child);
+            }
+
+
+
+
+
+
+
+
+
+            /*여기서 부터는 잘 모르겠는 부분 */
+            //리프레시 토큰 발급 새로운 유저 객체 + 리프레시 토큰 duration
+            String refreshToken1 = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
+
+
+
+
+            return refreshToken1;
         }
     }
 
