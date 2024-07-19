@@ -33,5 +33,4 @@ public class Child {
     @Column
     private long childProfile;
 
-
 }
