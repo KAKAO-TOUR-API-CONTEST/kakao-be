@@ -29,7 +29,7 @@ public class UserController {
     @GetMapping("/withdraw")
     public ResponseEntity<String> signOut(@RequestBody WithdrawRequest withdrawRequest) {
         String response = userService.withDraw(withdrawRequest);
-        System.out.println(response);
+
         return ResponseEntity.ok(response);
     }
 
