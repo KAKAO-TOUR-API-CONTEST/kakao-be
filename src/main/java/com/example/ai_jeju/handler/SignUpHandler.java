@@ -51,7 +51,7 @@ public class SignUpHandler {
                 .nickname(nick)
                 .provider(signUpRequest.getProvider())
                 .email(signUpRequest.getEmail())
-                .profile(signUpRequest.getProfile())
+                .snsprofile(signUpRequest.getProfile())
                 .provider(signUpRequest.getProvider())
                 .build();
 
