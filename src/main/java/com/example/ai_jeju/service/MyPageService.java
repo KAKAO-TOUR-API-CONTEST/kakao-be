@@ -32,7 +32,7 @@ public class MyPageService {
     public void updateSnsProfile(Long id, String snsprofile) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        user.setSnsProfile(snsprofile);
+        user.setSnsprofile(snsprofile);
         userRepository.save(user);
     }
 
@@ -55,7 +55,7 @@ public class MyPageService {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            user.setSnsProfile(null);
+            user.setSnsprofile(null);
             userRepository.save(user);
         } else {
             throw new NoSuchElementException("not found");

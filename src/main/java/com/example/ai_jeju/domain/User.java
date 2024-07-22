@@ -37,8 +37,8 @@ public class User {
     @Column(name = "provider")
     private String provider;
 
-    @Column(name="snsProfile")
-    private String snsProfile;
+    @Column(name="snsprofile")
+    private String snsprofile;
 
     @Column(name="profileimg")
     private String profileimg;
