@@ -79,7 +79,7 @@ public class UserService {
                     .nickname(nick)
                     .provider(signUpRequest.getProvider())
                     .email(signUpRequest.getEmail())
-                    .profile(signUpRequest.getProfile())
+                    //.profile(signUpRequest.getProfile())
                     .provider(signUpRequest.getProvider())
                     .build();
 
