@@ -12,6 +12,7 @@ import java.util.List;
 @Table(name="users")
 @NoArgsConstructor(access= AccessLevel.PROTECTED) //기본생성자
 @Getter
+@Setter
 @Entity
 @AllArgsConstructor // 모든 필드를 초기화하는 생성자
 @Builder // 빌더 패턴
@@ -32,15 +33,18 @@ public class User {
     @Column(name = "nickname")
     private String nickname;
 
-    @Column(name = "profile")
-    private String profile;
 
     @Column(name = "provider")
     private String provider;
 
+    @Column(name="snsprofile")
+    private String snsprofile;
+
+    @Column(name="profileimg")
+    private String profileimg;
 
 
-    /*
+/*
     // Builder pattern
     private User(Builder builder) {
         this.email = builder.email;
