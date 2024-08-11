@@ -13,8 +13,10 @@ import com.example.ai_jeju.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.ResponseEntity;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 
 import java.io.IOException;
 import java.time.Duration;
@@ -22,29 +24,31 @@ import java.util.List;
 
 import static com.example.ai_jeju.util.CookieUtil.addCookie;
 
-
+@Service
+@NoArgsConstructor
 @AllArgsConstructor
-public class SignUpHandler {
+public class SignUpHandler{
     public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
     public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(14);
     public static final Duration ACCESS_TOKEN_DURATION = Duration.ofDays(1);
 
     HttpServletResponse response;
 
-
-    UserRepository userRepository;
     RefreshTokenRepository refreshTokenRepository;
-    TokenProvider tokenProvider;
-    CookieUtil cookieUtil;
-    ChildRepository childRepository;
 
-    public String successHadler(SignUpRequest signUpRequest) throws IOException {
+    CookieUtil cookieUtil;
+
+    @Autowired
+    private ChildRepository childRepository;
+    private UserRepository userRepository;
+
+    public String successHadler(HttpServletRequest request,
+                                HttpServletResponse response, SignUpRequest signUpRequest, TokenProvider tokenProvider) throws IOException {
 
         String nick = signUpRequest.getNickname();
         if(nick==null){
             nick = new NickNameGenerator().getNickname();
         }
-
         // Save new user using builder pattern
         User newUser = User.builder()
                 .name(signUpRequest.getName())
@@ -71,22 +75,43 @@ public class SignUpHandler {
         }
 
         userRepository.save(newUser);
-
         String refresh_token = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
+        /*
         RefreshToken refreshToken = RefreshToken.builder()
                         .refresh_token(refresh_token)
-                                .userId(newUser.getId()).build();
+                                .userId(newUser.getId()).build();*/
 
+        /*
         refreshTokenRepository.save(refreshToken);
-
         userRepository.save(newUser);
-
         int cookieMaxAge = (int) REFRESH_TOKEN_DURATION.toSeconds();
+        CookieUtil.addCookie(response, REFRESH_TOKEN_COOKIE_NAME, refresh_token, cookieMaxAge);*/
 
-        CookieUtil.addCookie(response, REFRESH_TOKEN_COOKIE_NAME, refresh_token, cookieMaxAge);
-
+        saveRefreshToken(newUser.getId(), refresh_token);
+        addRefreshTokenToCookie(request,response,refresh_token);
         return  accessToken;
     }
+
+
+    //생성된 리프레시 토큰을 전달받아 데이터베이스 저장
+    private void saveRefreshToken(Long userId, String newRefreshToken) {
+        RefreshToken refreshToken = refreshTokenRepository.findByUserId(userId)
+                .map(entity -> entity.update(newRefreshToken))
+                .orElse(new RefreshToken(userId, newRefreshToken));
+
+        refreshTokenRepository.save(refreshToken);
+    }
+
+    //생성된 리프레시 토큰을 쿠키에 저장
+    private void addRefreshTokenToCookie(HttpServletRequest request,
+                                         HttpServletResponse response, String refreshToken) {
+        int cookieMaxAge = (int) REFRESH_TOKEN_DURATION.toSeconds();
+        CookieUtil.deleteCookie(request, response, REFRESH_TOKEN_COOKIE_NAME);
+        CookieUtil.addCookie(response, REFRESH_TOKEN_COOKIE_NAME, refreshToken, cookieMaxAge);
+        System.out.println("addRefreshToken 동작");
+    }
+
+
 
 
 

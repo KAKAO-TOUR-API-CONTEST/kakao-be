@@ -12,6 +12,8 @@ import com.example.ai_jeju.repository.ChildRepository;
 import com.example.ai_jeju.repository.RefreshTokenRepository;
 import com.example.ai_jeju.repository.UserRepository;
 import com.example.ai_jeju.util.CookieUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,6 +26,8 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
+
+import static com.example.ai_jeju.handler.SignUpHandler.REFRESH_TOKEN_COOKIE_NAME;
 
 
 @Service
@@ -44,10 +48,11 @@ public class UserService {
     private RefreshTokenRepository refreshTokenRepository;
 
 
-    private SignUpHandler signUpHandler;
+    private SignUpHandler signUpHandler = new SignUpHandler();
 
-    public String signUp(SignUpRequest signUpRequest) throws IOException {
+    public String signUp( SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+        System.out.println("회원가입 서비스 동작");
         // 이미 가입한 회원인지 확인한다.
         Optional<User> existingUserByEmail = userRepository.findByEmail(signUpRequest.getEmail());
 
@@ -61,60 +66,11 @@ public class UserService {
             return token;
         }
         /*--------------------------------------------------------------------------------------------------*/
+
         // db에 회원정보 없음 -> 새로운 회원 추가
         else{
 
-            /*
-            //요청에서 들어온 닉네임
-            String nick = signUpRequest.getNickname();
-
-            if(nick==null){
-                //System.out.println("nickname is null");
-                nick = new NickNameGenerator().getNickname();
-            }
-
-            // Save new user using builder pattern
-            User newUser = User.builder()
-                    .name(signUpRequest.getName())
-                    .nickname(nick)
-                    .provider(signUpRequest.getProvider())
-                    .email(signUpRequest.getEmail())
-                    //.profile(signUpRequest.getProfile())
-                    .provider(signUpRequest.getProvider())
-                    .build();
-
-            userRepository.save(newUser);//User정보 저장
-
-            //동반아동
-            List<Child> childList = signUpRequest.getChild();
-            //일단 한번 해보자.
-            for(int i=0; i<childList.size(); i++){
-                Child child = Child.builder()
-                        .userId(newUser.getId())
-                        .childName(childList.get(i).getChildName())
-                        .birthDate(childList.get(i).getBirthDate())
-                        .gender(childList.get(i).getGender())
-                        .build();
-
-                childRepository.save(child);
-            }
-
-            String token = tokenProvider.generateToken(newUser, ACCESS_TOKEN_DURATION);
-            //String형 refresh_token과 RefreshToken형 refreshToken 헷갈리지 말 것
-            String refresh_token = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
-
-            RefreshToken refreshToken = RefreshToken.builder()
-                    .refresh_token(refresh_token)
-                    .userId(newUser.getId())
-                    .build();
-
-            refreshTokenRepository.save(refreshToken);
-
-            return refresh_token;*/
-
-            String accessToken = signUpHandler.successHadler(signUpRequest);
-
-            return accessToken;
+            return successHadler(request,response,signUpRequest);
         }
     }
 
@@ -123,10 +79,6 @@ public class UserService {
                 .orElseThrow(
                         ()-> new IllegalArgumentException("unexpected user"));
     }
-
-
-
-
 
     //회원 탈퇴하기
     public String withDraw(WithdrawRequest withDrawRequest){
@@ -185,9 +137,69 @@ public class UserService {
                 else{
                     return("delete fail");
                 }
-
         }
-
         return "result";
     }
+
+    public String successHadler(HttpServletRequest request,
+                                HttpServletResponse response, SignUpRequest signUpRequest) throws IOException {
+
+        String nick = signUpRequest.getNickname();
+        if(nick==null){
+            nick = new NickNameGenerator().getNickname();
+        }
+        // Save new user using builder pattern
+        User newUser = User.builder()
+                .name(signUpRequest.getName())
+                .nickname(nick)
+                .provider(signUpRequest.getProvider())
+                .email(signUpRequest.getEmail())
+                .snsprofile(signUpRequest.getProfile())
+                .provider(signUpRequest.getProvider())
+                .build();
+
+
+        String accessToken = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
+        /*-------------------------------------------*/
+        //동반아동
+        List<Child> childList = signUpRequest.getChild();
+        for(int i=0; i<childList.size(); i++){
+            Child child = Child.builder()
+                    .userId(newUser.getId())
+                    .childName(childList.get(i).getChildName())
+                    .birthDate(childList.get(i).getBirthDate())
+                    .gender(childList.get(i).getGender())
+                    .build();
+            childRepository.save(child);
+        }
+
+        userRepository.save(newUser);
+        String refresh_token = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
+
+        saveRefreshToken(newUser.getId(), refresh_token);
+        addRefreshTokenToCookie(request,response,refresh_token);
+        return  accessToken;
+    }
+
+
+    //생성된 리프레시 토큰을 전달받아 데이터베이스 저장
+    private void saveRefreshToken(Long userId, String newRefreshToken) {
+        RefreshToken refreshToken = refreshTokenRepository.findByUserId(userId)
+                .map(entity -> entity.update(newRefreshToken))
+                .orElse(new RefreshToken(userId, newRefreshToken));
+
+        refreshTokenRepository.save(refreshToken);
+    }
+
+    //생성된 리프레시 토큰을 쿠키에 저장
+    private void addRefreshTokenToCookie(HttpServletRequest request,
+                                         HttpServletResponse response, String refreshToken) {
+        int cookieMaxAge = (int) REFRESH_TOKEN_DURATION.toSeconds();
+        CookieUtil.deleteCookie(request, response, REFRESH_TOKEN_COOKIE_NAME);
+        CookieUtil.addCookie(response, REFRESH_TOKEN_COOKIE_NAME, refreshToken, cookieMaxAge);
+        System.out.println("addRefreshToken 동작");
+    }
+
+
+
 }

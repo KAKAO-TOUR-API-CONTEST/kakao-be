@@ -2,7 +2,10 @@ package com.example.ai_jeju.controller;
 
 import com.example.ai_jeju.dto.SignUpRequest;
 import com.example.ai_jeju.dto.WithdrawRequest;
+import com.example.ai_jeju.handler.SignUpHandler;
 import com.example.ai_jeju.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +20,15 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
+
     //회원가입
     /*여기 확인해보자*/
     @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@RequestBody SignUpRequest signUpRequest) throws IOException {
-        String response = userService.signUp(signUpRequest);
+    public void signUp(@RequestBody SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        //String response = userService.signUp(signUpRequest);
         //System.out.println(response);
-        return ResponseEntity.ok(response);
+        userService.signUp(signUpRequest,request,response);
     }
 
 

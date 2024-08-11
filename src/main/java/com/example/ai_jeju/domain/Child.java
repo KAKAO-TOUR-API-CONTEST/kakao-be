@@ -22,7 +22,7 @@ public class Child {
     private Long userId;
 
     @Column
-    private Date birthDate;
+    private String birthDate;
 
     @Column
     private String childName;

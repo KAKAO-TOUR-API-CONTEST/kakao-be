@@ -32,7 +32,6 @@ public class MyPageController {
         }
     }
 
-
     @PutMapping("/mypage/nickname")
     public ResponseEntity<String> updateNickname(@RequestParam Long userId, @RequestBody Map<String, String> request) {
         String nickname = request.get("nickname");
@@ -40,14 +39,6 @@ public class MyPageController {
         return ResponseEntity.ok("Nickname changed");
     }
 
-    //sns프로필 사용하기로 했었나? 사용하면 user쪽에 entity변수 하나 추가해서 해야함
-    /*
-    @PutMapping("/mypage/snsprofile")
-    public ResponseEntity<String> updateSnsProfile(@RequestParam Long userId, @RequestBody Map<String, String> request) {
-        String snsprofile = request.get("snsprofile");
-        myPageService.updateSnsProfile(id, snsprofile);
-        return ResponseEntity.ok("snsprofile change");
-    }*/
 
     //프로필 이미지 변경
     @PutMapping("/mypage/profileimg")
