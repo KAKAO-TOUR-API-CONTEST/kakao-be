@@ -25,14 +25,12 @@ public class User {
 
     @Column(name="email", nullable = false, unique = true)
     private String email;
-
     //실명
     @Column(name = "name")
     private String name;
 
     @Column(name = "nickname")
     private String nickname;
-
 
     @Column(name = "provider")
     private String provider;
