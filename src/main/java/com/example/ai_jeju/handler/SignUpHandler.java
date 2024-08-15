@@ -29,70 +29,68 @@ import static com.example.ai_jeju.util.CookieUtil.addCookie;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SignUpHandler{
-    public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
+    public static final String ACCESS_TOKEN_COOKIE_NAME = "access_token";
     public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(14);
     public static final Duration ACCESS_TOKEN_DURATION = Duration.ofDays(1);
 
     HttpServletResponse response;
-
     RefreshTokenRepository refreshTokenRepository;
-
     CookieUtil cookieUtil;
 
     @Autowired
     private ChildRepository childRepository;
     private UserRepository userRepository;
 
-    public String successHadler(HttpServletRequest request,
-                                HttpServletResponse response, SignUpRequest signUpRequest, TokenProvider tokenProvider) throws IOException {
-
-        String nick = signUpRequest.getNickname();
-        if(nick==null){
-            nick = new NickNameGenerator().getNickname();
-        }
-        // Save new user using builder pattern
-        User newUser = User.builder()
-                .name(signUpRequest.getName())
-                .nickname(nick)
-                .provider(signUpRequest.getProvider())
-                .email(signUpRequest.getEmail())
-                .snsprofile(signUpRequest.getProfile())
-                .provider(signUpRequest.getProvider())
-                .build();
-
-
-        String accessToken = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
-        /*-------------------------------------------*/
-        //동반아동
-        List<ChildRequest> childList = signUpRequest.getChild();
-        for(int i=0; i<childList.size(); i++){
-            Child child = Child.builder()
-                    .userId(newUser.getId())
-                    .childName(childList.get(i).getChildName())
-                    .birthDate(childList.get(i).getBirthDate())
-                    .gender(childList.get(i).getGender())
-                    .build();
-            childRepository.save(child);
-        }
-
-        userRepository.save(newUser);
-        String refresh_token = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
-        /*
-        RefreshToken refreshToken = RefreshToken.builder()
-                        .refresh_token(refresh_token)
-                                .userId(newUser.getId()).build();*/
-
-        /*
-        refreshTokenRepository.save(refreshToken);
-        userRepository.save(newUser);
-        int cookieMaxAge = (int) REFRESH_TOKEN_DURATION.toSeconds();
-        CookieUtil.addCookie(response, REFRESH_TOKEN_COOKIE_NAME, refresh_token, cookieMaxAge);*/
-
-        saveRefreshToken(newUser.getId(), refresh_token);
-        addRefreshTokenToCookie(request,response,refresh_token);
-        return  accessToken;
-    }
-
+//    public String successHadler(HttpServletRequest request,
+//                                HttpServletResponse response, SignUpRequest signUpRequest, TokenProvider tokenProvider) throws IOException {
+//
+//        String nick = signUpRequest.getNickname();
+//        if(nick==null){
+//            nick = new NickNameGenerator().getNickname();
+//        }
+//        // Save new user using builder pattern
+//        User newUser = User.builder()
+//                .name(signUpRequest.getName())
+//                .nickname(nick)
+//                .provider(signUpRequest.getProvider())
+//                .email(signUpRequest.getEmail())
+//                .snsprofile(signUpRequest.getProfile())
+//                .provider(signUpRequest.getProvider())
+//                .phoneNum(signUpRequest.getPhoneNum())
+//                .build();
+//
+//
+//        String accessToken = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
+//        /*-------------------------------------------*/
+//        //동반아동
+//        List<ChildRequest> childList = signUpRequest.getChild();
+//        for(int i=0; i<childList.size(); i++){
+//            Child child = Child.builder()
+//                    .userId(newUser.getId())
+//                    .childName(childList.get(i).getChildName())
+//                    .birthDate(childList.get(i).getBirthDate())
+//                    .gender(childList.get(i).getGender())
+//                    .build();
+//            childRepository.save(child);
+//        }
+//
+//        userRepository.save(newUser);
+//        String refresh_token = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
+//        /*
+//        RefreshToken refreshToken = RefreshToken.builder()
+//                        .refresh_token(refresh_token)
+//                                .userId(newUser.getId()).build();*/
+//
+//        /*
+//        refreshTokenRepository.save(refreshToken);
+//        userRepository.save(newUser);
+//        int cookieMaxAge = (int) REFRESH_TOKEN_DURATION.toSeconds();
+//        CookieUtil.addCookie(response, REFRESH_TOKEN_COOKIE_NAME, refresh_token, cookieMaxAge);*/
+//
+//        saveRefreshToken(newUser.getId(), refresh_token);
+//        addRefreshTokenToCookie(request,response,refresh_token);
+//        return  accessToken;
+//    }
 
     //생성된 리프레시 토큰을 전달받아 데이터베이스 저장
     private void saveRefreshToken(Long userId, String newRefreshToken) {
@@ -105,12 +103,14 @@ public class SignUpHandler{
 
     //생성된 리프레시 토큰을 쿠키에 저장
     private void addRefreshTokenToCookie(HttpServletRequest request,
-                                         HttpServletResponse response, String refreshToken) {
-        int cookieMaxAge = (int) REFRESH_TOKEN_DURATION.toSeconds();
-        CookieUtil.deleteCookie(request, response, REFRESH_TOKEN_COOKIE_NAME);
-        CookieUtil.addCookie(response, REFRESH_TOKEN_COOKIE_NAME, refreshToken, cookieMaxAge);
-        System.out.println("addRefreshToken 동작");
+                                         HttpServletResponse response, String accessToken) {
+        int cookieMaxAge = (int) ACCESS_TOKEN_DURATION.toSeconds();
+        CookieUtil.deleteCookie(request, response, ACCESS_TOKEN_COOKIE_NAME);
+        CookieUtil.addCookie(response, ACCESS_TOKEN_COOKIE_NAME, accessToken, cookieMaxAge);
+
     }
+
+
 
 
 
