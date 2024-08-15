@@ -49,29 +49,66 @@ public class UserService {
     private RefreshTokenRepository refreshTokenRepository;
 
 
-    private SignUpHandler signUpHandler = new SignUpHandler();
+    //private SignUpHandler signUpHandler = new SignUpHandler();
 
-    public String signUp( SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // DB에 회원이 있을 때 -> 기존 회원일 경우
+    public Object checkIfUser(String email){
 
-        System.out.println("회원가입 서비스 동작");
         // 이미 가입한 회원인지 확인한다.
-        Optional<User> existingUserByEmail = userRepository.findByEmail(signUpRequest.getEmail());
+        Optional<User> existingUser = userRepository.findByEmail(email);
 
-        // DB에 회원이 있을 때 -> 기존 회원일 경우
         /*--------------------------------------------------------------------------------------------------*/
-        if (existingUserByEmail.isPresent()) {
-            User user = this.findByEmail(signUpRequest.getEmail());
-            String token = tokenProvider.generateToken(user,ACCESS_TOKEN_DURATION);
-            //accessToken반환
-            //여기 부분 바꿔야함.
-            return token;
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+            String accessToken = tokenProvider.generateToken(user,ACCESS_TOKEN_DURATION);
+            return accessToken;
         }
         /*--------------------------------------------------------------------------------------------------*/
-
         // db에 회원정보 없음 -> 새로운 회원 추가
         else{
-            return successHadler(request,response,signUpRequest);
+            return false;
         }
+    }
+
+
+    public String signUp( SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response) {
+
+        String nick = signUpRequest.getNickname();
+        if(nick==null){
+            nick = new NickNameGenerator().getNickname();
+        }
+        // Save new user using builder pattern
+        User newUser = User.builder()
+                .name(signUpRequest.getName())
+                .nickname(nick)
+                .provider(signUpRequest.getProvider())
+                .email(signUpRequest.getEmail())
+                .snsprofile(signUpRequest.getProfile())
+                .provider(signUpRequest.getProvider())
+                .build();
+
+        String accessToken = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
+        /*-------------------------------------------*/
+        //동반아동
+        List<ChildRequest> childList = signUpRequest.getChild();
+        for(int i=0; i<childList.size(); i++){
+            Child child = Child.builder()
+                    //유저 아이디의 값 그대로 주기.
+                    .userId(newUser.getId())
+                    .childName(childList.get(i).getChildName())
+                    .birthDate(childList.get(i).getBirthDate())
+                    .gender(childList.get(i).getGender())
+                    .build();
+            childRepository.save(child);
+        }
+
+        userRepository.save(newUser);
+        String refresh_token = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
+
+        saveRefreshToken(newUser.getId(), refresh_token);
+        addRefreshTokenToCookie(request,response,refresh_token);
+        return  accessToken;
+
     }
 
     public User findByEmail(String email){

@@ -31,6 +31,11 @@ public class Child {
     private Boolean gender;
 
     @Column
-    private long childProfile;
+    private String realtion;
 
+    @Column
+    private String phoneNum;
+
+    @Column
+    private long childProfile;
 }
