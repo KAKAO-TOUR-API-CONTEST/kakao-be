@@ -19,11 +19,11 @@ public class Stay {
     @Column(name = "name", updatable = false, unique = true)
     String name;
 
-    @Column(name = "latitude", updatable = false, unique = true)
-    double latitude;
+    @Column(name = "mapX", updatable = false, unique = true)
+    double mapX;
 
-    @Column(name = "longitude", updatable = false, unique = true)
-    double longitude;
+    @Column(name = "mapY", updatable = false, unique = true)
+    double mapY;
 
     @Column(name = "address", updatable = false, unique = true)
     String address;
