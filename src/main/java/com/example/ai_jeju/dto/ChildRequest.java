@@ -12,4 +12,6 @@ public class ChildRequest {
     private String childName;
     private Boolean gender;
     private long childProfile;
+    private String relation;
+
 }

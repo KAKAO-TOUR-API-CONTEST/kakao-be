@@ -26,20 +26,23 @@ public class User {
     @Column(name="email", nullable = false, unique = true)
     private String email;
     //실명
-    @Column(name = "name")
+    @Column(name = "name",nullable = false)
     private String name;
 
-    @Column(name = "nickname")
+    @Column(name = "nickname",nullable = false)
     private String nickname;
 
-    @Column(name = "provider")
+    @Column(name = "provider", nullable = false)
     private String provider;
 
-    @Column(name="snsprofile")
-    private String snsprofile;
+    @Column(name="profileImg")
+    private String profileImg;
 
-    @Column(name="profileimg")
-    private String profileimg;
+    @Column(name="rgtDate", nullable = false)
+    private String rgtDate;
+
+    @Column(name="phoneNum", nullable = false)
+    private String phoneNum;
 
 
 /*

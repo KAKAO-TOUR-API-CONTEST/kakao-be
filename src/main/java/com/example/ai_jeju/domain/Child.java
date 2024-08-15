@@ -34,8 +34,5 @@ public class Child {
     private String realtion;
 
     @Column
-    private String phoneNum;
-
-    @Column
     private long childProfile;
 }

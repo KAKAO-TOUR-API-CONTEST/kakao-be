@@ -1,5 +1,7 @@
 package com.example.ai_jeju.controller;
 
+import com.example.ai_jeju.domain.User;
+import com.example.ai_jeju.dto.MyPageResponse;
 import com.example.ai_jeju.dto.SignUpRequest;
 import com.example.ai_jeju.dto.WithdrawRequest;
 import com.example.ai_jeju.handler.SignUpHandler;
@@ -23,18 +25,23 @@ public class UserController {
     //회원가입
     /*여기 확인해보자*/
     @PostMapping("/register")
-    public void signUp(@RequestBody SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        userService.signUp(signUpRequest,request,response);
+    public Long registerUser(@RequestBody SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        return userService.registerUser(signUpRequest,request,response);
     }
     @GetMapping("/checks")
-    public Object CheckIfUser(@RequestParam String email){
-        return userService.checkIfUser(email);
+    public Long CheckIfUser(@RequestParam String email, HttpServletRequest request, HttpServletResponse response){
+        return userService.checkIfUser(email,request,response);
     }
 
-    @GetMapping("/RandomList")
-    public Object GetRandomList(@RequestParam String email){
-        return userService.checkIfUser(email);
+    @GetMapping("/mypage")
+    public MyPageResponse myPage(@RequestParam Long userId){
+        return userService.getMyPage(userId);
     }
+
+//    @GetMapping("/RandomList")
+//    public Object GetRandomList(){
+//        return userService.getRandomList();
+//    }
 
     //탈퇴하기
     @GetMapping("/withdraw")

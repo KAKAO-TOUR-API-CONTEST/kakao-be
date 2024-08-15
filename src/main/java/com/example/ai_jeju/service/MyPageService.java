@@ -29,18 +29,13 @@ public class MyPageService {
         userRepository.save(user);
     }
 
-    public void updateSnsProfile(Long id, String snsprofile) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        user.setSnsprofile(snsprofile);
-        userRepository.save(user);
-    }
+
 
     @Transactional
     public void updateProfile(Long id, String profileimg) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        user.setProfileimg(profileimg); // S3에 업로드된 이미지의 URL을 프로필 이미지로 설정
+        user.setProfileImg(profileimg); // S3에 업로드된 이미지의 URL을 프로필 이미지로 설정
         userRepository.save(user);
     }
 
@@ -48,25 +43,25 @@ public class MyPageService {
     public String getProfileUrl(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Profile not found"));
-        return user.getProfileimg(); // 프로필 이미지 URL 반환
+        return user.getProfileImg(); // 프로필 이미지 URL 반환
     }
 
-    public void deleteSnsProfile(Long id) {
-        Optional<User> userOptional = userRepository.findById(id);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            user.setSnsprofile(null);
-            userRepository.save(user);
-        } else {
-            throw new NoSuchElementException("not found");
-        }
-    }
+//    public void deleteSnsProfile(Long id) {
+//        Optional<User> userOptional = userRepository.findById(id);
+//        if (userOptional.isPresent()) {
+//            User user = userOptional.get();
+//            user.setSnsprofile(null);
+//            userRepository.save(user);
+//        } else {
+//            throw new NoSuchElementException("not found");
+//        }
+//    }
 
     public void deleteProfileImage(Long id) {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            user.setProfileimg(null);
+            user.setProfileImg(null);
             userRepository.save(user);
         } else {
             throw new NoSuchElementException("not found");
