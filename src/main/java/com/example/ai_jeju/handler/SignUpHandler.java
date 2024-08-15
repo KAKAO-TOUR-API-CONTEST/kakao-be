@@ -3,6 +3,7 @@ package com.example.ai_jeju.handler;
 import com.example.ai_jeju.domain.Child;
 import com.example.ai_jeju.domain.RefreshToken;
 import com.example.ai_jeju.domain.User;
+import com.example.ai_jeju.dto.ChildRequest;
 import com.example.ai_jeju.dto.SignUpRequest;
 import com.example.ai_jeju.generator.NickNameGenerator;
 import com.example.ai_jeju.jwt.TokenProvider;
@@ -63,7 +64,7 @@ public class SignUpHandler{
         String accessToken = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
         /*-------------------------------------------*/
         //동반아동
-        List<Child> childList = signUpRequest.getChild();
+        List<ChildRequest> childList = signUpRequest.getChild();
         for(int i=0; i<childList.size(); i++){
             Child child = Child.builder()
                     .userId(newUser.getId())

@@ -3,6 +3,7 @@ package com.example.ai_jeju.service;
 import com.example.ai_jeju.domain.Child;
 import com.example.ai_jeju.domain.RefreshToken;
 import com.example.ai_jeju.domain.User;
+import com.example.ai_jeju.dto.ChildRequest;
 import com.example.ai_jeju.dto.WithdrawRequest;
 import com.example.ai_jeju.dto.SignUpRequest;
 import com.example.ai_jeju.generator.NickNameGenerator;
@@ -69,7 +70,6 @@ public class UserService {
 
         // db에 회원정보 없음 -> 새로운 회원 추가
         else{
-
             return successHadler(request,response,signUpRequest);
         }
     }
@@ -162,9 +162,10 @@ public class UserService {
         String accessToken = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
         /*-------------------------------------------*/
         //동반아동
-        List<Child> childList = signUpRequest.getChild();
+        List<ChildRequest> childList = signUpRequest.getChild();
         for(int i=0; i<childList.size(); i++){
             Child child = Child.builder()
+                    //유저 아이디의 값 그대로 주기.
                     .userId(newUser.getId())
                     .childName(childList.get(i).getChildName())
                     .birthDate(childList.get(i).getBirthDate())

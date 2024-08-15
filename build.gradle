@@ -46,7 +46,16 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
     //implementation 'org.springframework.boot:spring-boot-starter-security'
 
-    compileOnly 'org.projectlombok:lombok'
+	// graphQL 클래스, 인터페이스를 제공하는 라이브러리
+	implementation 'com.graphql-java-kickstart:graphql-spring-boot-starter:11.0.0'
+	runtimeOnly 'com.graphql-java-kickstart:graphiql-spring-boot-starter:11.0.0'
+	// graphQL 쿼리 요청에 사용되는 라이브러리
+	implementation 'com.graphql-java-kickstart:playground-spring-boot-starter:11.0.0'
+
+
+
+
+	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
