@@ -12,26 +12,29 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-//HTTP 요청을 처리하는 Controller 클래스
+
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-
-
     //회원가입
     /*여기 확인해보자*/
-    @PostMapping("/signup")
+    @PostMapping("/register")
     public void signUp(@RequestBody SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        //String response = userService.signUp(signUpRequest);
-        //System.out.println(response);
         userService.signUp(signUpRequest,request,response);
     }
+    @GetMapping("/checks")
+    public Object CheckIfUser(@RequestParam String email){
+        return userService.checkIfUser(email);
+    }
 
-
+    @GetMapping("/RandomList")
+    public Object GetRandomList(@RequestParam String email){
+        return userService.checkIfUser(email);
+    }
 
     //탈퇴하기
     @GetMapping("/withdraw")
