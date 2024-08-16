@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -28,26 +27,16 @@ public class UserController {
     public Long registerUser(@RequestBody SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
         return userService.registerUser(signUpRequest,request,response);
     }
+
     @GetMapping("/checks")
     public Long CheckIfUser(@RequestParam String email, HttpServletRequest request, HttpServletResponse response){
         return userService.checkIfUser(email,request,response);
     }
 
-    @GetMapping("/mypage")
-    public MyPageResponse myPage(@RequestParam Long userId){
-        return userService.getMyPage(userId);
-    }
-
-//    @GetMapping("/RandomList")
-//    public Object GetRandomList(){
-//        return userService.getRandomList();
-//    }
-
     //탈퇴하기
     @GetMapping("/withdraw")
     public ResponseEntity<String> signOut(@RequestBody WithdrawRequest withdrawRequest) {
         String response = userService.withDraw(withdrawRequest);
-
         return ResponseEntity.ok(response);
     }
 

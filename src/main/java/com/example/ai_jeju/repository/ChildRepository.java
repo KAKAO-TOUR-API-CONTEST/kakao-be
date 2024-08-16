@@ -17,5 +17,4 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
     @Query("SELECT c FROM Child c WHERE c.userId = :userId")
     List<Child> findAllById(@Param("userId") Long userId);
 
-
 }
