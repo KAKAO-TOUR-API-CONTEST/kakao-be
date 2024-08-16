@@ -21,17 +21,17 @@ public class Store {
     String name;
 
     //이미지 소스
-    @Column(name = "imgSrc",updatable = false)
-    boolean imgSrc;
+    @Column(name = "imgSrc",updatable = false,nullable = true)
+    String imgSrc;
 
-    @Column(name = "address",updatable = false)
+    @Column(name = "address",updatable = false,nullable = true)
     String address;
 
 
-    @Column(name = "mapX",updatable = false)
+    @Column(name = "mapX",updatable = false,nullable = true)
     double mapX;
 
-    @Column(name = "mapY",updatable = false)
+    @Column(name = "mapY",updatable = false,nullable = true)
     double mapY;
 
 
@@ -45,32 +45,32 @@ public class Store {
      */
 
     //유모차 대여여부
-    @Column(name = "stroller",updatable = false)
+    @Column(name = "stroller",updatable = false,nullable = true)
     boolean stroller;
 
     //유모차 편의성
-    @Column(name = "strollerVal",updatable = false)
-    int strollerVal;
+    @Column(name = "strollerVal",updatable = false,nullable = true)
+    boolean strollerVal;
 
     //아이 스페어 체어
-    @Column(name = "babySpareChair",updatable = false)
+    @Column(name = "babySpareChair",updatable = false,nullable = true)
     boolean babySpareChair;
 
     //아이 놀이방
-    @Column(name = "playground",updatable = false)
+    @Column(name = "playground",updatable = false,nullable = true)
     boolean playground;
 
     //노키즈존 여부
-    @Column(name = "noKidsZone",updatable = false)
+    @Column(name = "noKidsZone",updatable = false,nullable = true)
     boolean noKidsZone;
 
-    @Column(name = "categoryId",updatable = false)
+    @Column(name = "categoryId",updatable = false,nullable = true)
     int categoryId;
 
-    @Column(name = "operationTime",updatable = false)
+    @Column(name = "operationTime",updatable = false,nullable = true)
     String operationTime;
 
-    @Column(name = "tel",updatable = false)
+    @Column(name = "tel",updatable = false,nullable = true)
     String tel;
 
 }

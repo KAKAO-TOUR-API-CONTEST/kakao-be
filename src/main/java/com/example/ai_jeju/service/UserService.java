@@ -53,11 +53,12 @@ public class UserService {
     private RefreshTokenRepository refreshTokenRepository;
     @Autowired
     private StoreRepository storeRepository;
-
-
-    // DB에 회원이 있을 때 -> 기존 회원일 경우
+    /**
+     * login/signu up flow-1
+     * checkIfUser : 기존 회원여부 확인
+     * 기존 회원이라면 객체 (아이디만) 반환 , AccessToken 쿠키로 발급
+     */
     public Long checkIfUser(String email, HttpServletRequest request, HttpServletResponse response){
-        // 이미 가입한 회원인지 확인한다.
         Optional<User> existingUser = userRepository.findByEmail(email);
         /*--------------------------------------------------------------------------------------------------*/
         if (existingUser.isPresent()) {
@@ -67,19 +68,22 @@ public class UserService {
             return user.getId();
         }
         /*--------------------------------------------------------------------------------------------------*/
-        // db에 회원정보 없음 -> 새로운 회원 추가
         else{
             return null;
         }
     }
-
+    /**
+     * login/signu up flow-3
+     * registerUser : 새로운 회원 DB 저장
+     * 기존 회원이라면 객체 반환 , AccessToken 쿠키로 발급
+     */
     public Long registerUser( SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response) {
-
+        // 닉네임 없을 때 생성
         String nick = signUpRequest.getNickname();
         if(nick==null){
             nick = new NickNameGenerator().getNickname();
         }
-
+        // 가입일자
         LocalDate date = LocalDate.now();
         // Save new user using builder pattern
         User newUser = User.builder()
@@ -92,35 +96,36 @@ public class UserService {
                 .rgtDate(date.toString())
                 .phoneNum(signUpRequest.getPhoneNum())
                 .build();
-
-
-        //String accessToken = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
         /*-------------------------------------------*/
-        //동반아동
+
+        System.out.println("id"+newUser.getId());
+        // 동반아동 등록하기
         List<ChildRequest> childList = signUpRequest.getChild();
         for(int i=0; i<childList.size(); i++){
             Child child = Child.builder()
-                    //유저 아이디의 값 그대로 주기.
+                    // 유저 아이디의 값 그대로 주기.
                     .userId(newUser.getId())
                     .childName(childList.get(i).getChildName())
                     .birthDate(childList.get(i).getBirthDate())
                     .gender(childList.get(i).getGender())
+                    .realtion(childList.get(i).getRelation())
                     .build();
             childRepository.save(child);
         }
         userRepository.save(newUser);
         String refresh_token = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
         String access_token = tokenProvider.generateToken(newUser, ACCESS_TOKEN_DURATION);
+        // DB에 refreshToken 저장
         saveRefreshToken(newUser.getId(), refresh_token);
+        // AccessToken 쿠키로 발급
         addAccessTokenToCookie(request,response, access_token);
+
         return  newUser.getId();
     }
-
 //    public List<Store> getRandomList(){
 //        List<Store> RandomStores = new ArrayList<Store>();
 //        StoreRepository.findById(Long.valueOf(1));
 //    }
-
     public User findByEmail(String email){
         return userRepository.findByEmail(email)
                 .orElseThrow(
@@ -132,16 +137,18 @@ public class UserService {
                 .orElseThrow(
                         ()-> new IllegalArgumentException("unexpected user"));
     }
-
-    //회원 탈퇴하기
+    /**
+     * withdroaw up flow
+     * checkIfUser : 기존 회원여부 확인
+     * 기존 회원이라면 객체 (아이디만) 반환 , AccessToken 쿠키로 발급
+     */
     public String withDraw(WithdrawRequest withDrawRequest){
-
         String email = withDrawRequest.getEmail();
         String accessToken = withDrawRequest.getAccessToken();
-        //기본 빈 url
+        // 기본 빈 url
         String url ="";
-        //provider 추출하기
-        //email 기반으로 삭제할 user 객체 찾기
+        // email 기반으로 삭제할 user 객체 찾기
+        // provider 추출하기
         User delUser = this.findByEmail(withDrawRequest.getEmail());
         String provider = delUser.getProvider();
         /*--------------------------------------------------------------------------------------------------*/
@@ -152,14 +159,10 @@ public class UserService {
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
                 headers.set("Authorization", "Bearer " + accessToken);
-
                 //전달할 Header 기반 HttpEntity 만들기
                 HttpEntity<String> entity = new HttpEntity<>(headers);
-
                 ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
-
                 ResponseEntity<String> result = ResponseEntity.status(response.getStatusCode()).body(response.getBody());
-
                 System.out.println("카카오 탈퇴 결과값 :"+result);
                 //맞을때
                 if(result.equals("200")){
@@ -170,22 +173,18 @@ public class UserService {
                 else{
                     return("delete fail");
                 }
-
                 /*--------------------------------------------------------------------------------------------------*/
             case "google":
                 url  = "https://accounts.google.com/o/oauth2/revoke?token="+accessToken;
                 ResponseEntity<String> googleRes = restTemplate.getForEntity(url, String.class);
                 ResponseEntity<String> googleResult = ResponseEntity.status(googleRes.getStatusCode()).body(googleRes.getBody());
                 System.out.println("구글 탈퇴 결과값 :"+googleResult);
-
                 /*--------------------------------------------------------------------------------------------------*/
-
                 //맞을때
                 if(googleResult.equals("200")){
                     userRepository.delete(delUser);
                     return("delete success");
                 }
-
                 //아니면 그냥 break..
                 else{
                     return("delete fail");
@@ -193,74 +192,67 @@ public class UserService {
         }
         return "result";
     }
-
-    public String successHadler(HttpServletRequest request,
-                                HttpServletResponse response, SignUpRequest signUpRequest) throws IOException {
-
-        String nick = signUpRequest.getNickname();
-        if(nick==null){
-            nick = new NickNameGenerator().getNickname();
-        }
-        // Save new user using builder pattern
-        User newUser = User.builder()
-                .name(signUpRequest.getName())
-                .nickname(nick)
-                .provider(signUpRequest.getProvider())
-                .email(signUpRequest.getEmail())
-
-                .profileImg(signUpRequest.getProfileImg())
-                .provider(signUpRequest.getProvider())
-                .build();
-
-
-        String accessToken = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
-        /*-------------------------------------------*/
-        //동반아동
-        List<ChildRequest> childList = signUpRequest.getChild();
-        for(int i=0; i<childList.size(); i++){
-            Child child = Child.builder()
-                    //유저 아이디의 값 그대로 주기.
-                    .userId(newUser.getId())
-                    .childName(childList.get(i).getChildName())
-                    .birthDate(childList.get(i).getBirthDate())
-                    .gender(childList.get(i).getGender())
-                    .build();
-            childRepository.save(child);
-        }
-
-        userRepository.save(newUser);
-        String refresh_token = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
-
-        saveRefreshToken(newUser.getId(), refresh_token);
-        addAccessTokenToCookie(request,response,refresh_token);
-        return  accessToken;
-    }
-
+//    public String successHadler(HttpServletRequest request,
+//                                HttpServletResponse response, SignUpRequest signUpRequest) throws IOException {
+//
+//        String nick = signUpRequest.getNickname();
+//        if(nick==null){
+//            nick = new NickNameGenerator().getNickname();
+//        }
+//        // Save new user using builder pattern
+//        User newUser = User.builder()
+//                .name(signUpRequest.getName())
+//                .nickname(nick)
+//                .provider(signUpRequest.getProvider())
+//                .email(signUpRequest.getEmail())
+//
+//                .profileImg(signUpRequest.getProfileImg())
+//                .provider(signUpRequest.getProvider())
+//                .build();
+//
+//
+//        String accessToken = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
+//        /*-------------------------------------------*/
+//        //동반아동
+//        List<ChildRequest> childList = signUpRequest.getChild();
+//        for(int i=0; i<childList.size(); i++){
+//            Child child = Child.builder()
+//                    //유저 아이디의 값 그대로 주기.
+//                    .userId(newUser.getId())
+//                    .childName(childList.get(i).getChildName())
+//                    .birthDate(childList.get(i).getBirthDate())
+//                    .gender(childList.get(i).getGender())
+//                    .build();
+//            childRepository.save(child);
+//        }
+//
+//        userRepository.save(newUser);
+//        String refresh_token = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
+//
+//        saveRefreshToken(newUser.getId(), refresh_token);
+//        addAccessTokenToCookie(request,response,refresh_token);
+//        return  accessToken;
+//    }
 
     //생성된 리프레시 토큰을 전달받아 데이터베이스 저장
     private void saveRefreshToken(Long userId, String newRefreshToken) {
         RefreshToken refreshToken = refreshTokenRepository.findByUserId(userId)
                 .map(entity -> entity.update(newRefreshToken))
                 .orElse(new RefreshToken(userId, newRefreshToken));
-
         refreshTokenRepository.save(refreshToken);
     }
-
     //생성된 액세스 토큰을 쿠키에 저장
     private void addAccessTokenToCookie(HttpServletRequest request,
                                          HttpServletResponse response, String refreshToken) {
         int cookieMaxAge = (int) ACCESS_TOKEN_DURATION.toSeconds();
         CookieUtil.deleteCookie(request, response, ACCESS_TOKEN_COOKIE_NAME);
         CookieUtil.addCookie(response, ACCESS_TOKEN_COOKIE_NAME, refreshToken, cookieMaxAge);
-
     }
-
     public MyPageResponse getMyPage(Long userId){
         MyPageResponse myPageRes = new MyPageResponse();
         User user = userRepository.findById(userId).get();
         List<Child> childs = childRepository.findAllById(userId);
-
-
+        // myPageResponse  : 응답 객체 만들기
         myPageRes.setEmail(user.getEmail());
         myPageRes.setName(user.getName());
         myPageRes.setNickname(user.getNickname());
@@ -268,10 +260,6 @@ public class UserService {
         myPageRes.setRgtDate(user.getRgtDate());
         myPageRes.setPhoneNum(user.getPhoneNum());
         myPageRes.setNumOfChilds(childs.size());
-
         return  myPageRes;
     }
-
-
-
 }

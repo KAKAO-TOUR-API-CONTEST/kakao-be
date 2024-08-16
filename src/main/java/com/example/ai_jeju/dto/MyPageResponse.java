@@ -13,14 +13,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MyPageResponse {
 
-
-
     private String email;
     private String name;
     private String nickname;
     private String profileImg;
     private String rgtDate;
     private String phoneNum;
-
     private int numOfChilds;
+
 }

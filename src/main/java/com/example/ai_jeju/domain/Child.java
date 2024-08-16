@@ -20,19 +20,14 @@ public class Child {
 
     @Column
     private Long userId;
-
     @Column
     private String birthDate;
-
     @Column
     private String childName;
-
     @Column
     private Boolean gender;
-
     @Column
     private String realtion;
-
     @Column
     private long childProfile;
 }

@@ -1,8 +1,10 @@
 package com.example.ai_jeju.controller;
 
 import com.example.ai_jeju.domain.User;
+import com.example.ai_jeju.dto.MyPageResponse;
 import com.example.ai_jeju.service.MyPageService;
 import com.example.ai_jeju.service.S3Service;
+import com.example.ai_jeju.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,18 +20,28 @@ public class MyPageController {
 
     @Autowired
     private MyPageService myPageService;
+
+    @Autowired
+    private UserService userService;
+
     @Autowired
     private S3Service s3Service;
 
     //마이페이지 회원 1명씩 조회
+
+//    @GetMapping("/mypage")
+//    public ResponseEntity<User> getUserById(@RequestParam Long userId) {
+//        Optional<User> user = myPageService.getUserById(userId);
+//        if (user.isPresent()) {
+//            return ResponseEntity.ok(user.get());
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
+
     @GetMapping("/mypage")
-    public ResponseEntity<User> getUserById(@RequestParam Long userId) {
-        Optional<User> user = myPageService.getUserById(userId);
-        if (user.isPresent()) {
-            return ResponseEntity.ok(user.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public MyPageResponse myPage(@RequestParam Long userId){
+        return userService.getMyPage(userId);
     }
 
     @PutMapping("/mypage/nickname")
@@ -48,13 +60,6 @@ public class MyPageController {
         return ResponseEntity.ok("success");
     }
 
-    /*
-    @DeleteMapping("/mypage/snsprofile")
-    public ResponseEntity<String> deleteSnsProfile(@RequestParam Long id) {
-        myPageService.deleteSnsProfile(id);
-        return ResponseEntity.ok("deleted");
-    }*/
-
     @DeleteMapping("/mypage/profileimg")
     public ResponseEntity<String> deleteProfileImage(@RequestParam Long userId) {
         myPageService.deleteProfileImage(userId);
@@ -67,7 +72,5 @@ public class MyPageController {
         String presignedUrl = s3Service.createPresignedUrl(filePath);
         return ResponseEntity.ok(presignedUrl);
     }
-
-
 
 }
