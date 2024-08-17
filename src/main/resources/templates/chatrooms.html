@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Rooms</title>
+  <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .room-list {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+        .room-item {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+        }
+        .room-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+<div class="room-list">
+  <div id="rooms">
+    <!-- 방 목록이 여기에 동적으로 추가됩니다 -->
+  </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/chat/rooms')
+            .then(response => response.json())
+            .then(rooms => {
+                const roomsContainer = document.getElementById('rooms');
+                rooms.forEach(room => {
+                    const roomElement = document.createElement('div');
+                    roomElement.className = 'room-item';
+                    roomElement.innerText = room.name;
+                    roomElement.addEventListener('click', function() {
+                        window.location.href = `/chatroom?roomId=${room.roomId}`;
+                    });
+                    roomsContainer.appendChild(roomElement);
+                });
+            });
+    });
+</script>
+</body>
+</html>

@@ -60,9 +60,11 @@ public class ChatController {
         messagingTemplate.convertAndSend("/sub/chat/room/" + messageDto.getRoomId(), messageDto);
     }
 
-    @GetMapping("/chat.html")
+    @GetMapping("/chatroom")
     public String chat(@RequestParam("roomId") String roomId, Model model) {
         model.addAttribute("roomId", roomId);
         return "chat"; // chat.html 파일을 반환
     }
+
+
 }
