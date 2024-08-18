@@ -20,7 +20,22 @@ public class RefreshToken {
     String refresh_token;
 
     @Column
-    String user_id;
+    private Long userId;
+
+
+    //생성자
+    public RefreshToken(Long userId, String refreshToken){
+        this.userId = userId;
+        this.refresh_token = refreshToken;
+    }
+
+    //update 메서드
+    public RefreshToken update(String newRefreshToken){
+        this.refresh_token = newRefreshToken;
+        return  this;
+    }
+
+
 
 
 }

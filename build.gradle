@@ -37,13 +37,23 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	//implementation 'org.springframework.boot:spring-boot-starter-security'
+
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-tomcat'
 	//JWT 의존성 추가
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+    //implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// graphQL 클래스, 인터페이스를 제공하는 라이브러리
+	implementation 'com.graphql-java-kickstart:graphql-spring-boot-starter:11.0.0'
+	runtimeOnly 'com.graphql-java-kickstart:graphiql-spring-boot-starter:11.0.0'
+	// graphQL 쿼리 요청에 사용되는 라이브러리
+	implementation 'com.graphql-java-kickstart:playground-spring-boot-starter:11.0.0'
+
+
+
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'

@@ -1,35 +1,42 @@
 package com.example.ai_jeju.controller;
 
+import com.example.ai_jeju.domain.User;
+import com.example.ai_jeju.dto.MyPageResponse;
 import com.example.ai_jeju.dto.SignUpRequest;
 import com.example.ai_jeju.dto.WithdrawRequest;
+import com.example.ai_jeju.handler.SignUpHandler;
 import com.example.ai_jeju.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-//HTTP 요청을 처리하는 Controller 클래스
+import java.io.IOException;
+
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
     //회원가입
-    @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@RequestBody SignUpRequest signUpRequest) {
-        String response = userService.signUp(signUpRequest);
-        //System.out.println(response);
-        return ResponseEntity.ok(response);
+    /*여기 확인해보자*/
+    @PostMapping("/register")
+    public Long registerUser(@RequestBody SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        return userService.registerUser(signUpRequest,request,response);
     }
 
-
+    @GetMapping("/checks")
+    public Long CheckIfUser(@RequestParam String email, HttpServletRequest request, HttpServletResponse response){
+        return userService.checkIfUser(email,request,response);
+    }
 
     //탈퇴하기
     @GetMapping("/withdraw")
     public ResponseEntity<String> signOut(@RequestBody WithdrawRequest withdrawRequest) {
         String response = userService.withDraw(withdrawRequest);
-        System.out.println(response);
         return ResponseEntity.ok(response);
     }
 
