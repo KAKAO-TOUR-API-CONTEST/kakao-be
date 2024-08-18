@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .chat-room {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+        .chat-messages {
+            border: 1px solid #ddd;
+            padding: 10px;
+            height: 300px;
+            overflow-y: scroll;
+        }
+        .message-input {
+            width: calc(100% - 60px);
+            padding: 10px;
+        }
+        .send-button {
+            padding: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="chat-room">
+    <h3 id="room-name"></h3>
+    <div class="chat-messages" id="chat-messages"></div>
+    <div>
+        <input type="text" id="message" class="message-input" />
+        <button id="send" class="send-button">Send</button>
+    </div>
+</div>
+
+<script>
+    let stompClient = null;
+    let roomId = new URLSearchParams(window.location.search).get('roomId');
+    let sender = prompt("Enter your name");
+
+    document.getElementById('room-name').innerText = `Room ID: ${roomId}`;
+
+    function connect() {
+        let socket = new SockJS('/ws/chat');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            stompClient.subscribe(`/sub/chat/room/${roomId}`, function (message) {
+                showMessage(JSON.parse(message.body));
+            });
+
+            stompClient.send("/pub/chat/message", {}, JSON.stringify({
+                type: 'ENTER',
+                roomId: roomId,
+                sender: sender,
+                message: ''
+            }));
+        });
+    }
+
+    function sendMessage() {
+        let message = document.getElementById('message').value;
+        stompClient.send("/pub/chat/message", {}, JSON.stringify({
+            type: 'TALK',
+            roomId: roomId,
+            sender: sender,
+            message: message
+        }));
+        document.getElementById('message').value = '';
+    }
+
+    function showMessage(message) {
+        let messageElement = document.createElement('div');
+        messageElement.innerText = `${message.sender}: ${message.message}`;
+        document.getElementById('chat-messages').appendChild(messageElement);
+    }
+
+    document.getElementById('send').addEventListener('click', sendMessage);
+
+    connect();
+</script>
+</body>
+</html>

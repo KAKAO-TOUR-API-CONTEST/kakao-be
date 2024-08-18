@@ -7,6 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -14,6 +15,8 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.Date;
 import io.jsonwebtoken.*;
+
+
 
 @RequiredArgsConstructor
 @Service
