@@ -44,6 +44,9 @@ public class User {
     @Column(name="phoneNum", nullable = false)
     private String phoneNum;
 
+    @Column(name ="ifRcmd", nullable = false)
+    private boolean ifRcmd;
+
 
 /*
     // Builder pattern

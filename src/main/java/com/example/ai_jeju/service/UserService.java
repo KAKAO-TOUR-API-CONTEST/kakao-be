@@ -95,6 +95,7 @@ public class UserService {
                 .provider(signUpRequest.getProvider())
                 .rgtDate(date.toString())
                 .phoneNum(signUpRequest.getPhoneNum())
+                .ifRcmd(signUpRequest.getIfRcmd())
                 .build();
         /*-------------------------------------------*/
 
@@ -122,20 +123,26 @@ public class UserService {
 
         return  newUser.getId();
     }
+
 //    public List<Store> getRandomList(){
 //        List<Store> RandomStores = new ArrayList<Store>();
 //        StoreRepository.findById(Long.valueOf(1));
 //    }
+
     public User findByEmail(String email){
         return userRepository.findByEmail(email)
                 .orElseThrow(
                         ()-> new IllegalArgumentException("unexpected user"));
     }
 
-    public Store findById(Long id){
-        return storeRepository.findById(id)
-                .orElseThrow(
-                        ()-> new IllegalArgumentException("unexpected user"));
+//    public Store findStoreById(Long id){
+//        return storeRepository.findById(id)
+//                .orElseThrow(
+//                        ()-> new IllegalArgumentException("unexpected store"));
+//    }
+
+    public Optional<User> findById(Long userId){
+        return userRepository.findById(userId);
     }
     /**
      * withdroaw up flow

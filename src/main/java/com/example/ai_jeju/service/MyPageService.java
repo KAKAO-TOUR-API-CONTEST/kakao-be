@@ -46,16 +46,8 @@ public class MyPageService {
         return user.getProfileImg(); // 프로필 이미지 URL 반환
     }
 
-//    public void deleteSnsProfile(Long id) {
-//        Optional<User> userOptional = userRepository.findById(id);
-//        if (userOptional.isPresent()) {
-//            User user = userOptional.get();
-//            user.setSnsprofile(null);
-//            userRepository.save(user);
-//        } else {
-//            throw new NoSuchElementException("not found");
-//        }
-//    }
+
+
 
     public void deleteProfileImage(Long id) {
         Optional<User> userOptional = userRepository.findById(id);
@@ -66,5 +58,17 @@ public class MyPageService {
         } else {
             throw new NoSuchElementException("not found");
         }
+    }
+
+    public User updateUser(Long id, User newUserData) {
+        return userRepository.findById(id)
+                .map(user -> {
+                    user.setName(newUserData.getName());
+                    user.setNickname(newUserData.getNickname());
+                    user.setProfileImg(newUserData.getProfileImg());
+                    user.setPhoneNum(newUserData.getPhoneNum());
+                    return userRepository.save(user);
+                })
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }

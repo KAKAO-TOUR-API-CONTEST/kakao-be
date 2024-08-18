@@ -1,7 +1,9 @@
 package com.example.ai_jeju.controller;
 
 import com.example.ai_jeju.domain.Store;
+import com.example.ai_jeju.domain.User;
 import com.example.ai_jeju.service.MainVIewService;
+import com.example.ai_jeju.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,8 @@ public class MainViewController {
 
     @Autowired
     private MainVIewService mainViewService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/detailList")
     public Optional<Store> getUserById(@RequestParam Long storeId) {
@@ -40,6 +44,14 @@ public class MainViewController {
         return mainViewService.searchByCategory(keyword,categoryId);
     }
 
+    @GetMapping("/rcmd")
+    public boolean getIfrcmd(@RequestParam Long userId) {
+
+        Optional<User> user  = userService.findById(userId);
+        if(user.isPresent())
+            return user.get().isIfRcmd();
+        return false;
+    }
 
 //    @GetMapping("/stay/detailList")
 //    public Stay getStayById(@RequestParam int stayId) {

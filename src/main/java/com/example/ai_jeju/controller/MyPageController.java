@@ -10,9 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.Optional;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @RestController
 @RequestMapping("/api")
@@ -73,4 +70,18 @@ public class MyPageController {
         return ResponseEntity.ok(presignedUrl);
     }
 
+
+    @PutMapping("/mypage/update")
+    public ResponseEntity<User> updateMyPage (@RequestBody User newUser) {
+
+        Long userId = newUser.getId();
+
+        try {
+            User updatedUser = myPageService.updateUser(userId, newUser);
+            return ResponseEntity.ok(updatedUser);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+
+    }
 }
