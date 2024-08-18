@@ -45,10 +45,10 @@ public class ChatController {
         // 메시지 타입에 따라 처리
         switch (messageDto.getType()) {
             case ENTER:
-                //messageDto.setMessage(messageDto.getSender() + "님이 입장하셨습니다.");
+                messageDto.setMessage(messageDto.getSender() + "님이 입장하셨습니다.");
                 break;
             case EXIT:
-                //messageDto.setMessage(messageDto.getSender() + "님이 퇴장하셨습니다.");
+                messageDto.setMessage(messageDto.getSender() + "님이 퇴장하셨습니다.");
                 break;
             default:
                 break;
@@ -74,7 +74,7 @@ public class ChatController {
         return "chat"; // chat.html 파일을 반환
     }
 
-    @GetMapping("/previous")
+    @GetMapping("/chat/previous")
     @ResponseBody
     public List<ChatMessage> getPreviousMessages(
             @RequestParam("roomId") String roomId,
