@@ -24,6 +24,7 @@ jobs:
             cd /server/back-end
             git restore .
             git pull
+            ./gradlew clean
             ./gradlew build
             systemctl restart jeju-back
 
