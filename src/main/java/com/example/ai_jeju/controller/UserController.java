@@ -29,7 +29,7 @@ public class UserController {
     }
 
     @GetMapping("/checks")
-    public Long CheckIfUser(@RequestParam String email, HttpServletRequest request, HttpServletResponse response){
+    public Long CheckIfUser(@RequestParam(name = "email") String email, HttpServletRequest request, HttpServletResponse response){
         return userService.checkIfUser(email,request,response);
     }
 
