@@ -1,7 +1,7 @@
 package com.example.ai_jeju.controller;
 
 import com.example.ai_jeju.domain.ChatRoom;
-import com.example.ai_jeju.repository.ChatRoomRepository;
+import com.example.ai_jeju.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -13,18 +13,16 @@ import java.util.List;
 @RequestMapping("/chat")
 public class ChatRoomController {
 
-    private final ChatRoomRepository chatRoomRepository;
-
+    private final ChatService chatService;
 
     @GetMapping("/rooms")
     public List<ChatRoom> room() {
-        return chatRoomRepository.findAllRoom();
+        return chatService.findAllRooms();
     }
-
 
     @GetMapping("/room/{roomId}")
     public ChatRoom roomInfo(@PathVariable("roomId") String roomId) {
-        return chatRoomRepository.findRoomById(roomId);
+        return chatService.findRoomById(roomId);
     }
 
     @Controller

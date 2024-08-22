@@ -1,39 +1,33 @@
 package com.example.ai_jeju.domain;
 
-import com.example.ai_jeju.dto.ChatMessageDto;
-import com.example.ai_jeju.service.ChatService;
-import lombok.Builder;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import lombok.Data;
-import org.springframework.web.socket.WebSocketSession;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Data
+@Entity
 public class ChatRoom {
 
-    private static final AtomicInteger idCounter = new AtomicInteger(0);
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String roomId;
     private String name;
 
     // 기본 생성자
     public ChatRoom() {
-        this.roomId = String.valueOf(idCounter.incrementAndGet());
     }
 
-    // 이름과 ID를 인자로 받는 생성자
+    // 이름과 roomId를 인자로 받는 생성자
     public ChatRoom(String roomId, String name) {
         this.roomId = roomId;
         this.name = name;
     }
 
-    public static ChatRoom create(String name) {
-        ChatRoom chatRoom = new ChatRoom();
-        chatRoom.roomId = String.valueOf(idCounter.incrementAndGet());
-        chatRoom.name = name;
-        return chatRoom;
+    public static ChatRoom create(String roomId, String name) {
+        return new ChatRoom(roomId, name);
     }
 }
