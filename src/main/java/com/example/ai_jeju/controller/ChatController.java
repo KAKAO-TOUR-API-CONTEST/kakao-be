@@ -81,20 +81,25 @@ public class ChatController {
     }
 
 
-    @GetMapping("/chatroom")
-    public String chat(@RequestParam("roomId") String roomId, Model model) {
-        model.addAttribute("roomId", roomId);
-        return "chat"; // chat.html 파일을 반환
-    }
+    //@GetMapping("/chatroom")
+    //public String chat(@RequestParam("roomId") String roomId, Model model) {
+    //    model.addAttribute("roomId", roomId);
+    //    return "chat"; // chat.html 파일을 반환
+    //}
 
     @GetMapping("/chat/previous")
     @ResponseBody
     public List<ChatMessage> getPreviousMessages(
             @RequestParam("roomId") String roomId,
-            @RequestParam(value = "lastMessageId", required = false) Optional<Long> lastMessageId) {
+            @RequestParam(value = "lastMessageid", required = false) Optional<Long> lastMessageId) {
         return chatService.previousMessages(roomId, lastMessageId.orElse(null));
     }
 
+    @GetMapping("/chat/allprevious")
+    @ResponseBody
+    public List<ChatMessage> getAllMessages(@RequestParam("roomId") String roomId) {
+        return chatService.getAllMessages(roomId);
+    }
 
 
 

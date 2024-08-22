@@ -30,6 +30,10 @@ public class ChatService {
     @Autowired
     private ChatMessageRepository chatMessageRepository;
 
+    public List<ChatMessage> getAllMessages(String roomId) {
+        return chatMessageRepository.findByRoomIdOrderByIdAsc(roomId);
+    }
+
     public List<ChatMessage> previousMessages(String roomId, Long lastMessageId) {
         if (lastMessageId == null) {
             // 마지막 메시지 ID가 없으면 해당 채팅방의 최신 메시지 10개 가져오기
