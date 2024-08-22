@@ -16,7 +16,7 @@ public class RefreshToken {
     @Column(name = "id", updatable = false, unique = true)
     private Long id;
 
-    @Column
+    @Column(name = "refresh_token", columnDefinition = "LONGTEXT")
     String refresh_token;
 
     @Column
