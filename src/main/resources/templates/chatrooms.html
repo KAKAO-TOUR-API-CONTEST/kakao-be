@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat Rooms</title>
-  <style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Rooms</title>
+    <style>
         body {
             font-family: Arial, sans-serif;
         }
@@ -19,36 +19,102 @@
             padding: 10px;
             border-bottom: 1px solid #ddd;
             cursor: pointer;
+            position: relative;
         }
         .room-item:last-child {
             border-bottom: none;
+        }
+        .last-message {
+            font-size: 0.9em;
+            color: gray;
+            margin-top: 5px;
+        }
+        .user-count {
+            font-size: 0.8em;
+            color: blue;
+            position: absolute;
+            right: 10px;
+            top: 10px;
         }
     </style>
 </head>
 <body>
 <div class="room-list">
-  <div id="rooms">
-    <!-- 방 목록이 여기에 동적으로 추가됩니다 -->
-  </div>
+    <div id="rooms">
+        <!-- 방 목록이 여기에 동적으로 추가됩니다 -->
+    </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        fetch('/chat/rooms')
-            .then(response => response.json())
-            .then(rooms => {
-                const roomsContainer = document.getElementById('rooms');
-                rooms.forEach(room => {
-                    const roomElement = document.createElement('div');
-                    roomElement.className = 'room-item';
-                    roomElement.innerText = room.name;
-                    roomElement.addEventListener('click', function() {
-                        window.location.href = `/chatroom?roomId=${room.roomId}`;
+    let stompClient = null;
+
+    function connect() {
+        let socket = new SockJS('/ws/chat');
+        stompClient = Stomp.over(socket);
+
+        let token = localStorage.getItem('jwtToken');
+        stompClient.connect({ 'Authorization': `Bearer ${token}` }, function (frame) {
+            console.log('Connected: ' + frame);
+            fetch('/chat/rooms')
+                .then(response => response.json())
+                .then(rooms => {
+                    const roomsContainer = document.getElementById('rooms');
+                    rooms.forEach(room => {
+                        const roomElement = document.createElement('div');
+                        roomElement.className = 'room-item';
+                        roomElement.innerHTML = `<strong>${room.name}</strong>`;
+
+                        const lastMessageElement = document.createElement('div');
+                        lastMessageElement.className = 'last-message';
+                        roomElement.appendChild(lastMessageElement);
+
+                        const userCountElement = document.createElement('div');
+                        userCountElement.className = 'user-count';
+                        roomElement.appendChild(userCountElement);
+
+                        // Fetch last message in the room
+                        fetch(`/chat/room/${room.roomId}/lastmessage`)
+                            .then(response => response.json())
+                            .then(message => {
+                                if (message) {
+                                    lastMessageElement.innerText = `${message.sender}: ${message.message}`;
+                                } else {
+                                    lastMessageElement.innerText = "No messages yet";
+                                }
+                            });
+
+                        // Fetch user count for the room
+                        fetch(`/chat/${room.roomId}/users/count`)
+                            .then(response => response.json())
+                            .then(count => {
+                                userCountElement.innerText = `Users: ${count}`;
+                            })
+                            .catch(error => {
+                                console.error('Error fetching user count:', error);
+                                userCountElement.innerText = `Users: N/A`;
+                            });
+
+                        stompClient.subscribe(`/sub/chat/room/${room.roomId}`, function (message) {
+                            const parsedMessage = JSON.parse(message.body);
+                            lastMessageElement.innerText = `${parsedMessage.sender}: ${parsedMessage.message}`;
+                        });
+
+                        roomElement.addEventListener('click', function() {
+                            window.location.href = `/chatroom?roomId=${room.roomId}`;
+                        });
+
+                        roomsContainer.appendChild(roomElement);
                     });
-                    roomsContainer.appendChild(roomElement);
                 });
-            });
-    });
+        }, function (error) {
+            console.log("Error during connection: ", error);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', connect);
 </script>
 </body>
 </html>

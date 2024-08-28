@@ -64,14 +64,24 @@ public class ChatController {
                     break;
             }
 
-            ChatMessage chatMessage = ChatMessage.builder()
-                    .roomId(messageDto.getRoomId())
-                    .sender(messageDto.getSender())  // nickname이 sender로 설정됨
-                    .message(messageDto.getMessage())
-                    .timestamp(LocalDateTime.now())
-                    .type(messageDto.getType().name())
-                    .build();
-            chatMessageRepository.save(chatMessage);
+            // roomId를 사용해 ChatRoom 객체를 가져옵니다
+            ChatRoom chatRoom = chatRoomRepository.findByRoomId(messageDto.getRoomId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid roomId: " + messageDto.getRoomId()));
+
+            try {
+                ChatMessage chatMessage = ChatMessage.builder()
+                        .chatRoom(chatRoom)
+                        .sender(messageDto.getSender())
+                        .message(messageDto.getMessage())
+                        .timestamp(LocalDateTime.now())
+                        .type(messageDto.getType().name())
+                        .build();
+                log.info("Saving ChatMessage: " + chatMessage.toString());
+                chatMessageRepository.save(chatMessage);
+            } catch (Exception e) {
+                log.error("Error saving ChatMessage", e);
+            }
+
 
             log.info("Sending message to /sub/chat/room/" + messageDto.getRoomId() + ": " + messageDto.toString());
             messagingTemplate.convertAndSend("/sub/chat/room/" + messageDto.getRoomId(), messageDto);
@@ -81,24 +91,34 @@ public class ChatController {
     }
 
 
-    //@GetMapping("/chatroom")
-    //public String chat(@RequestParam("roomId") String roomId, Model model) {
-    //    model.addAttribute("roomId", roomId);
-    //    return "chat"; // chat.html 파일을 반환
-    //}
+    @GetMapping("/chatroom")
+    public String chat(@RequestParam("roomId") String roomId, Model model) {
+        model.addAttribute("roomId", roomId);
+        return "chat"; // chat.html 파일을 반환
+    }
 
     @GetMapping("/chat/previous")
     @ResponseBody
     public List<ChatMessage> getPreviousMessages(
             @RequestParam("roomId") String roomId,
             @RequestParam(value = "lastMessageid", required = false) Optional<Long> lastMessageId) {
-        return chatService.previousMessages(roomId, lastMessageId.orElse(null));
+
+        // roomId를 사용해 ChatRoom 객체를 가져옵니다
+        ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid roomId: " + roomId));
+
+        return chatService.previousMessages(chatRoom, lastMessageId.orElse(null));
     }
 
     @GetMapping("/chat/allprevious")
     @ResponseBody
     public List<ChatMessage> getAllMessages(@RequestParam("roomId") String roomId) {
-        return chatService.getAllMessages(roomId);
+
+        // roomId를 사용해 ChatRoom 객체를 가져옵니다
+        ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid roomId: " + roomId));
+
+        return chatService.getAllMessages(chatRoom);
     }
 
 

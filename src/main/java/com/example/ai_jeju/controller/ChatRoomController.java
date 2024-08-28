@@ -1,12 +1,17 @@
 package com.example.ai_jeju.controller;
 
+import com.example.ai_jeju.domain.ChatMessage;
 import com.example.ai_jeju.domain.ChatRoom;
+import com.example.ai_jeju.handler.StompHandler;
 import com.example.ai_jeju.service.ChatService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -14,6 +19,7 @@ import java.util.List;
 public class ChatRoomController {
 
     private final ChatService chatService;
+    private final StompHandler stompHandler;
 
     @GetMapping("/rooms")
     public List<ChatRoom> room() {
@@ -34,4 +40,25 @@ public class ChatRoomController {
             return "chatrooms";
         }
     }
+
+    @GetMapping("/room/{roomId}/lastmessage")
+    public ChatMessage getLastMessage(@PathVariable("roomId") String roomId) {
+        ChatRoom chatRoom = chatService.findRoomById(roomId);
+        if (chatRoom == null) {
+            throw new IllegalArgumentException("Invalid roomId: " + roomId);
+        }
+        return chatService.findLastMessage(chatRoom);
+    }
+
+
+    @GetMapping("/{roomId}/users/count")
+    public int getUserCount(@PathVariable("roomId") String roomId) {
+        return stompHandler.getUserCount(roomId);
+    }
+
+
+
+
+
+
 }

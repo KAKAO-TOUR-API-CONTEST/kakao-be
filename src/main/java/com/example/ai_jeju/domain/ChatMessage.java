@@ -1,9 +1,6 @@
 package com.example.ai_jeju.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +19,10 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String roomId;
+    @ManyToOne
+    @JoinColumn(name = "room_id", referencedColumnName = "roomId")
+    private ChatRoom chatRoom;
+
     private String sender;
     private String message;
     private String type;

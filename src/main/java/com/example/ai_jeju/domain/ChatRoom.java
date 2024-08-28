@@ -1,9 +1,6 @@
 package com.example.ai_jeju.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -11,23 +8,25 @@ import lombok.Data;
 public class ChatRoom {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     private String roomId;
+
     private String name;
+    private String description;
+    private String imgurl;
 
     // 기본 생성자
     public ChatRoom() {
     }
 
     // 이름과 roomId를 인자로 받는 생성자
-    public ChatRoom(String roomId, String name) {
+    public ChatRoom(String roomId, String name, String description, String imgurl) {
         this.roomId = roomId;
         this.name = name;
+        this.description = description;
+        this.imgurl = imgurl;
     }
 
-    public static ChatRoom create(String roomId, String name) {
-        return new ChatRoom(roomId, name);
+    public static ChatRoom create(String roomId, String name, String description, String imgurl) {
+        return new ChatRoom(roomId, name, description, imgurl);
     }
 }

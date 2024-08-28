@@ -27,9 +27,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.example.ai_jeju.handler.SignUpHandler.ACCESS_TOKEN_COOKIE_NAME;
 //import static com.example.ai_jeju.handler.SignUpHandler.REFRESH_TOKEN_COOKIE_NAME;
@@ -58,20 +56,29 @@ public class UserService {
      * checkIfUser : 기존 회원여부 확인
      * 기존 회원이라면 객체 (아이디만) 반환 , AccessToken 쿠키로 발급
      */
-    public Long checkIfUser(String email, HttpServletRequest request, HttpServletResponse response){
+    public Map<String, Object> checkIfUser(String email, HttpServletRequest request, HttpServletResponse response) {
         Optional<User> existingUser = userRepository.findByEmail(email);
-        /*--------------------------------------------------------------------------------------------------*/
+        Map<String, Object> result = new HashMap<>();
+
         if (existingUser.isPresent()) {
             User user = existingUser.get();
-            String accessToken = tokenProvider.generateToken(user,ACCESS_TOKEN_DURATION);
-            addAccessTokenToCookie(request,response, accessToken);
-            return user.getId();
+            String accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_DURATION);
+
+            result.put("statusCode", 1000);
+            result.put("message", "existinguser");
+            result.put("data", Map.of(
+                    "userId", user.getId(),
+                    "accessToken", accessToken
+            ));
+        } else {
+            result.put("statusCode", 2000);
+            result.put("message", "notexistinguser");
+            result.put("data", null);
         }
-        /*--------------------------------------------------------------------------------------------------*/
-        else{
-            return null;
-        }
+
+        return result;
     }
+
     /**
      * login/signu up flow-3
      * registerUser : 새로운 회원 DB 저장
