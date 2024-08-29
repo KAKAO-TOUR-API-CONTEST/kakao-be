@@ -46,6 +46,7 @@ public class ChatController {
 
         try {
             String nickname = (String) sessionAttributes.get("nickname");
+            String profileImg = (String) sessionAttributes.get("profileImg");
             log.info("Received message: " + messageDto.toString());
 
             // sender가 null일 경우 세션에서 추출한 nickname을 sender로 설정
@@ -53,12 +54,16 @@ public class ChatController {
                 messageDto.setSender(nickname);
             }
 
+            if (messageDto.getProfileImg() == null) {
+                messageDto.setProfileImg(profileImg);
+            }
+
             switch (messageDto.getType()) {
                 case ENTER:
-                    messageDto.setMessage(nickname + "님이 입장하셨습니다.");
+                    //messageDto.setMessage(nickname + "님이 입장하셨습니다.");
                     break;
                 case EXIT:
-                    messageDto.setMessage(nickname + "님이 퇴장하셨습니다.");
+                    //messageDto.setMessage(nickname + "님이 퇴장하셨습니다.");
                     break;
                 default:
                     break;

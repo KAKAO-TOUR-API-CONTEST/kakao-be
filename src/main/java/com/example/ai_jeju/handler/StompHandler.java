@@ -54,8 +54,12 @@ public class StompHandler implements ChannelInterceptor {
                 String nickname = tokenProvider.extractNickname(token);
                 log.info("Extracted nickname: {}", nickname);
 
+                String profileImg = tokenProvider.extractProfileImg(token);
+                log.info("Extracted profileImg: {}", profileImg);
+
                 // WebSocket 세션에 nickname 저장
                 accessor.getSessionAttributes().put("nickname", nickname);
+                accessor.getSessionAttributes().put("profileImg", profileImg);
                 accessor.getSessionAttributes().put("connected", true); // 연결 상태 저장
                 accessor.getSessionAttributes().put("enter", false); // 초기에는 false로 설정
             } else {
@@ -82,7 +86,9 @@ public class StompHandler implements ChannelInterceptor {
 
                     // 토큰에서 가져온 nickname을 sender로 사용
                     String sender = (String) accessor.getSessionAttributes().get("nickname");
+                    String profileImg = (String) accessor.getSessionAttributes().get("profileImg");
                     log.info("Sender retrieved from session: {}", sender);
+                    log.info("ProfileImg retrieved from session: {}", profileImg);
 
                     if ("ENTER".equals(messageType)) {
                         log.info("User '{}' has entered room '{}'", sender, roomId);

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -26,5 +27,8 @@ public class ChatMessage {
     private String sender;
     private String message;
     private String type;
+
+    @UpdateTimestamp
+    @Column(name = "timestamp")
     private LocalDateTime timestamp;
 }
