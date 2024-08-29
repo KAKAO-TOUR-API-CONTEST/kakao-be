@@ -51,7 +51,7 @@ public class ChatRoomController {
     }
 
 
-    @GetMapping("/{roomId}/users/count")
+    @GetMapping("/users/{roomId}/count")
     public int getUserCount(@PathVariable("roomId") String roomId) {
         return stompHandler.getUserCount(roomId);
     }

@@ -68,17 +68,18 @@ public class ChatController {
                     break;
             }
 
-            // roomId를 사용해 ChatRoom 객체를 가져옵니다
+            // roomId를 사용해 ChatRoom 객체를 가져오기
             ChatRoom chatRoom = chatRoomRepository.findByRoomId(messageDto.getRoomId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid roomId: " + messageDto.getRoomId()));
 
-            // ENTER 타입이 아닌 경우에만 메시지를 저장합니다
+            // ENTER 타입이 아닌 경우에만 메시지를 저장하기
             if (messageDto.getType() != ChatMessageDto.MessageType.ENTER) {
                 try {
                     ChatMessage chatMessage = ChatMessage.builder()
                             .chatRoom(chatRoom)
                             .sender(messageDto.getSender())
                             .message(messageDto.getMessage())
+                            .profileImg(messageDto.getProfileImg())
                             .timestamp(LocalDateTime.now())
                             .type(messageDto.getType().name())
                             .build();
@@ -110,7 +111,7 @@ public class ChatController {
             @RequestParam("roomId") String roomId,
             @RequestParam(value = "lastMessageid", required = false) Optional<Long> lastMessageId) {
 
-        // roomId를 사용해 ChatRoom 객체를 가져옵니다
+        // roomId를 사용해 ChatRoom 객체 가져오기
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid roomId: " + roomId));
 
@@ -121,12 +122,24 @@ public class ChatController {
     @ResponseBody
     public List<ChatMessage> getAllMessages(@RequestParam("roomId") String roomId) {
 
-        // roomId를 사용해 ChatRoom 객체를 가져옵니다
+        // roomId를 사용해 ChatRoom 객체를 가져오기
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid roomId: " + roomId));
 
         return chatService.getAllMessages(chatRoom);
     }
+
+    @GetMapping("/chat/messagecount")
+    @ResponseBody
+    public int getMessageCount(@RequestParam("roomId") String roomId) {
+
+
+        ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid roomId: " + roomId));
+
+        return chatService.getMessageCount(chatRoom);
+    }
+
 
 
 

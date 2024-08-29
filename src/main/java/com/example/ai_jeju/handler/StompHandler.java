@@ -54,10 +54,13 @@ public class StompHandler implements ChannelInterceptor {
 
                 // 토큰에서 nickname 추출
                 String nickname = tokenProvider.extractNickname(token);
+
+                String profileImg = tokenProvider.extractProfileImg(token);
                 log.info("Extracted nickname: {}", nickname);
 
                 // WebSocket 세션에 nickname 저장
                 accessor.getSessionAttributes().put("nickname", nickname);
+                accessor.getSessionAttributes().put("profileImg", profileImg);
                 accessor.getSessionAttributes().put("connected", true); // 연결 상태 저장
                 accessor.getSessionAttributes().put("enter", false); // 초기에는 false로 설정
 

@@ -67,9 +67,7 @@
             stompClient.send("/pub/chat/message", {}, JSON.stringify({
                 type: 'ENTER',
                 roomId: roomId,
-                sender: sender,
                 message: '',
-                profileImg: profileImg
             }));
         }, function (error) {
             console.log("Error during connection: ", error);
@@ -81,26 +79,24 @@
         stompClient.send("/pub/chat/message", {}, JSON.stringify({
             type: 'TALK',
             roomId: roomId,
-            sender: sender,
             message: message,
-            profileImg: profileImg
         }));
         document.getElementById('message').value = '';
     }
 
     function showMessage(message) {
         if (message.type === 'ENTER') {
-            return; // 아무것도 하지 않고 종료
+            return;
         }
         let messageElement = document.createElement('div');
-        messageElement.innerText = `${message.sender}: ${message.message}`;
+        messageElement.innerText = `${message.profileImg} ${message.sender}: ${message.message}`;
         document.getElementById('chat-messages').appendChild(messageElement);
     }
 
     document.getElementById('send').addEventListener('click', sendMessage);
 
     document.getElementById('back').addEventListener('click', function() {
-        window.history.back(); // 뒤로 이동하는 코드
+        window.history.back();
     });
 
     connect();

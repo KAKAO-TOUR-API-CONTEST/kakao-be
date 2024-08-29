@@ -75,7 +75,7 @@
                         userCountElement.className = 'user-count';
                         roomElement.appendChild(userCountElement);
 
-                        // Fetch last message in the room
+                        //마지막메시지
                         fetch(`/chat/room/${room.roomId}/lastmessage`)
                             .then(response => response.json())
                             .then(message => {
@@ -86,15 +86,15 @@
                                 }
                             });
 
-                        // Fetch user count for the room
-                        fetch(`/chat/${room.roomId}/users/count`)
+                        //유저카운트
+                        fetch(`/chat/users/${room.roomId}/count`)
                             .then(response => response.json())
                             .then(count => {
                                 userCountElement.innerText = `Users: ${count}`;
                             })
                             .catch(error => {
                                 console.error('Error fetching user count:', error);
-                                userCountElement.innerText = `Users: N/A`;
+                                userCountElement.innerText = `Users: none`;
                             });
 
                         stompClient.subscribe(`/sub/chat/room/${room.roomId}`, function (message) {

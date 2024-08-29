@@ -20,4 +20,6 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
     List<ChatMessage> findTop10ByChatRoomAndIdLessThanOrderByIdDesc(ChatRoom chatRoom, Long id);
 
     Optional<ChatMessage> findTop1ByChatRoomOrderByIdDesc(ChatRoom chatRoom);
+
+    int countByChatRoom(ChatRoom chatRoom);
 }

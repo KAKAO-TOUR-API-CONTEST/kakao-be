@@ -52,4 +52,10 @@ public class ChatService {
     public ChatMessage findLastMessage(ChatRoom chatRoom) {
         return chatMessageRepository.findTop1ByChatRoomOrderByIdDesc(chatRoom).orElse(null);
     }
+
+    public int getMessageCount(ChatRoom chatRoom) {
+        return chatMessageRepository.countByChatRoom(chatRoom);
+    }
+
+
 }

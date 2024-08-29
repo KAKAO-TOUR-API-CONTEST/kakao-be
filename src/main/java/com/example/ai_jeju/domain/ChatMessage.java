@@ -30,4 +30,5 @@ public class ChatMessage {
     @UpdateTimestamp
     @Column(name = "timestamp")
     private LocalDateTime timestamp;
+    private String profileImg;
 }
