@@ -53,17 +53,16 @@ public class ChatController {
             if (messageDto.getSender() == null) {
                 messageDto.setSender(nickname);
             }
-
             if (messageDto.getProfileImg() == null) {
                 messageDto.setProfileImg(profileImg);
             }
 
             switch (messageDto.getType()) {
                 case ENTER:
-                    //messageDto.setMessage(nickname + "님이 입장하셨습니다.");
+                    messageDto.setMessage(nickname + "님이 입장하셨습니다.");
                     break;
                 case EXIT:
-                    //messageDto.setMessage(nickname + "님이 퇴장하셨습니다.");
+                    messageDto.setMessage(nickname + "님이 퇴장하셨습니다.");
                     break;
                 default:
                     break;
@@ -73,18 +72,21 @@ public class ChatController {
             ChatRoom chatRoom = chatRoomRepository.findByRoomId(messageDto.getRoomId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid roomId: " + messageDto.getRoomId()));
 
-            try {
-                ChatMessage chatMessage = ChatMessage.builder()
-                        .chatRoom(chatRoom)
-                        .sender(messageDto.getSender())
-                        .message(messageDto.getMessage())
-                        .timestamp(LocalDateTime.now())
-                        .type(messageDto.getType().name())
-                        .build();
-                log.info("Saving ChatMessage: " + chatMessage.toString());
-                chatMessageRepository.save(chatMessage);
-            } catch (Exception e) {
-                log.error("Error saving ChatMessage", e);
+            // ENTER 타입이 아닌 경우에만 메시지를 저장합니다
+            if (messageDto.getType() != ChatMessageDto.MessageType.ENTER) {
+                try {
+                    ChatMessage chatMessage = ChatMessage.builder()
+                            .chatRoom(chatRoom)
+                            .sender(messageDto.getSender())
+                            .message(messageDto.getMessage())
+                            .timestamp(LocalDateTime.now())
+                            .type(messageDto.getType().name())
+                            .build();
+                    log.info("Saving ChatMessage: " + chatMessage.toString());
+                    chatMessageRepository.save(chatMessage);
+                } catch (Exception e) {
+                    log.error("Error saving ChatMessage", e);
+                }
             }
 
 

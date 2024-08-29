@@ -27,7 +27,6 @@ public class ChatMessage {
     private String sender;
     private String message;
     private String type;
-
     @UpdateTimestamp
     @Column(name = "timestamp")
     private LocalDateTime timestamp;

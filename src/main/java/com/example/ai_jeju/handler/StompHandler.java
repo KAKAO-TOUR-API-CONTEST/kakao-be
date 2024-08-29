@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Component
@@ -23,6 +24,7 @@ public class StompHandler implements ChannelInterceptor {
     private final TokenProvider tokenProvider;
     private static final String BEARER_PREFIX = "Bearer ";
     private final ConcurrentMap<String, Integer> roomUserCount = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, ConcurrentMap<String, Integer>> userRoomEntryCount = new ConcurrentHashMap<>();
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -54,14 +56,12 @@ public class StompHandler implements ChannelInterceptor {
                 String nickname = tokenProvider.extractNickname(token);
                 log.info("Extracted nickname: {}", nickname);
 
-                String profileImg = tokenProvider.extractProfileImg(token);
-                log.info("Extracted profileImg: {}", profileImg);
-
                 // WebSocket 세션에 nickname 저장
                 accessor.getSessionAttributes().put("nickname", nickname);
-                accessor.getSessionAttributes().put("profileImg", profileImg);
                 accessor.getSessionAttributes().put("connected", true); // 연결 상태 저장
                 accessor.getSessionAttributes().put("enter", false); // 초기에는 false로 설정
+
+
             } else {
                 log.error("Invalid JWT Token");
                 throw new IllegalArgumentException("Invalid JWT Token provided");
@@ -86,19 +86,25 @@ public class StompHandler implements ChannelInterceptor {
 
                     // 토큰에서 가져온 nickname을 sender로 사용
                     String sender = (String) accessor.getSessionAttributes().get("nickname");
-                    String profileImg = (String) accessor.getSessionAttributes().get("profileImg");
                     log.info("Sender retrieved from session: {}", sender);
-                    log.info("ProfileImg retrieved from session: {}", profileImg);
 
                     if ("ENTER".equals(messageType)) {
                         log.info("User '{}' has entered room '{}'", sender, roomId);
 
-                        // 접속자 수 증가
+                        // 사용자가 방에 입장할 때마다 방의 사용자 수 증가
                         roomUserCount.merge(roomId, 1, Integer::sum);
                         log.info("Room '{}' user count: {}", roomId, roomUserCount.get(roomId));
 
+                        // 사용자 방 입장 횟수 증가
+                        userRoomEntryCount
+                                .computeIfAbsent(sender, k -> new ConcurrentHashMap<>())
+                                .merge(roomId, 1, Integer::sum);
+                        log.info("User '{}' entry count for room '{}': {}", sender, roomId, userRoomEntryCount.get(sender).get(roomId));
+
                         // 사용자가 실제로 ENTER 했음을 표시
                         accessor.getSessionAttributes().put("enter", true);
+
+                        accessor.getSessionAttributes().put("roomId", roomId);
                     }
 
                     // 메시지 전송 시 sender를 설정
@@ -118,22 +124,27 @@ public class StompHandler implements ChannelInterceptor {
             String sessionId = accessor.getSessionId();
             log.info("DISCONNECT command received for session: {}", sessionId);
 
-            // 연결이 활성화되어 있는지 확인하고, enter가 되어있을 때만 disconnect 처리
             Boolean connected = (Boolean) accessor.getSessionAttributes().get("connected");
             Boolean entered = (Boolean) accessor.getSessionAttributes().get("enter");
 
             if (connected != null && connected && entered != null && entered) {
                 String nickname = (String) accessor.getSessionAttributes().get("nickname");
-                if (nickname != null) {
-                    // roomUserCount에서 사용자를 찾아 접속자 수를 감소시킴
-                    roomUserCount.forEach((roomId, count) -> {
-                        if (count > 0) {
-                            roomUserCount.merge(roomId, -1, Integer::sum);
-                            log.info("User '{}' has left room '{}'. Updated user count: {}", nickname, roomId, roomUserCount.get(roomId));
+                String roomId = (String) accessor.getSessionAttributes().get("roomId");  // 세션에서 roomId를 가져옴
+
+                if (nickname != null && roomId != null) {
+                    Integer count = userRoomEntryCount.getOrDefault(nickname, new ConcurrentHashMap<>()).get(roomId);
+                    if (count != null && count > 0) {
+                        roomUserCount.merge(roomId, -1, Integer::sum);
+                        userRoomEntryCount.get(nickname).merge(roomId, -1, Integer::sum);
+                        log.info("User '{}' has left room '{}'. Updated user count: {}", nickname, roomId, roomUserCount.get(roomId));
+
+                        // 마지막 입장인 경우 방 목록에서 제거
+                        if (userRoomEntryCount.get(nickname).get(roomId) == 0) {
+                            userRoomEntryCount.get(nickname).remove(roomId);
                         }
-                    });
+                    }
                 }
-                // 연결 상태 업데이트
+
                 accessor.getSessionAttributes().put("connected", false);
             } else {
                 log.warn("DISCONNECT called but user was not marked as connected or had not entered.");
@@ -143,10 +154,7 @@ public class StompHandler implements ChannelInterceptor {
         return message;
     }
 
-
     public int getUserCount(String roomId) {
         return roomUserCount.getOrDefault(roomId, 0);
     }
-
-
 }
