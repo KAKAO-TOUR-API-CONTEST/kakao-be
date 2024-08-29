@@ -55,24 +55,18 @@
         let socket = new SockJS('/ws/chat');
         stompClient = Stomp.over(socket);
 
-
         let token = localStorage.getItem('jwtToken');
 
         stompClient.connect({ 'Authorization': `Bearer ${token}` }, function (frame) {
 
             stompClient.subscribe(`/sub/chat/room/${roomId}`, function (message) {
                 showMessage(JSON.parse(message.body));
-                let userInfo = JSON.parse(message.body);
-                sender = userInfo.sender;
-                profileImg = userInfo.profileImg;
             });
 
             stompClient.send("/pub/chat/message", {}, JSON.stringify({
                 type: 'ENTER',
                 roomId: roomId,
-                sender : sender,
-                message: '',
-                profileImg: profileImg
+                message: ''
             }));
         }, function (error) {
             console.log("Error during connection: ", error);
@@ -84,14 +78,17 @@
         stompClient.send("/pub/chat/message", {}, JSON.stringify({
             type: 'TALK',
             roomId: roomId,
-            sender : sender,
-            message: message,
-            profileImg: profileImg
+            message: message
         }));
         document.getElementById('message').value = '';
     }
 
     function showMessage(message) {
+        // 메시지 타입이 ENTER인 경우 화면에 표시하지 않음
+        if (message.type === 'ENTER') {
+            return; // 아무것도 하지 않고 종료
+        }
+
         let messageElement = document.createElement('div');
         messageElement.innerText = `${message.profileImg} ${message.sender}: ${message.message}`;
         document.getElementById('chat-messages').appendChild(messageElement);
@@ -101,5 +98,6 @@
 
     connect();
 </script>
+
 </body>
 </html>
