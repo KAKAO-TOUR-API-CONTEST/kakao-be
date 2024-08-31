@@ -15,20 +15,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChatService {
 
-    @Autowired
-    private ChatMessageRepository chatMessageRepository;
 
-
+    private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomRepository chatRoomRepository;
 
     @PostConstruct
     public void init() {
-        // 데이터베이스에 이미 채팅방이 존재하는지 확인
         if (chatRoomRepository.count() == 0) {
-            // 방 3개를 고정적으로 생성하여 데이터베이스에 저장
-            chatRoomRepository.save(new ChatRoom("1", "Room 1"));
-            chatRoomRepository.save(new ChatRoom("2", "Room 2"));
-            chatRoomRepository.save(new ChatRoom("3", "Room 3"));
+            chatRoomRepository.save(new ChatRoom("1", "설렘 가득한 여행 준비", "제주 여행 계획을 짜고있는 엄마아빠들과 소통해요", "https://ai-jeju.s3.ap-northeast-2.amazonaws.com/%EC%9D%B4%EB%AF%B8%EC%A7%801.png"));
+            chatRoomRepository.save(new ChatRoom("2", "즐거운 제주 여행", "제주 여행을 즐기고 있는 엄마아빠들과 소통해요", "https://ai-jeju.s3.ap-northeast-2.amazonaws.com/%EC%9D%B4%EB%AF%B8%EC%A7%802.png"));
+            chatRoomRepository.save(new ChatRoom("3", "제주에서 새로운 인연", "아이제주를 통해 새로운 인연을 만들어요", "https://ai-jeju.s3.ap-northeast-2.amazonaws.com/%EC%9D%B4%EB%AF%B8%EC%A7%803.jpg"));
         }
     }
 
@@ -40,16 +36,26 @@ public class ChatService {
         return chatRoomRepository.findByRoomId(roomId).orElse(null);
     }
 
-    public List<ChatMessage> getAllMessages(String roomId) {
-        return chatMessageRepository.findByRoomIdOrderByIdAsc(roomId);
+    public List<ChatMessage> getAllMessages(ChatRoom chatRoom) {
+        return chatMessageRepository.findByChatRoomOrderByIdAsc(chatRoom);
     }
 
-    public List<ChatMessage> previousMessages(String roomId, Long lastMessageId) {
+    public List<ChatMessage> previousMessages(ChatRoom chatRoom, Long lastMessageId) {
         if (lastMessageId == null) {
             // 마지막 메시지 ID가 없으면 해당 채팅방의 최신 메시지 10개 가져오기
-            return chatMessageRepository.findTop10ByRoomIdOrderByIdDesc(roomId);
+            return chatMessageRepository.findTop10ByChatRoomOrderByIdDesc(chatRoom);
         }
         // 특정 ID 이전의 해당 채팅방 메시지 10개 가져오기
-        return chatMessageRepository.findTop10ByRoomIdAndIdLessThanOrderByIdDesc(roomId, lastMessageId);
+        return chatMessageRepository.findTop10ByChatRoomAndIdLessThanOrderByIdDesc(chatRoom, lastMessageId);
     }
+
+    public ChatMessage findLastMessage(ChatRoom chatRoom) {
+        return chatMessageRepository.findTop1ByChatRoomOrderByIdDesc(chatRoom).orElse(null);
+    }
+
+    public int getMessageCount(ChatRoom chatRoom) {
+        return chatMessageRepository.countByChatRoom(chatRoom);
+    }
+
+
 }

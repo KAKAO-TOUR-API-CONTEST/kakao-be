@@ -10,11 +10,12 @@ import lombok.*;
 public class ChatMessageDto {
 
     public enum MessageType {
-        ENTER, TALK, EXIT;
+        TALK, EXIT, ENTER;
     }
 
     private MessageType type;
     private String roomId;
     private String sender;
     private String message;
+    private String profileImg;
 }

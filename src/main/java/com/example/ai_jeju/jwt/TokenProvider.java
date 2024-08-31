@@ -44,6 +44,7 @@ public class TokenProvider {
                 .setSubject(user.getEmail())
                 .claim("id", user.getId())
                 .claim("nickname", user.getNickname())
+                .claim("profileImg", user.getProfileImg())
                 .signWith(key, SignatureAlgorithm.HS512) // 동일한 키와 알고리즘 사용
                 .compact();
     }
@@ -79,6 +80,11 @@ public class TokenProvider {
     public String extractNickname(String token) {
         Claims claims = getClaims(token);
         return claims.get("nickname", String.class);
+    }
+
+    public String extractProfileImg(String token) {
+        Claims claims = getClaims(token);
+        return claims.get("profileImg", String.class);
     }
 
     private Claims getClaims(String token) {

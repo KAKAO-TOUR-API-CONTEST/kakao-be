@@ -24,6 +24,8 @@ public class Emergency {
     private String imgsrc;
     @Column(length = 1024)
     private String operationtime;
+    @Column(length = 1024)
+    private String breaktime;
     private String category;
     double mapx;
     double mapy;

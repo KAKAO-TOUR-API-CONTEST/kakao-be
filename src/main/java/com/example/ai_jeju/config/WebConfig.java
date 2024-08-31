@@ -13,7 +13,6 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        // 모든 경로에 대해 인터셉터를 적용 (필요에 따라 경로를 지정할 수 있음)
         registry.addInterceptor(headerCheckInterceptor).addPathPatterns("/**");
     }
 }
