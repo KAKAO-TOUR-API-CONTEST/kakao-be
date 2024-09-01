@@ -10,6 +10,8 @@ import com.example.ai_jeju.handler.SignUpHandler;
 import com.example.ai_jeju.jwt.TokenProvider;
 import com.example.ai_jeju.repository.*;
 import com.example.ai_jeju.util.CookieUtil;
+import com.example.ai_jeju.util.ResponseDto;
+import com.example.ai_jeju.util.ResponseUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,14 +39,17 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
+
     @Autowired
     private AlbumRepository albumRepository;
     @Autowired
     private TokenProvider tokenProvider;
     @Autowired
     private ChildRepository childRepository;
-    @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
+
     @Autowired
     private StoreRepository storeRepository;
     /**
@@ -52,27 +57,31 @@ public class UserService {
      * checkIfUser : 기존 회원여부 확인
      * 기존 회원이라면 객체 (아이디만) 반환 , AccessToken 쿠키로 발급
      */
-    public Map<String, Object> checkIfUser(String email, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseDto checkIfUser(String email, HttpServletRequest request, HttpServletResponse response) {
         Optional<User> existingUser = userRepository.findByEmail(email);
+        //Optional<RefreshToken> refreshToken = refreshTokenRepository.findByEmail(email);
+        //String refresh_token = refreshToken.get().getRefresh_token();
+        //refresh_token.get
         Map<String, Object> result = new HashMap<>();
 
         if (existingUser.isPresent()) {
             User user = existingUser.get();
             String accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_DURATION);
 
+            return ResponseUtil.SUCCESS("로그인 완료되었습니다.", accessToken);
+           /*
             result.put("statusCode", 1000);
             result.put("message", "existinguser");
             result.put("data", Map.of(
                     "userId", user.getId(),
                     "accessToken", accessToken
-            ));
+            ));*/
         } else {
-            result.put("statusCode", 2000);
-            result.put("message", "notexistinguser");
-            result.put("data", null);
+
+            return ResponseUtil.FAILURE("등록되어 있지 않은 유저입니다.", null);
         }
 
-        return result;
+
     }
 
     /**
@@ -165,11 +174,6 @@ public class UserService {
                         ()-> new IllegalArgumentException("unexpected user"));
     }
 
-//    public Store findStoreById(Long id){
-//        return storeRepository.findById(id)
-//                .orElseThrow(
-//                        ()-> new IllegalArgumentException("unexpected store"));
-//    }
 
     public Optional<User> findById(Long userId){
         return userRepository.findById(userId);
@@ -250,7 +254,7 @@ public class UserService {
         User user = userRepository.findById(userId).get();
         List<Child> childs = childRepository.findAllById(userId);
         // myPageResponse  : 응답 객체 만들기
-        System.out.println(childs.get(0).getChildName());
+        //System.out.println(childs.get(0).getChildName());
         myPageRes.setEmail(user.getEmail());
         myPageRes.setName(user.getName());
         myPageRes.setNickname(user.getNickname());
