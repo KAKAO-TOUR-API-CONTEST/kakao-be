@@ -1,9 +1,6 @@
 package com.example.ai_jeju.service;
 
-import com.example.ai_jeju.domain.Child;
-import com.example.ai_jeju.domain.RefreshToken;
-import com.example.ai_jeju.domain.Store;
-import com.example.ai_jeju.domain.User;
+import com.example.ai_jeju.domain.*;
 import com.example.ai_jeju.dto.ChildRequest;
 import com.example.ai_jeju.dto.MyPageResponse;
 import com.example.ai_jeju.dto.WithdrawRequest;
@@ -11,10 +8,7 @@ import com.example.ai_jeju.dto.SignUpRequest;
 import com.example.ai_jeju.generator.NickNameGenerator;
 import com.example.ai_jeju.handler.SignUpHandler;
 import com.example.ai_jeju.jwt.TokenProvider;
-import com.example.ai_jeju.repository.ChildRepository;
-import com.example.ai_jeju.repository.RefreshTokenRepository;
-import com.example.ai_jeju.repository.StoreRepository;
-import com.example.ai_jeju.repository.UserRepository;
+import com.example.ai_jeju.repository.*;
 import com.example.ai_jeju.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -43,6 +37,8 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AlbumRepository albumRepository;
     @Autowired
     private TokenProvider tokenProvider;
     @Autowired
@@ -88,7 +84,12 @@ public class UserService {
         // 닉네임 없을 때 생성
         String nick = signUpRequest.getNickname();
         if(nick==null){
+            //일단 닉네임을 생성해보고.
             nick = new NickNameGenerator().getNickname();
+            //만약 중복된 닉네임이 없을 때까지 재생성한다.
+            while(!userRepository.findUserByNickname(nick).isPresent()){
+                nick = new NickNameGenerator().getNickname();
+            }
         }
         // 가입일자
         LocalDate date = LocalDate.now();
@@ -106,7 +107,7 @@ public class UserService {
                 .build();
         /*-------------------------------------------*/
 
-        //1. 부모 저장하고
+        //1. 부모정보 저장하기
         userRepository.save(newUser);
         Optional<User> registerdUser = userRepository.findByEmail(newUser.getEmail());
 
@@ -122,8 +123,26 @@ public class UserService {
                     .gender(childList.get(i).getGender())
                     .realtion(childList.get(i).getRelation())
                     .build();
+
             childRepository.save(child);
         }
+
+        // userId로 아이들 찾기
+        List<Child> savedChilds = childRepository.findAllById(registerdUser.get().getId());
+
+
+        for(int i=0; i<savedChilds.size(); i++){
+            Album album = Album.builder()
+                    .albumId(savedChilds.get(i).getChildId())
+                    .child(savedChilds.get(i))
+                    .build();
+
+            albumRepository.save(album);
+            System.out.println(savedChilds.get(i).getUserId());
+        }
+
+
+
 
         String refresh_token = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
         String access_token = tokenProvider.generateToken(newUser, ACCESS_TOKEN_DURATION);

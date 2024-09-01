@@ -29,4 +29,7 @@ public class Child {
     @Column
     private long childProfile;
 
+    @OneToOne(mappedBy = "child", cascade = CascadeType.ALL)
+    private Album album;
+
 }

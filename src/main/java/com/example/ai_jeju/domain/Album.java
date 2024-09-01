@@ -13,8 +13,13 @@ import lombok.*;
 public class Album {
 
     @Id
+    @GeneratedValue
+    @Column(name = "album_id")
+    private Long albumId;
+
     @OneToOne
-    @JoinColumn(name = "album_id") // FK를 설정
+    @MapsId
+    @JoinColumn(name = "album_id", referencedColumnName = "child_id")
     private Child child;
 
 }

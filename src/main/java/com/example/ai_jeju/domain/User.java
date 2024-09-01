@@ -29,7 +29,7 @@ public class User {
     @Column(name = "name",nullable = false)
     private String name;
 
-    @Column(name = "nickname",nullable = false)
+    @Column(name = "nickname",nullable = false,unique = true)
     private String nickname;
 
     @Column(name = "provider", nullable = false)
@@ -55,6 +55,7 @@ public class User {
 
     @Column(name ="ag3", nullable = false)
     private boolean ag3;
+
 
 /*
     // Builder pattern
