@@ -6,6 +6,7 @@ import com.example.ai_jeju.dto.SignUpRequest;
 import com.example.ai_jeju.dto.WithdrawRequest;
 import com.example.ai_jeju.handler.SignUpHandler;
 import com.example.ai_jeju.service.UserService;
+import com.example.ai_jeju.util.ResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class UserController {
     }
 
     @GetMapping("/checks")
-    public Map<String, Object> CheckIfUser(@RequestParam(name = "email") String email, HttpServletRequest request, HttpServletResponse response){
+    public ResponseDto CheckIfUser(@RequestParam(name = "email") String email, HttpServletRequest request, HttpServletResponse response){
         return userService.checkIfUser(email, request, response);
     }
 
