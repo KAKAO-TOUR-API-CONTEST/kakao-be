@@ -1,6 +1,8 @@
 package com.example.ai_jeju.service;
 
 import com.example.ai_jeju.domain.User;
+import com.example.ai_jeju.dto.ModifyMyPageRequest;
+import com.example.ai_jeju.exception.UserNotFoundException;
 import com.example.ai_jeju.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,15 +62,21 @@ public class MyPageService {
         }
     }
 
-    public User updateUser(Long id, User newUserData) {
-        return userRepository.findById(id)
-                .map(user -> {
-                    user.setName(newUserData.getName());
-                    user.setNickname(newUserData.getNickname());
-                    user.setProfileImg(newUserData.getProfileImg());
-                    user.setPhoneNum(newUserData.getPhoneNum());
-                    return userRepository.save(user);
-                })
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public void updateUser(Long userId, ModifyMyPageRequest modifyMyPageRequest) {
+        //수정당할 애 찾기
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+
+        // 닉네임 업데이트
+        modifyMyPageRequest.getNickname().ifPresent(nickname -> {
+            user.setNickname(nickname);
+        });
+
+        // 전화번호 업데이트
+        modifyMyPageRequest.getPhoneNum().ifPresent(phoneNum -> {
+            user.setPhoneNum(phoneNum);
+        });
+        // 변경된 사용자 정보를 저장
+        userRepository.save(user);
     }
 }
