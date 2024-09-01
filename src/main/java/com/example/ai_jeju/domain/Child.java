@@ -3,8 +3,6 @@ package com.example.ai_jeju.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Date;
-
 @Table(name="child")
 @NoArgsConstructor(access= AccessLevel.PROTECTED) //기본생성자
 @Getter
@@ -30,4 +28,5 @@ public class Child {
     private String realtion;
     @Column
     private long childProfile;
+
 }

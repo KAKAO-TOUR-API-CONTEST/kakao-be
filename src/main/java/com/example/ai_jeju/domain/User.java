@@ -47,6 +47,14 @@ public class User {
     @Column(name ="ifRcmd", nullable = false)
     private boolean ifRcmd;
 
+    @Column(name ="ag1", nullable = false)
+    private boolean ag1;
+
+    @Column(name ="ag2", nullable = false)
+    private boolean ag2;
+
+    @Column(name ="ag3", nullable = false)
+    private boolean ag3;
 
 /*
     // Builder pattern

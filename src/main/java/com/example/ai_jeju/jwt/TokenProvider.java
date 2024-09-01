@@ -55,7 +55,9 @@ public class TokenProvider {
         try {
             Jwts.parser()
                     .setSigningKey(key) // 동일한 키와 알고리즘 사용
-                    .parseClaimsJws(token);
+                    .parseClaimsJws(token)
+                    .getBody();
+
             log.info("JWT token is valid");
             return true;
         } catch (MalformedJwtException e) {
