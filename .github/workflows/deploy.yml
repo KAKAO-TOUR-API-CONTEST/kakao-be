@@ -21,9 +21,10 @@ jobs:
           port: ${{ secrets.REMOTE_SSH_PORT }}
           script_stop: true
           script: |
-            cd /server/back-end
+            cd /java/BACKEND
             git restore .
             git pull
+            ./gradlew clean
             ./gradlew build
-            systemctl restart jeju-back
+            systemctl restart aijeju
 

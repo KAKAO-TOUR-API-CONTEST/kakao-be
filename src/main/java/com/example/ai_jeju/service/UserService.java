@@ -27,9 +27,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.example.ai_jeju.handler.SignUpHandler.ACCESS_TOKEN_COOKIE_NAME;
 //import static com.example.ai_jeju.handler.SignUpHandler.REFRESH_TOKEN_COOKIE_NAME;
@@ -58,20 +56,29 @@ public class UserService {
      * checkIfUser : 기존 회원여부 확인
      * 기존 회원이라면 객체 (아이디만) 반환 , AccessToken 쿠키로 발급
      */
-    public Long checkIfUser(String email, HttpServletRequest request, HttpServletResponse response){
+    public Map<String, Object> checkIfUser(String email, HttpServletRequest request, HttpServletResponse response) {
         Optional<User> existingUser = userRepository.findByEmail(email);
-        /*--------------------------------------------------------------------------------------------------*/
+        Map<String, Object> result = new HashMap<>();
+
         if (existingUser.isPresent()) {
             User user = existingUser.get();
-            String accessToken = tokenProvider.generateToken(user,ACCESS_TOKEN_DURATION);
-            addAccessTokenToCookie(request,response, accessToken);
-            return user.getId();
+            String accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_DURATION);
+
+            result.put("statusCode", 1000);
+            result.put("message", "existinguser");
+            result.put("data", Map.of(
+                    "userId", user.getId(),
+                    "accessToken", accessToken
+            ));
+        } else {
+            result.put("statusCode", 2000);
+            result.put("message", "notexistinguser");
+            result.put("data", null);
         }
-        /*--------------------------------------------------------------------------------------------------*/
-        else{
-            return null;
-        }
+
+        return result;
     }
+
     /**
      * login/signu up flow-3
      * registerUser : 새로운 회원 DB 저장
@@ -99,13 +106,17 @@ public class UserService {
                 .build();
         /*-------------------------------------------*/
 
-        System.out.println("id"+newUser.getId());
+        //1. 부모 저장하고
+        userRepository.save(newUser);
+        Optional<User> registerdUser = userRepository.findByEmail(newUser.getEmail());
+
+        //System.out.println("id"+newUser.getId());
         // 동반아동 등록하기
         List<ChildRequest> childList = signUpRequest.getChild();
         for(int i=0; i<childList.size(); i++){
             Child child = Child.builder()
                     // 유저 아이디의 값 그대로 주기.
-                    .userId(newUser.getId())
+                    .userId(registerdUser.get().getId())
                     .childName(childList.get(i).getChildName())
                     .birthDate(childList.get(i).getBirthDate())
                     .gender(childList.get(i).getGender())
@@ -113,7 +124,7 @@ public class UserService {
                     .build();
             childRepository.save(child);
         }
-        userRepository.save(newUser);
+
         String refresh_token = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
         String access_token = tokenProvider.generateToken(newUser, ACCESS_TOKEN_DURATION);
         // DB에 refreshToken 저장
@@ -199,47 +210,6 @@ public class UserService {
         }
         return "result";
     }
-//    public String successHadler(HttpServletRequest request,
-//                                HttpServletResponse response, SignUpRequest signUpRequest) throws IOException {
-//
-//        String nick = signUpRequest.getNickname();
-//        if(nick==null){
-//            nick = new NickNameGenerator().getNickname();
-//        }
-//        // Save new user using builder pattern
-//        User newUser = User.builder()
-//                .name(signUpRequest.getName())
-//                .nickname(nick)
-//                .provider(signUpRequest.getProvider())
-//                .email(signUpRequest.getEmail())
-//
-//                .profileImg(signUpRequest.getProfileImg())
-//                .provider(signUpRequest.getProvider())
-//                .build();
-//
-//
-//        String accessToken = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
-//        /*-------------------------------------------*/
-//        //동반아동
-//        List<ChildRequest> childList = signUpRequest.getChild();
-//        for(int i=0; i<childList.size(); i++){
-//            Child child = Child.builder()
-//                    //유저 아이디의 값 그대로 주기.
-//                    .userId(newUser.getId())
-//                    .childName(childList.get(i).getChildName())
-//                    .birthDate(childList.get(i).getBirthDate())
-//                    .gender(childList.get(i).getGender())
-//                    .build();
-//            childRepository.save(child);
-//        }
-//
-//        userRepository.save(newUser);
-//        String refresh_token = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
-//
-//        saveRefreshToken(newUser.getId(), refresh_token);
-//        addAccessTokenToCookie(request,response,refresh_token);
-//        return  accessToken;
-//    }
 
     //생성된 리프레시 토큰을 전달받아 데이터베이스 저장
     private void saveRefreshToken(Long userId, String newRefreshToken) {
@@ -256,10 +226,12 @@ public class UserService {
         CookieUtil.addCookie(response, ACCESS_TOKEN_COOKIE_NAME, refreshToken, cookieMaxAge);
     }
     public MyPageResponse getMyPage(Long userId){
+
         MyPageResponse myPageRes = new MyPageResponse();
         User user = userRepository.findById(userId).get();
         List<Child> childs = childRepository.findAllById(userId);
         // myPageResponse  : 응답 객체 만들기
+        System.out.println(childs.get(0).getChildName());
         myPageRes.setEmail(user.getEmail());
         myPageRes.setName(user.getName());
         myPageRes.setNickname(user.getNickname());

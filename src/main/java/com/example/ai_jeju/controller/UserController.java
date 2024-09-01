@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -29,9 +30,10 @@ public class UserController {
     }
 
     @GetMapping("/checks")
-    public Long CheckIfUser(@RequestParam String email, HttpServletRequest request, HttpServletResponse response){
-        return userService.checkIfUser(email,request,response);
+    public Map<String, Object> CheckIfUser(@RequestParam(name = "email") String email, HttpServletRequest request, HttpServletResponse response){
+        return userService.checkIfUser(email, request, response);
     }
+
 
     //탈퇴하기
     @GetMapping("/withdraw")
