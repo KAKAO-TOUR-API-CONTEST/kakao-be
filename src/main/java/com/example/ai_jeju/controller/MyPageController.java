@@ -1,6 +1,8 @@
 package com.example.ai_jeju.controller;
 
+import com.example.ai_jeju.dto.ModifyMyPageRequest;
 import com.example.ai_jeju.dto.MyPageResponse;
+import com.example.ai_jeju.exception.UserNotFoundException;
 import com.example.ai_jeju.jwt.TokenProvider;
 import com.example.ai_jeju.service.MyPageService;
 import com.example.ai_jeju.service.S3Service;
@@ -32,24 +34,12 @@ public class MyPageController {
         this.tokenProvider = tokenProvider;
     }
 
-    //마이페이지 회원 1명씩 조회
-
-//    @GetMapping("/mypage")
-//    public ResponseEntity<User> getUserById(@RequestParam Long userId) {
-//        Optional<User> user = myPageService.getUserById(userId);
-//        if (user.isPresent()) {
-//            return ResponseEntity.ok(user.get());
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
-
 
     @GetMapping("/mypage")
     public ResponseDto myPage(@RequestHeader("Authorization") String token){
         // Bearer 토큰 형식에서 "Bearer " 부분 제거
         String accessToken = token.replace("Bearer ", "");
-        System.out.println(accessToken);
+
         if (tokenProvider.validToken(accessToken)) {
             Long userId = tokenProvider.getUserId(accessToken);
 
@@ -59,12 +49,12 @@ public class MyPageController {
         }
     }
 
-    @PutMapping("/mypage/nickname")
-    public ResponseEntity<String> updateNickname(@RequestParam Long userId, @RequestBody Map<String, String> request) {
-        String nickname = request.get("nickname");
-        myPageService.updateNickname(userId, nickname);
-        return ResponseEntity.ok("Nickname changed");
-    }
+//    @PutMapping("/mypage/nickname")
+//    public ResponseEntity<String> updateNickname(@RequestParam Long userId, @RequestBody Map<String, String> request) {
+//        String nickname = request.get("nickname");
+//        myPageService.updateNickname(userId, nickname);
+//        return ResponseEntity.ok("Nickname changed");
+//    }
 
 
     //프로필 이미지 변경
@@ -90,17 +80,30 @@ public class MyPageController {
 
 
     //바꿔야함.
-//    @PutMapping("/mypage/update")
-//    public ResponseEntity<User> updateMyPage (@RequestBody ModifyMyPageRequest request) {
-//
-//        Long userId = newUser.getId();
-//
-//        try {
-//            User updatedUser = myPageService.updateUser(userId, newUser);
-//            return ResponseEntity.ok(updatedUser);
-//        } catch (RuntimeException e) {
-//            return ResponseEntity.notFound().build();
-//        }
-//
-//    }
+    @PutMapping("/mypage/update")
+    public ResponseDto updateMyPage (@RequestHeader("Authorization") String token, @RequestBody ModifyMyPageRequest modifyMyPageRequest) {
+
+        String accessToken = token.replace("Bearer ", "");
+
+        if (tokenProvider.validToken(accessToken)) {
+            Long userId = tokenProvider.getUserId(accessToken);
+
+            try {
+                myPageService.updateUser(userId, modifyMyPageRequest);
+                return  ResponseUtil.SUCCESS("마이페이지 수정에 성공하였습니다.", null);
+            } catch (UserNotFoundException e) {
+                return ResponseUtil.FAILURE(e.getMessage(), null);
+
+            } catch (Exception e) {
+                return ResponseUtil.FAILURE(e.getMessage(), null);
+            }
+
+        }else{
+            return ResponseUtil.FAILURE("고객 정보를 찾지 못하였습니다.", null);
+        }
+
+
+    }
+
+
 }

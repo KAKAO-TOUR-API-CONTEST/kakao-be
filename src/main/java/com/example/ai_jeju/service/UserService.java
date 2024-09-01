@@ -127,19 +127,19 @@ public class UserService {
             childRepository.save(child);
         }
 
-        // userId로 아이들 찾기
-        List<Child> savedChilds = childRepository.findAllById(registerdUser.get().getId());
-
-
-        for(int i=0; i<savedChilds.size(); i++){
-            Album album = Album.builder()
-                    .albumId(savedChilds.get(i).getChildId())
-                    .child(savedChilds.get(i))
-                    .build();
-
-            albumRepository.save(album);
-            System.out.println(savedChilds.get(i).getUserId());
-        }
+//        // userId로 아이들 찾기
+//        List<Child> savedChilds = childRepository.findAllById(registerdUser.get().getId());
+//
+//
+//        for(int i=0; i<savedChilds.size(); i++){
+//            Album album = Album.builder()
+//                    .albumId(savedChilds.get(i).getChildId())
+//                    .child(savedChilds.get(i))
+//                    .build();
+//
+//            albumRepository.save(album);
+//            System.out.println(savedChilds.get(i).getUserId());
+//        }
 
 
 
