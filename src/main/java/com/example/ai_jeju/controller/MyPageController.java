@@ -1,5 +1,6 @@
 package com.example.ai_jeju.controller;
 
+import com.example.ai_jeju.dto.ChildRequest;
 import com.example.ai_jeju.dto.ModifyMyPageRequest;
 import com.example.ai_jeju.dto.MyPageResponse;
 import com.example.ai_jeju.exception.UserNotFoundException;
@@ -46,6 +47,27 @@ public class MyPageController {
             return ResponseUtil.SUCCESS("마이페이지 조회에 성공하였습니다.", userService.getMyPage(userId));
         } else {
             return ResponseUtil.ERROR("유저 추가 중 문제가 발생하였습니다.", null);
+        }
+    }
+
+    @PostMapping("/mypage/child")
+    public ResponseDto myPageAddChild(@RequestHeader("Authorization") String token, @RequestBody ChildRequest childRequest){
+        // Bearer 토큰 형식에서 "Bearer " 부분 제거
+        String accessToken = token.replace("Bearer ", "");
+
+        if (tokenProvider.validToken(accessToken)) {
+            Long userId = tokenProvider.getUserId(accessToken);
+            try{
+                userService.registerChild(userId,childRequest);
+                return ResponseUtil.SUCCESS("아이 추가에 성공하였습니다.", null);
+
+            }catch (Exception e){
+                return ResponseUtil.ERROR(e.getMessage(), null);
+            }
+
+
+        } else {
+            return ResponseUtil.ERROR("토큰 유효성 문제가 발생하였습니다.", null);
         }
     }
 

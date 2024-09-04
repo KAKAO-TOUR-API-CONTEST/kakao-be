@@ -84,6 +84,20 @@ public class UserService {
 
     }
 
+    public void registerChild(Long userId, ChildRequest childRequest){
+
+        Child child = Child.builder()
+                // 유저 아이디의 값 그대로 주기.
+                .userId(userId)
+                .childName(childRequest.getChildName())
+                .birthDate(childRequest.getBirthDate())
+                .gender(childRequest.getGender())
+                .realtion(childRequest.getRelation())
+                .build();
+
+        childRepository.save(child);
+    }
+
     /**
      * login/signu up flow-3
      * registerUser : 새로운 회원 DB 저장
