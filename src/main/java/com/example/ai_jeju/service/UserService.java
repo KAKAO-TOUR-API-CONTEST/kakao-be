@@ -103,8 +103,9 @@ public class UserService {
      * registerUser : 새로운 회원 DB 저장
      * 기존 회원이라면 객체 반환 , AccessToken 쿠키로 발급
      */
-    public Long registerUser( SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseDto registerUser( SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response) {
         // 닉네임 없을 때 생성
+
         String nick = signUpRequest.getNickname();
         if(nick==null){
             //일단 닉네임을 생성해보고.
@@ -130,12 +131,11 @@ public class UserService {
                 .build();
         /*-------------------------------------------*/
 
-        //1. 부모정보 저장하기
+        // 1. 부모정보 저장하기
         userRepository.save(newUser);
         Optional<User> registerdUser = userRepository.findByEmail(newUser.getEmail());
 
-        //System.out.println("id"+newUser.getId());
-        // 동반아동 등록하기
+        // 2. 동반아동 등록하기
         List<ChildRequest> childList = signUpRequest.getChild();
         for(int i=0; i<childList.size(); i++){
             Child child = Child.builder()
@@ -150,23 +150,6 @@ public class UserService {
             childRepository.save(child);
         }
 
-//        // userId로 아이들 찾기
-//        List<Child> savedChilds = childRepository.findAllById(registerdUser.get().getId());
-//
-//
-//        for(int i=0; i<savedChilds.size(); i++){
-//            Album album = Album.builder()
-//                    .albumId(savedChilds.get(i).getChildId())
-//                    .child(savedChilds.get(i))
-//                    .build();
-//
-//            albumRepository.save(album);
-//            System.out.println(savedChilds.get(i).getUserId());
-//        }
-
-
-
-
         String refresh_token = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
         String access_token = tokenProvider.generateToken(newUser, ACCESS_TOKEN_DURATION);
         // DB에 refreshToken 저장
@@ -174,7 +157,7 @@ public class UserService {
         // AccessToken 쿠키로 발급
         addAccessTokenToCookie(request,response, access_token);
 
-        return  newUser.getId();
+        return  ResponseUtil.SUCCESS("로그인 완료되었습니다.", access_token);
     }
 
 //    public List<Store> getRandomList(){

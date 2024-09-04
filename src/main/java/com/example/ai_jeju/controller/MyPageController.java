@@ -71,14 +71,6 @@ public class MyPageController {
         }
     }
 
-//    @PutMapping("/mypage/nickname")
-//    public ResponseEntity<String> updateNickname(@RequestParam Long userId, @RequestBody Map<String, String> request) {
-//        String nickname = request.get("nickname");
-//        myPageService.updateNickname(userId, nickname);
-//        return ResponseEntity.ok("Nickname changed");
-//    }
-
-
     //프로필 이미지 변경
     @PutMapping("/mypage/profileimg")
     public ResponseEntity<String> updateProfileImage(@RequestParam Long userId, @RequestBody Map<String, String> request) {
