@@ -4,6 +4,7 @@ import com.example.ai_jeju.domain.Store;
 import com.example.ai_jeju.domain.User;
 import com.example.ai_jeju.service.MainVIewService;
 import com.example.ai_jeju.service.UserService;
+import com.example.ai_jeju.util.ResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class MainViewController {
     private UserService userService;
 
     @GetMapping("/detailList")
-    public Optional<Store> getUserById(@RequestParam Long storeId) {
+    public ResponseDto getUserById(@RequestParam Long storeId) {
         return mainViewService.getDetailList(storeId);
     }
 

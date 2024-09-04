@@ -26,7 +26,7 @@ public class UserController {
     //회원가입
     /*여기 확인해보자*/
     @PostMapping("/register")
-    public Long registerUser(@RequestBody SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public ResponseDto registerUser(@RequestBody SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
         return userService.registerUser(signUpRequest,request,response);
     }
 
