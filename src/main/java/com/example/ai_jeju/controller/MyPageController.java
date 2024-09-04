@@ -59,11 +59,24 @@ public class MyPageController {
 
     //프로필 이미지 변경
     @PutMapping("/mypage/profileimg")
-    public ResponseEntity<String> updateProfileImage(@RequestParam Long userId, @RequestBody Map<String, String> request) {
-        String profileimg = request.get("profileimg");
-        myPageService.updateProfile(userId, profileimg);
-        return ResponseEntity.ok("success");
-    }
+    public ResponseEntity<String> updateProfileImage(@RequestHeader("Authorization") String token,@RequestBody Map<String, String> request) {
+        String accessToken = token.replace("Bearer ", "");
+        if (tokenProvider.validToken(accessToken)) {
+            Long userId = tokenProvider.getUserId(accessToken);
+            String profileImg = request.get("profileImg");
+            if (profileImg == null || profileImg.isEmpty()) {
+                return ResponseEntity.badRequest().body("프로필 이미지가 필요");
+            }
+            myPageService.updateProfile(userId, profileImg);
+            return ResponseEntity.ok("프로필 이미지 업데이트 완료");
+
+
+        } else {
+            return ResponseEntity.badRequest().body("프로필 이미지가 필요");
+        }
+
+        }
+
 
     @DeleteMapping("/mypage/profileimg")
     public ResponseEntity<String> deleteProfileImage(@RequestParam Long userId) {

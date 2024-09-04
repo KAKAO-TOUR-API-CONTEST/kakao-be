@@ -37,7 +37,7 @@ public class MyPageService {
     public void updateProfile(Long id, String profileimg) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        user.setProfileImg(profileimg); // S3에 업로드된 이미지의 URL을 프로필 이미지로 설정
+        user.setProfileImg(profileimg);
         userRepository.save(user);
     }
 
