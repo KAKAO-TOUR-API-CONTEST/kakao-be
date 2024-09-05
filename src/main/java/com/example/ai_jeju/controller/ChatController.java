@@ -109,7 +109,7 @@ public class ChatController {
     @ResponseBody
     public List<ChatMessage> getPreviousMessages(
             @RequestParam("roomId") String roomId,
-            @RequestParam(value = "lastMessageid", required = false) Optional<Long> lastMessageId) {
+            @RequestParam(value = "lastMessageId", required = false) Optional<Long> lastMessageId) {
 
         // roomId를 사용해 ChatRoom 객체 가져오기
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId)
