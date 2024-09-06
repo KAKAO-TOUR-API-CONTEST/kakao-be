@@ -23,7 +23,7 @@ public class BookmarkController {
         this.tokenProvider = tokenProvider;
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseDto getUserById(@RequestHeader("Authorization") String token, @RequestParam Long storeId) {
 
         String accessToken = token.replace("Bearer ", "");
