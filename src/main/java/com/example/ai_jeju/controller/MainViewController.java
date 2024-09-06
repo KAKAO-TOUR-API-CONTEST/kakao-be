@@ -32,27 +32,29 @@ public class MainViewController {
         return mainViewService.getDetailList(storeId);
     }
 
-
     @GetMapping("/mainList")
-    public ResponseDto getMainLInst(@RequestHeader("Authorization") String token) {
+    public ResponseDto getMainList(@RequestParam(value = "token", required = false) String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            String accessToken = token.replace("Bearer ", "");
 
-        String accessToken = token.replace("Bearer ", "");
-
-        if (tokenProvider.validToken(accessToken)) {
-            Long userId = tokenProvider.getUserId(accessToken);
-            try{
-
-                return ResponseUtil.SUCCESS("메인리스트 조회에 성공하였습니다.", mainViewService.getMainList(userId));
-
-            }catch (Exception e){
+            if (tokenProvider.validToken(accessToken)) {
+                Long userId = tokenProvider.getUserId(accessToken);
+                try {
+                    return ResponseUtil.SUCCESS("메인리스트 조회에 성공하였습니다.", mainViewService.getMainList(userId));
+                } catch (Exception e) {
+                    return ResponseUtil.ERROR(e.getMessage(), null);
+                }
+            } else {
+                return ResponseUtil.ERROR("토큰 유효성 문제가 발생하였습니다.", null);
+            }
+        } else {
+            // 토큰이 없는 경우 기본 데이터 반환
+            try {
+                return ResponseUtil.SUCCESS("토큰 없이 조회에 성공하였습니다.", mainViewService.getMainList(null));
+            } catch (Exception e) {
                 return ResponseUtil.ERROR(e.getMessage(), null);
             }
-
-
-        } else {
-            return ResponseUtil.ERROR("토큰 유효성 문제가 발생하였습니다.", null);
         }
-
     }
 
     @GetMapping("/mainList/filters")
