@@ -3,12 +3,11 @@ package com.example.ai_jeju.service;
 import com.example.ai_jeju.domain.Bookmark;
 import com.example.ai_jeju.domain.Store;
 import com.example.ai_jeju.dto.MainListResponse;
-import com.example.ai_jeju.dto.StoreResponse;
+import com.example.ai_jeju.dto.DetailListResponse;
 import com.example.ai_jeju.repository.BookmarkRepository;
 import com.example.ai_jeju.repository.StoreRepository;
 import com.example.ai_jeju.util.ResponseDto;
 import com.example.ai_jeju.util.ResponseUtil;
-import com.sun.tools.javac.Main;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +26,7 @@ public class MainVIewService {
     @Autowired
     private BookmarkRepository bookmarkRepository;
 
-    public ResponseDto getDetailList(Long storeId){
+    public DetailListResponse getDetailList(Long userId,Long storeId){
 
         Optional<Store> store = storeRepository.findById(storeId);
 
@@ -35,7 +34,7 @@ public class MainVIewService {
 
         if(store.isPresent()){
             Store innerStore = store.get();
-            StoreResponse storeResponse = StoreResponse.builder()
+            DetailListResponse detailListResponse = DetailListResponse.builder()
                     .storeId(innerStore.getStoreId())
                     .name(innerStore.getName())
                     .imgSrc(innerStore.getImgSrc())
@@ -51,14 +50,12 @@ public class MainVIewService {
                     .operationTime(innerStore.getOperationTime())
                     .tel(innerStore.getTel())
                     .noBmk(bmks.size())
+                    .bmkStatus(bookmarkRepository.existsByUserIdAndStoreId(userId,storeId))
                     .build();
 
-            return ResponseUtil.SUCCESS("detail List 조회 성공하셨습니다.",storeResponse);
-        }
-        else {
-            return ResponseUtil.FAILURE("해당 storeId는 존재하지 않습니다.", null);
+            return detailListResponse;
+        }else return null;
 
-        }
     }
 
 

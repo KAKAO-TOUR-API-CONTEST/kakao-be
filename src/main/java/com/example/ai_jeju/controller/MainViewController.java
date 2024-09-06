@@ -27,14 +27,33 @@ public class MainViewController {
     }
 
     @GetMapping("/detailList")
-    public ResponseDto getUserById(@RequestParam Long storeId) {
-
-        return mainViewService.getDetailList(storeId);
+    public ResponseDto getUserById(@RequestHeader(value = "Authorization", required = false) String token,@RequestParam Long storeId) {
+        if (token != null) {
+            String accessToken = token.replace("Bearer ", "");
+            if (tokenProvider.validToken(accessToken)) {
+                Long userId = tokenProvider.getUserId(accessToken);
+                try {
+                    return ResponseUtil.SUCCESS("상세 조회에 성공하였습니다.", mainViewService.getDetailList(userId,storeId));
+                } catch (Exception e) {
+                    return ResponseUtil.ERROR(e.getMessage(), null);
+                }
+            } else {
+                return ResponseUtil.ERROR("토큰 유효성 문제가 발생하였습니다.", null);
+            }
+        }else {
+            // 토큰이 없는 경우 기본 데이터 반환
+            try {
+                return ResponseUtil.SUCCESS("비회원 상세 조회에 성공하였습니다.", mainViewService.getDetailList(null,storeId));
+            } catch (Exception e) {
+                return ResponseUtil.ERROR(e.getMessage(), null);
+            }
+        }
     }
 
     @GetMapping("/mainList")
-    public ResponseDto getMainList(@RequestParam(value = "token", required = false) String token) {
-        if (token != null && token.startsWith("Bearer ")) {
+    public ResponseDto getMainList(@RequestHeader(value = "Authorization", required = false) String token) {
+
+        if (token != null) {
             String accessToken = token.replace("Bearer ", "");
 
             if (tokenProvider.validToken(accessToken)) {
@@ -50,7 +69,7 @@ public class MainViewController {
         } else {
             // 토큰이 없는 경우 기본 데이터 반환
             try {
-                return ResponseUtil.SUCCESS("토큰 없이 조회에 성공하였습니다.", mainViewService.getMainList(null));
+                return ResponseUtil.SUCCESS("비회원 메인 조회에 성공하였습니다.", mainViewService.getMainList(null));
             } catch (Exception e) {
                 return ResponseUtil.ERROR(e.getMessage(), null);
             }
