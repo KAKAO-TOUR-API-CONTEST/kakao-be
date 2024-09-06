@@ -1,7 +1,10 @@
 package com.example.ai_jeju.domain;
 
+import com.example.ai_jeju.repository.AlbumRepository;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 @Table(name="child")
 @NoArgsConstructor(access= AccessLevel.PROTECTED) //기본생성자
@@ -18,14 +21,19 @@ public class Child {
 
     @Column
     private Long userId;
+
     @Column
     private String birthDate;
+
     @Column
     private String childName;
+
     @Column
     private Boolean gender;
+
     @Column
     private String realtion;
+
     @Column
     private long childProfile;
 
@@ -33,3 +41,4 @@ public class Child {
     private Album album;
 
 }
+

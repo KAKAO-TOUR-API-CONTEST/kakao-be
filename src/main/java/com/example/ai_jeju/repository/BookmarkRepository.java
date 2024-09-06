@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface BookmarkRepository extends JpaRepository<Bookmark,Long> {
 
-//    List<Bookmark> findByUserId();
+
 // userId와 storeId를 기준으로 북마크가 존재하는지 여부를 확인하는 메서드
 boolean existsByUserIdAndStoreId(Long userId, Long storeId);
 List<Bookmark> findByStoreId(Long storeId);

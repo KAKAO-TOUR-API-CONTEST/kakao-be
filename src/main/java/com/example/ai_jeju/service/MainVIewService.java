@@ -2,14 +2,17 @@ package com.example.ai_jeju.service;
 
 import com.example.ai_jeju.domain.Bookmark;
 import com.example.ai_jeju.domain.Store;
+import com.example.ai_jeju.dto.MainListResponse;
 import com.example.ai_jeju.dto.StoreResponse;
 import com.example.ai_jeju.repository.BookmarkRepository;
 import com.example.ai_jeju.repository.StoreRepository;
 import com.example.ai_jeju.util.ResponseDto;
 import com.example.ai_jeju.util.ResponseUtil;
+import com.sun.tools.javac.Main;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,8 +61,30 @@ public class MainVIewService {
         }
     }
 
-    public List<Store> getMainList(){
-        return storeRepository.findAllOrderByRandomNative();
+
+
+    public List<MainListResponse> getMainList(Long userId){
+
+        List<Store> storeList= storeRepository.findAllOrderByRandomNative();
+
+        List<MainListResponse> mainListResponses= new ArrayList<>();
+
+        for(Store store : storeList){
+
+            List<Bookmark> bmks = bookmarkRepository.findByStoreId(store.getStoreId());
+
+            MainListResponse mainListResponse = MainListResponse.builder()
+                    .storeId(store.getStoreId())
+                    .name(store.getName())
+                    .imgSrc(store.getImgSrc())
+                    .address(store.getAddress())
+                    .noKidsZone(store.getNoKidsZone())
+                    .noBmk(bmks.size())
+                    .bmkSatus(bookmarkRepository.existsByUserIdAndStoreId(userId,store.getStoreId()))
+                    .build();
+            mainListResponses.add(mainListResponse);
+        }
+        return mainListResponses;
     }
 
     public List<Store>getListByCategory(int categoryId){

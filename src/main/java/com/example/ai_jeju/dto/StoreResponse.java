@@ -15,6 +15,10 @@ import lombok.NoArgsConstructor;
 @Getter
 public class StoreResponse {
 
+
+
+
+
     private Long storeId;
     String name;
     //이미지 소스
@@ -31,4 +35,6 @@ public class StoreResponse {
     String operationTime;
     String tel;
     int noBmk;
+
+
 }

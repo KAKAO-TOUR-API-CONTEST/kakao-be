@@ -24,7 +24,6 @@ public class UserController {
     private UserService userService;
 
     //회원가입
-    /*여기 확인해보자*/
     @PostMapping("/register")
     public ResponseDto registerUser(@RequestBody SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
         return userService.registerUser(signUpRequest,request,response);
@@ -34,7 +33,6 @@ public class UserController {
     public ResponseDto CheckIfUser(@RequestParam(name = "email") String email, HttpServletRequest request, HttpServletResponse response){
         return userService.checkIfUser(email, request, response);
     }
-
 
     //탈퇴하기
     @GetMapping("/withdraw")
