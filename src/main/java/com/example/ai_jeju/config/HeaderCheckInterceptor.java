@@ -35,14 +35,10 @@ public class HeaderCheckInterceptor implements HandlerInterceptor {
 
     private String getAccesToken(String authorizationHeader){
         System.out.println("get Access Token 실행");
-
         if(authorizationHeader != null && authorizationHeader.startsWith(TOKEN_PREFIX)){
-
             System.out.println("get Access Token : " + authorizationHeader.substring(TOKEN_PREFIX.length()));
-
             return authorizationHeader.substring(TOKEN_PREFIX.length());
-        }
-        else{
+        } else{
             System.out.println("Access Token 없음");
         }
         return null;

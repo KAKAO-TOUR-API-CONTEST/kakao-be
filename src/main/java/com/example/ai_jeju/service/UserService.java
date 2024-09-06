@@ -135,12 +135,13 @@ public class UserService {
         userRepository.save(newUser);
         Optional<User> registerdUser = userRepository.findByEmail(newUser.getEmail());
 
+        Long userId = registerdUser.get().getId();
         // 2. 동반아동 등록하기
         List<ChildRequest> childList = signUpRequest.getChild();
         for(int i=0; i<childList.size(); i++){
             Child child = Child.builder()
                     // 유저 아이디의 값 그대로 주기.
-                    .userId(registerdUser.get().getId())
+                    .userId(userId)
                     .childName(childList.get(i).getChildName())
                     .birthDate(childList.get(i).getBirthDate())
                     .gender(childList.get(i).getGender())
@@ -149,6 +150,16 @@ public class UserService {
 
             childRepository.save(child);
         }
+//        List<Child> registerdChilds = childRepository.findAllById(userId);
+//
+//        for( Child registeredChild : registerdChilds){
+//            // register album
+//            Album album = Album.builder()
+//                    .child(registeredChild)
+//                    .build();
+//            albumRepository.save(album);
+//        }
+
 
         String refresh_token = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
         String access_token = tokenProvider.generateToken(newUser, ACCESS_TOKEN_DURATION);
