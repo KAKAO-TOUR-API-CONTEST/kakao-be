@@ -75,6 +75,7 @@ public class UserService {
                 .user(userRepository.findById(userId).get())
                 .childName(childRequest.getChildName())
                 .birthDate(childRequest.getBirthDate())
+                .childProfile(childRequest.getChildProfile())
                 .gender(childRequest.getGender())
                 .realtion(childRequest.getRelation())
                 .build();
