@@ -23,11 +23,8 @@ public class Child {
     @JoinColumn(name="user_id")
     private User user;
 
-    @Column
-    private Long calenderId;
-
-    @Column
-    private Long albumId;
+    @Column(name="schedule_id")
+    private Long scheduleId;
 
     @Column
     private String birthDate;
@@ -42,14 +39,14 @@ public class Child {
     private String realtion;
 
     @Column
-    private long childProfile;
+    private String childProfile;
 
     //와하하 영속성문제 해결 하하하하
     @PostPersist
     public void postPersist() {
         // 데이터베이스에서 자동 생성된 ID를 다른 필드에 설정
-        this.calenderId = this.childId;
-        this.albumId = this.childId;
+        this.scheduleId = this.childId;
+
     }
 
 }

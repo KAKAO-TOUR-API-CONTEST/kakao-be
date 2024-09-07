@@ -12,6 +12,8 @@ import com.example.ai_jeju.repository.ChildRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -52,12 +54,27 @@ public class AlbumService {
     public void addAlbum(AddAlbumRequest addAlbumRequest){
 
         Optional<Child> child = childRepository.findByChildId(addAlbumRequest.getChildId());
+
         if(child.isPresent()){
+            // 현재 시간 가져오기
+            LocalDateTime now = LocalDateTime.now();
+            // 포맷 정의 (예: yyyy-MM-dd HH:mm:ss)
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            // 문자열로 변환
+            String rgtDate = now.format(formatter);
+
+            //제목이 비어있을수도 있으니까 예상해서
+            String albumTitle = addAlbumRequest.getAlbumTitle().orElse(rgtDate);
+
+
+            String albumDesc = addAlbumRequest.getAlbumDesc().orElse("");
+
             Album album = Album.builder()
                     .child(child.get())
-                    .albumDesc(addAlbumRequest.getAlbumDesc())
+                    .albumDesc(albumDesc)
                     .repImgSrc(addAlbumRequest.getAlbumItemDtos().get(0).getImgSrc())
-                    .albumTitle(addAlbumRequest.getAlbumTitle())
+                    .albumTitle(albumTitle)
+                    .rgtDate(rgtDate)
                     .build();
 
             List<AlbumItemDto> albumItemDtos = addAlbumRequest.getAlbumItemDtos();

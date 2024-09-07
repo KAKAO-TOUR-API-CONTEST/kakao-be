@@ -32,6 +32,7 @@ public class Album {
     @JoinColumn(name="child_id")
     private Child child;
 
-
+    @Column
+    private String rgtDate;
 
 }
