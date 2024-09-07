@@ -3,12 +3,14 @@ package com.example.ai_jeju.service;
 import com.example.ai_jeju.domain.Album;
 import com.example.ai_jeju.domain.AlbumItem;
 import com.example.ai_jeju.domain.Child;
+import com.example.ai_jeju.domain.ScheduleItem;
 import com.example.ai_jeju.dto.AddAlbumRequest;
 import com.example.ai_jeju.dto.AlbumItemDto;
 import com.example.ai_jeju.dto.AlbumResponse;
 import com.example.ai_jeju.repository.AlbumItemRepository;
 import com.example.ai_jeju.repository.AlbumRepository;
 import com.example.ai_jeju.repository.ChildRepository;
+import com.example.ai_jeju.repository.ScheduleItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,9 @@ public class AlbumService {
 
     @Autowired
     private ChildRepository childRepository;
+
+    @Autowired
+    private ScheduleItemRepository scheduleItemRepository;
 
     public List<AlbumResponse> getAlbumList(Long childId){
         Optional<Child> childOptional = childRepository.findByChildId(childId);
@@ -59,13 +64,12 @@ public class AlbumService {
             // 현재 시간 가져오기
             LocalDateTime now = LocalDateTime.now();
             // 포맷 정의 (예: yyyy-MM-dd HH:mm:ss)
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             // 문자열로 변환
             String rgtDate = now.format(formatter);
 
             //제목이 비어있을수도 있으니까 예상해서
             String albumTitle = addAlbumRequest.getAlbumTitle().orElse(rgtDate);
-
 
             String albumDesc = addAlbumRequest.getAlbumDesc().orElse("");
 
@@ -78,16 +82,29 @@ public class AlbumService {
                     .build();
 
             List<AlbumItemDto> albumItemDtos = addAlbumRequest.getAlbumItemDtos();
+
+            String year = rgtDate.split("-")[0];
+            String month = rgtDate.split("-")[1];
+            String day = rgtDate.split("-")[2];
+
             Album savedAlbum = albumRepository.save(album);
             for(AlbumItemDto albumItemDto : albumItemDtos){
                 AlbumItem albumItem = AlbumItem.builder()
                         .imgSrc(albumItemDto.getImgSrc())
                         .album(savedAlbum)
                         .build();
-
-                albumItemRepository.save(albumItem);
+                AlbumItem savedAlbumItem = albumItemRepository.save(albumItem);
             }
+            ScheduleItem scheduleItem = ScheduleItem.builder()
+                    .scheduleItemId(savedAlbum.getAlbumId())
+                    .year(year)
+                    .month(month)
+                    .day(day)
+                    .child(child.get())
 
+                    .build();
+
+            scheduleItemRepository.save(scheduleItem);
 
 
         }else{
