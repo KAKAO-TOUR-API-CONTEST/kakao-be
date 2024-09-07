@@ -39,10 +39,8 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
-
     @Autowired
     private AlbumRepository albumRepository;
     @Autowired
@@ -59,36 +57,22 @@ public class UserService {
      */
     public ResponseDto checkIfUser(String email, HttpServletRequest request, HttpServletResponse response) {
         Optional<User> existingUser = userRepository.findByEmail(email);
-        //Optional<RefreshToken> refreshToken = refreshTokenRepository.findByEmail(email);
-        //String refresh_token = refreshToken.get().getRefresh_token();
-        //refresh_token.get
+
         Map<String, Object> result = new HashMap<>();
 
         if (existingUser.isPresent()) {
             User user = existingUser.get();
             String accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_DURATION);
-
             return ResponseUtil.SUCCESS("로그인 완료되었습니다.", accessToken);
-           /*
-            result.put("statusCode", 1000);
-            result.put("message", "existinguser");
-            result.put("data", Map.of(
-                    "userId", user.getId(),
-                    "accessToken", accessToken
-            ));*/
         } else {
-
             return ResponseUtil.FAILURE("등록되어 있지 않은 유저입니다.", null);
         }
-
-
     }
 
     public void registerChild(Long userId, ChildRequest childRequest){
 
         Child child = Child.builder()
-                // 유저 아이디의 값 그대로 주기.
-                .userId(userId)
+                .user(userRepository.findById(userId).get())
                 .childName(childRequest.getChildName())
                 .birthDate(childRequest.getBirthDate())
                 .gender(childRequest.getGender())
@@ -135,13 +119,12 @@ public class UserService {
         userRepository.save(newUser);
         Optional<User> registerdUser = userRepository.findByEmail(newUser.getEmail());
 
-        Long userId = registerdUser.get().getId();
         // 2. 동반아동 등록하기
         List<ChildRequest> childList = signUpRequest.getChild();
         for(int i=0; i<childList.size(); i++){
             Child child = Child.builder()
                     // 유저 아이디의 값 그대로 주기.
-                    .userId(userId)
+                    .user(registerdUser.get())
                     .childName(childList.get(i).getChildName())
                     .birthDate(childList.get(i).getBirthDate())
                     .gender(childList.get(i).getGender())
@@ -150,16 +133,6 @@ public class UserService {
 
             childRepository.save(child);
         }
-//        List<Child> registerdChilds = childRepository.findAllById(userId);
-//
-//        for( Child registeredChild : registerdChilds){
-//            // register album
-//            Album album = Album.builder()
-//                    .child(registeredChild)
-//                    .build();
-//            albumRepository.save(album);
-//        }
-
 
         String refresh_token = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
         String access_token = tokenProvider.generateToken(newUser, ACCESS_TOKEN_DURATION);
@@ -170,11 +143,6 @@ public class UserService {
 
         return  ResponseUtil.SUCCESS("로그인 완료되었습니다.", access_token);
     }
-
-//    public List<Store> getRandomList(){
-//        List<Store> RandomStores = new ArrayList<Store>();
-//        StoreRepository.findById(Long.valueOf(1));
-//    }
 
     public User findByEmail(String email){
         return userRepository.findByEmail(email)
@@ -257,12 +225,9 @@ public class UserService {
         CookieUtil.addCookie(response, ACCESS_TOKEN_COOKIE_NAME, refreshToken, cookieMaxAge);
     }
     public MyPageResponse getMyPage(Long userId){
-
         MyPageResponse myPageRes = new MyPageResponse();
         User user = userRepository.findById(userId).get();
-        List<Child> childs = childRepository.findAllById(userId);
-        // myPageResponse  : 응답 객체 만들기
-        //System.out.println(childs.get(0).getChildName());
+        List<Child> childs = childRepository.findAllByUser(user);
         myPageRes.setEmail(user.getEmail());
         myPageRes.setName(user.getName());
         myPageRes.setNickname(user.getNickname());

@@ -31,8 +31,6 @@ public class MyPageService {
         userRepository.save(user);
     }
 
-
-
     @Transactional
     public void updateProfile(Long id, String profileimg) {
         User user = userRepository.findById(id)
@@ -47,9 +45,6 @@ public class MyPageService {
                 .orElseThrow(() -> new RuntimeException("Profile not found"));
         return user.getProfileImg(); // 프로필 이미지 URL 반환
     }
-
-
-
 
     public void deleteProfileImage(Long id) {
         Optional<User> userOptional = userRepository.findById(id);

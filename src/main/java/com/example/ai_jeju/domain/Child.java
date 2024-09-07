@@ -19,8 +19,15 @@ public class Child {
     @Column(name = "child_id", updatable = false, unique = true)
     private Long childId;
 
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
+
     @Column
-    private Long userId;
+    private Long calenderId;
+
+    @Column
+    private Long albumId;
 
     @Column
     private String birthDate;
@@ -37,8 +44,13 @@ public class Child {
     @Column
     private long childProfile;
 
-    @OneToOne(mappedBy = "child", cascade = CascadeType.ALL)
-    private Album album;
+    //와하하 영속성문제 해결 하하하하
+    @PostPersist
+    public void postPersist() {
+        // 데이터베이스에서 자동 생성된 ID를 다른 필드에 설정
+        this.calenderId = this.childId;
+        this.albumId = this.childId;
+    }
 
 }
 

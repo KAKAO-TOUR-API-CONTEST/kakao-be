@@ -87,7 +87,6 @@ public class MyPageController {
     }
 
 
-    //바꿔야함.
     @PutMapping("/mypage/update")
     public ResponseDto updateMyPage (@RequestHeader("Authorization") String token, @RequestBody ModifyMyPageRequest modifyMyPageRequest) {
 

@@ -47,33 +47,16 @@ public class User {
     @Column(name ="ifRcmd", nullable = false)
     private boolean ifRcmd;
 
+    //약관 1
     @Column(name ="ag1", nullable = false)
     private boolean ag1;
-
+    //약관 2
     @Column(name ="ag2", nullable = false)
     private boolean ag2;
-
+    //약관 3
     @Column(name ="ag3", nullable = false)
     private boolean ag3;
 
-
-/*
-    // Builder pattern
-    private User(Builder builder) {
-        this.email = builder.email;
-        this.nickname = builder.nickname;
-        this.profile = builder.password;
-        this.name = builder.name;
-        this.email = builder.email;
-    }*/
-
-
-    /*
-    @Builder
-    public User(String name, String password, String auth){
-        this.name = name;
-        this.password = password;
-    }*/
 
 
 }
