@@ -35,7 +35,6 @@ public class TokenProvider {
     // JWT 토큰 생성 메서드
     private String makeToken(Date expiry, User user) {
         Date now = new Date();
-
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setIssuer("issuer")
@@ -57,7 +56,6 @@ public class TokenProvider {
                     .setSigningKey(key) // 동일한 키와 알고리즘 사용
                     .parseClaimsJws(token)
                     .getBody();
-
             log.info("JWT token is valid");
             return true;
         } catch (MalformedJwtException e) {

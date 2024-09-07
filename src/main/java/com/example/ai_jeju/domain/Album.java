@@ -4,6 +4,8 @@ package com.example.ai_jeju.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Table(name="album")
 @NoArgsConstructor(access= AccessLevel.PROTECTED) //기본생성자
 @Getter
@@ -14,12 +16,22 @@ public class Album {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "album_id", nullable = false)
+    @Column(name = "album_id", updatable = false)
     private Long albumId;
 
-    @OneToOne
-    @JoinColumn(name = "child_id")
+    @Column(name = "album_title")
+    private String albumTitle;
+
+    @Column(name = "album_desc")
+    private String albumDesc;
+
+    @Column(name = "rep_imgsrc")
+    private String repImgSrc;
+
+    @ManyToOne
+    @JoinColumn(name="child_id")
     private Child child;
+
 
 
 }
