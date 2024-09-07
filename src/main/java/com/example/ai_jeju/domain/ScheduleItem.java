@@ -21,7 +21,7 @@ public class ScheduleItem {
     private String day;
 
     @ManyToOne
-    @JoinColumn(name="schedule_id",referencedColumnName = "schedule_id")
+    @JoinColumn(name="schedule_id", referencedColumnName = "schedule_id")
     Child child;
 
 }

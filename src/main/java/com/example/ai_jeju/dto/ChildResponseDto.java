@@ -13,5 +13,5 @@ public class ChildResponseDto {
     private String childName;
     private String birthDate;
     private String age;
-    private List<ScheduleItem> scheduleItems;
+    private List<ScheduleItemDto> scheduleItems;
 }
