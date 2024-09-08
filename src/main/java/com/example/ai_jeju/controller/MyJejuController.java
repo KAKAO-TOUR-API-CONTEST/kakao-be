@@ -65,10 +65,8 @@ public class MyJejuController {
     // 마이제주 : 아이 조회하기
 
     @GetMapping("/myjeju/child")
-    public void myPaPge(@RequestParam Long childId){
-
-        myJejuService.getMyChild(childId);
-
+    public ResponseDto myPaPge(@RequestParam Long childId){
+       return ResponseUtil.SUCCESS("아이 상세조회에 성공하였습니다.", myJejuService.getMyChild(childId));
     }
 
     @DeleteMapping("/myjeju/child")

@@ -14,7 +14,4 @@ public class ChildDetailResponse {
     private String profileImg;
     private String relation;
 
-
-
-
 }

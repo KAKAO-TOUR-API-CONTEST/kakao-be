@@ -2,10 +2,7 @@ package com.example.ai_jeju.service;
 
 import com.example.ai_jeju.domain.Child;
 import com.example.ai_jeju.domain.User;
-import com.example.ai_jeju.dto.ModifyMyPageRequest;
-import com.example.ai_jeju.dto.MyJejuChildDto;
-import com.example.ai_jeju.dto.MyJejuMyDto;
-import com.example.ai_jeju.dto.MyJejuResponse;
+import com.example.ai_jeju.dto.*;
 import com.example.ai_jeju.exception.UserNotFoundException;
 import com.example.ai_jeju.repository.ChildRepository;
 import com.example.ai_jeju.repository.UserRepository;
@@ -31,6 +28,9 @@ public class MyJejuService {
     private ChildRepository childRepository;
     @Autowired
     private S3Service s3Service;
+
+    LocalDate today = LocalDate.now();
+    int year = today.getYear();
 
     //마이페이지 회원 한명 id로 찾기
     public Optional<User> getUserById(Long id) {
@@ -111,8 +111,7 @@ public class MyJejuService {
 
         List<MyJejuChildDto> myJejuChildDtos = new ArrayList<>();
 
-        LocalDate today = LocalDate.now();
-        int year = today.getYear();
+
 
         for(int i=0; i<childs.size(); i++){
             MyJejuChildDto myJejuChildDto = MyJejuChildDto.builder()
@@ -121,7 +120,7 @@ public class MyJejuService {
                     .birthDate(childs.get(i).getBirthDate())
                     .order(i+1)
                     .imgSrc(childs.get(i).getChildProfile())
-                    .age(year- Integer.parseInt(childs.get(i).getBirthDate().split("\\.")[0]))
+                    .age(year- Integer.parseInt(childs.get(i).getBirthDate().split("\\.")[0])-1)
                     .build();
             myJejuChildDtos.add(myJejuChildDto);
         }
@@ -135,8 +134,21 @@ public class MyJejuService {
 
     }
 
-    public void getMyChild(Long childId){
-
+    public ChildDetailResponse getMyChild(Long childId){
+        Optional<Child> child = childRepository.findByChildId(childId);
+        if(child.isPresent()){
+            Child registeredChild = child.get();
+            ChildDetailResponse childDetailResponse = ChildDetailResponse.builder()
+                    .name(registeredChild.getChildName())
+                    .birthDate(registeredChild.getBirthDate())
+                    .age((year-1)- Integer.parseInt(registeredChild.getBirthDate().split("\\.")[0]))
+                    .gender(registeredChild.getGender())
+                    .profileImg(registeredChild.getChildProfile())
+                    .relation(registeredChild.getRealtion())
+                    .build();
+            return childDetailResponse;
+        }
+        return null;
 
     }
 
