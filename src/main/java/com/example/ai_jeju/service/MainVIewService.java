@@ -61,6 +61,35 @@ public class MainVIewService {
 
     }
 
+    public DetailListResponse getDetailList(Long storeId){
+        //Optional<User> user = userRepository.findById(userId);
+        Optional<Store> store = storeRepository.findById(storeId);
+        List<Bookmark> bmks = bookmarkRepository.findByStoreId(storeId);
+        if(store.isPresent()){
+            Store innerStore = store.get();
+            DetailListResponse detailListResponse = DetailListResponse.builder()
+                    .storeId(innerStore.getStoreId())
+                    .name(innerStore.getName())
+                    .imgSrc(innerStore.getImgSrc())
+                    .address(innerStore.getAddress())
+                    .mapX(innerStore.getMapX())
+                    .mapY(innerStore.getMapY())
+                    .stroller(innerStore.getStroller())
+                    .strollerVal(innerStore.getStrollerVal())
+                    .babySpareChair(innerStore.getBabySpareChair())
+                    .playground(innerStore.getPlayground())
+                    .noKidsZone(innerStore.getNoKidsZone())
+                    .categoryId(innerStore.getCategoryId())
+                    .operationTime(innerStore.getOperationTime())
+                    .tel(innerStore.getTel())
+                    .noBmk(bmks.size())
+                    .bmkStatus(false)
+                    .build();
+
+            return detailListResponse;
+        }else return null;
+
+    }
 
 
     public List<MainListResponse> getMainList(Long userId){
@@ -81,6 +110,30 @@ public class MainVIewService {
                     .noKidsZone(store.getNoKidsZone())
                     .noBmk(bmks.size())
                     .bmkSatus(bookmarkRepository.existsByUserAndStoreId(user.get(),store.getStoreId()))
+                    .build();
+            mainListResponses.add(mainListResponse);
+        }
+        return mainListResponses;
+    }
+
+    public List<MainListResponse> getMainList(){
+
+        List<Store> storeList= storeRepository.findAllOrderByRandomNative();
+        //Optional<User> user = userRepository.findById(userId);
+        List<MainListResponse> mainListResponses= new ArrayList<>();
+
+        for(Store store : storeList){
+
+            List<Bookmark> bmks = bookmarkRepository.findByStoreId(store.getStoreId());
+
+            MainListResponse mainListResponse = MainListResponse.builder()
+                    .storeId(store.getStoreId())
+                    .name(store.getName())
+                    .imgSrc(store.getImgSrc())
+                    .address(store.getAddress())
+                    .noKidsZone(store.getNoKidsZone())
+                    .noBmk(bmks.size())
+                    .bmkSatus(false)
                     .build();
             mainListResponses.add(mainListResponse);
         }

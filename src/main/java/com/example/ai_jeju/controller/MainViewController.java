@@ -43,7 +43,7 @@ public class MainViewController {
         }else {
             // 토큰이 없는 경우 기본 데이터 반환
             try {
-                return ResponseUtil.SUCCESS("비회원 상세 조회에 성공하였습니다.", mainViewService.getDetailList(null,storeId));
+                return ResponseUtil.SUCCESS("비회원 상세 조회에 성공하였습니다.", mainViewService.getDetailList(storeId));
             } catch (Exception e) {
                 return ResponseUtil.ERROR(e.getMessage(), null);
             }
@@ -55,7 +55,6 @@ public class MainViewController {
 
         if (token != null) {
             String accessToken = token.replace("Bearer ", "");
-
             if (tokenProvider.validToken(accessToken)) {
                 Long userId = tokenProvider.getUserId(accessToken);
                 try {
@@ -69,7 +68,7 @@ public class MainViewController {
         } else {
             // 토큰이 없는 경우 기본 데이터 반환
             try {
-                return ResponseUtil.SUCCESS("비회원 메인 조회에 성공하였습니다.", mainViewService.getMainList(null));
+                return ResponseUtil.SUCCESS("비회원 메인 조회에 성공하였습니다.", mainViewService.getMainList());
             } catch (Exception e) {
                 return ResponseUtil.ERROR(e.getMessage(), null);
             }
