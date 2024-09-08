@@ -3,23 +3,25 @@ package com.example.ai_jeju.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Table(name="bookmarks")
+@Table(name="schedule_items")
 @NoArgsConstructor(access= AccessLevel.PROTECTED) //기본생성자
 @Getter
 @Entity
 @AllArgsConstructor // 모든 필드를 초기화하는 생성자
 @Builder // 빌더 패턴
-public class Bookmark {
+public class ScheduleItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "bmk_id")
-    private Long bookmarkId;
+    @Column(name = "schedule_item_id", updatable = false, unique = true)
+    private Long scheduleItemId;
+
+    private String year;
+    private String month;
+    private String day;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
-    private User user;
+    @JoinColumn(name="schedule_id", referencedColumnName = "schedule_id")
+    Child child;
 
-    @Column(name = "store_id")
-    private Long storeId;
 }

@@ -6,12 +6,9 @@ import lombok.Getter;
 
 @Getter
 public class ChildRequest {
-
-
     private String birthDate;
     private String childName;
     private Boolean gender;
-    private long childProfile;
+    private String childProfile;
     private String relation;
-
 }

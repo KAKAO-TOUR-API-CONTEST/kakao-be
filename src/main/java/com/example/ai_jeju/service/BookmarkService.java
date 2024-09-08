@@ -2,13 +2,19 @@ package com.example.ai_jeju.service;
 
 import com.example.ai_jeju.domain.Bookmark;
 import com.example.ai_jeju.domain.Store;
+import com.example.ai_jeju.domain.User;
+import com.example.ai_jeju.dto.BookMarkItem;
 import com.example.ai_jeju.repository.BookmarkRepository;
 import com.example.ai_jeju.repository.StoreRepository;
+import com.example.ai_jeju.repository.UserRepository;
 import com.example.ai_jeju.util.ResponseDto;
 import com.example.ai_jeju.util.ResponseUtil;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,23 +23,86 @@ public class BookmarkService {
     @Autowired
     private BookmarkRepository bookmarkRepository;
 
-    public ResponseDto addBookmark(Long userId,Long storeId){
+    @Autowired
+    private UserRepository userRepository;
 
-        if(!bookmarkRepository.existsByUserIdAndStoreId(userId,storeId)){
-            Bookmark bookmark = Bookmark.builder()
-                    .userId(userId)
-                    .storeId(storeId)
-                    .build();
-            bookmarkRepository.save(bookmark);
-            return ResponseUtil.SUCCESS("관심목록에 성공적으로 등록하였습니다.",null);
+    @Autowired
+    private StoreRepository storeRepository;
 
-        }else{
+    public void addBookmark(Long userId, Long storeId) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            if (!bookmarkRepository.existsByUserAndStoreId(user.get(), storeId)) {
+                Bookmark bookmark = Bookmark.builder()
+                        .user(user.get())
+                        .storeId(storeId)
+                        .build();
+                bookmarkRepository.save(bookmark);
+            }
 
-            return ResponseUtil.FAILURE("이미 관심목록에 넣었습니다.",null);
         }
     }
 
+    @Transactional
+    public void deleteBookmark(Long userId, Long storeId) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            if (bookmarkRepository.existsByUserAndStoreId(user.get(), storeId)) {
+                bookmarkRepository.deleteByUserAndStoreId(user.get(), storeId);
+            }
+        }
+    }
 
+    public List<BookMarkItem> getBookmark(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            List<Bookmark> bookmarks = bookmarkRepository.findByUser(user.get());
+            List<BookMarkItem> bookMarkItems = new ArrayList<>();
+            for (Bookmark bookmark : bookmarks) {
+                //1. boookmark의 storeId 기반으로 스토어들을 찾고
+                Optional<Store> store = storeRepository.findByStoreId(bookmark.getStoreId());
+                //2. 그 storeId를 몇명이나 북마크로 등록했는지지를 확인한다.
+                List<Bookmark> bmks = bookmarkRepository.findByStoreId(store.get().getStoreId());
+                if (store.isPresent()) {
+                    BookMarkItem bookMarkItem = BookMarkItem.builder()
+                            .storeId(bookmark.getStoreId())
+                            .storeName(store.get().getName())
+                            .imgsrc(store.get().getImgSrc())
+                            .noKidszone(store.get().getNoKidsZone())
+                            .numOfBmk(bmks.size())
+                            .build();
+                    bookMarkItems.add(bookMarkItem);
+                    return bookMarkItems;
+                } else {
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+        public List<BookMarkItem> getBookmarkByCategoryId (Long userId, int categoryId){
+            Optional<User> user = userRepository.findById(userId);
+            if (user.isPresent()) {
+                List<Bookmark> bookmarks = bookmarkRepository.findByUser(user.get());
+                List<BookMarkItem> bookMarkItems = new ArrayList<>();
+                for (Bookmark bookmark : bookmarks) {
+                    Optional<Store> store = storeRepository.findByStoreId(bookmark.getStoreId());
+                    List<Bookmark> bmks = bookmarkRepository.findByStoreId(store.get().getStoreId());
+                    //그리고 카테고리 아이디가 내가 제시한 카테고리 아이디랑 같다면,
+                    if(store.isPresent()&&categoryId==store.get().getCategoryId() ){
+                        BookMarkItem bookMarkItem = BookMarkItem.builder()
+                                .storeId(bookmark.getStoreId())
+                                .storeName(store.get().getName())
+                                .noKidszone(store.get().getNoKidsZone())
+                                .numOfBmk(bmks.size())
+                                .build();
+                        bookMarkItems.add(bookMarkItem);
+                        return bookMarkItems;
+                    }
+                }
+            }
+            return null;
+        }
 
 
 }

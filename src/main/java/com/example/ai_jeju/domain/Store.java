@@ -73,7 +73,5 @@ public class Store {
     @Column(name = "tel",updatable = false,nullable = true)
     String tel;
 
-    @Column(name = "noBmk",updatable = false,nullable = true)
-    String noBmk;
 
 }
