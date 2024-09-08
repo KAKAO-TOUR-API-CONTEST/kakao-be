@@ -107,6 +107,7 @@ public class MyJejuService {
                 .imgSrc(user.getProfileImg())
                 .numOfChild(childs.size())
                 .rgtDate(user.getRgtDate())
+                .nickname(user.getNickname())
                 .build();
 
         List<MyJejuChildDto> myJejuChildDtos = new ArrayList<>();

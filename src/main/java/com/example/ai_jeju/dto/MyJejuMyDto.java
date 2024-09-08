@@ -11,4 +11,5 @@ public class MyJejuMyDto {
     private int numOfChild;
     private String rgtDate;
     private String imgSrc;
+    private String nickname;
 }
