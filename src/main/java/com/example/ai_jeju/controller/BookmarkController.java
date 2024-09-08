@@ -56,4 +56,37 @@ public class BookmarkController {
 
     }
 
+    //전체 랜덤 조회
+    @GetMapping("")
+    public ResponseDto getBookmark(@RequestHeader("Authorization") String token) {
+
+        String accessToken = token.replace("Bearer ", "");
+
+        if (tokenProvider.validToken(accessToken)) {
+            Long userId = tokenProvider.getUserId(accessToken);
+
+            return ResponseUtil.SUCCESS("관심목록을 성공적으로 조회하였습니다.", bookmarkService.getBookmark(userId));
+        }
+        else {
+            return ResponseUtil.ERROR("관심목록 조회를 실패하였습니다.", null);
+        }
+
+    }
+    //카테고리 별 조회
+    @GetMapping("/category")
+    public ResponseDto getBookmarkByCategoryId(@RequestHeader("Authorization") String token, @RequestParam int categoryId) {
+
+        String accessToken = token.replace("Bearer ", "");
+
+        if (tokenProvider.validToken(accessToken)) {
+            Long userId = tokenProvider.getUserId(accessToken);
+
+            return ResponseUtil.SUCCESS("카테고리별 관심목록 조회 성공하셨습니다.", bookmarkService.getBookmarkByCategoryId(userId,categoryId));
+        }
+        else {
+            return ResponseUtil.ERROR("카테고리별 관심목록 조회에 실패하셨습니다.", null);
+        }
+
+    }
+
 }
