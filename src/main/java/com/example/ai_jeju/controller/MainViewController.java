@@ -75,14 +75,44 @@ public class MainViewController {
         }
     }
 
-    @GetMapping("/mainList/filters")
-    public List<Store> getListByCategory(@RequestParam int categoryId){
-        return mainViewService.getListByCategory(categoryId);
+    //카테고리 아이디
+    @GetMapping("/mainList/category")
+    public ResponseDto getListByCategory(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam int categoryId){
+        if (token != null) {
+            String accessToken = token.replace("Bearer ", "");
+            if (tokenProvider.validToken(accessToken)) {
+                Long userId = tokenProvider.getUserId(accessToken);
+                try {
+                    return ResponseUtil.SUCCESS("메인리스트 조회에 성공하였습니다.", mainViewService.getListByCategory(userId,categoryId));
+                } catch (Exception e) {
+                    return ResponseUtil.ERROR(e.getMessage(), null);
+                }
+            } else {
+                return ResponseUtil.ERROR("토큰 유효성 문제가 발생하였습니다.", null);
+            }
+        }
+        return ResponseUtil.SUCCESS("메인리스트 조회에 성공하였습니다.", mainViewService.getListByCategory(categoryId));
     }
 
     @GetMapping("/searchList")
-    public List<Store> getListBySearch(@RequestParam String keyword){
-        return mainViewService.getListBySearch(keyword);
+    public ResponseDto getListBySearch(@RequestHeader(value = "Authorization", required = false) String token,@RequestParam String keyword){
+        if (token != null) {
+            String accessToken = token.replace("Bearer ", "");
+            if (tokenProvider.validToken(accessToken)) {
+                Long userId = tokenProvider.getUserId(accessToken);
+                try {
+                    return ResponseUtil.SUCCESS("검색에 성공하였습니다.", mainViewService.getListBySearch(userId,keyword));
+                } catch (Exception e) {
+                    return ResponseUtil.ERROR(e.getMessage(), null);
+                }
+            } else {
+                return ResponseUtil.ERROR("검색에 문제가 발생하였습니다.", null);
+            }
+        }else{
+            return ResponseUtil.SUCCESS("비회원 검색어 조회에 성공하였습니다.",mainViewService.getListBySearch(keyword));
+        }
+
+
     }
 
     @GetMapping("/searchList/filters")
