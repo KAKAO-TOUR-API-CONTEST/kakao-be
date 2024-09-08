@@ -36,8 +36,25 @@ public class ChildController {
         this.tokenProvider = tokenProvider;
     }
 
-    @GetMapping("/mainAlbums")
+    @GetMapping("/albums")
     public ResponseDto getmainAlbums(@RequestHeader(value = "Authorization") String token){
+
+        if (token != null) {
+            String accessToken = token.replace("Bearer ", "");
+            if (tokenProvider.validToken(accessToken)) {
+                Long userId = tokenProvider.getUserId(accessToken);
+                return ResponseUtil.SUCCESS("사진첩 메인리스트 조회에 성공하였습니다", childService.getMainAlbums(userId));
+            } else {
+                return ResponseUtil.ERROR("유효하지 않은 토큰입니다.", null);
+            }
+        }else{
+            return ResponseUtil.ERROR("존재하지 않는 회원입니다.", null);
+        }
+
+    }
+
+    @GetMapping("/child")
+    public ResponseDto getMyChild(@RequestHeader(value = "Authorization") String token){
 
         if (token != null) {
             String accessToken = token.replace("Bearer ", "");

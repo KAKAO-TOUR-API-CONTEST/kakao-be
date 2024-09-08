@@ -9,9 +9,11 @@ import java.util.List;
 @Getter
 @Builder
 public class ChildResponseDto {
+
     private Long childId;
     private String childName;
     private String birthDate;
     private String age;
     private List<ScheduleItemDto> scheduleItems;
+
 }

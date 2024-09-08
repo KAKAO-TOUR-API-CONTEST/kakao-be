@@ -19,6 +19,7 @@ import java.util.Optional;
 
 @Service
 public class ChildService {
+
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -29,9 +30,7 @@ public class ChildService {
     private ScheduleItemRepository scheduleItemRepository;
 
     public List<ChildResponseDto> getMainAlbums(Long userId){
-
         Optional<User> user = userRepository.findById(userId);
-
         if(user.isPresent()){
             List<ChildResponseDto> childResponseDtos = new ArrayList<>();
             List<Child> childs = childRepository.findAllByUser(user.get());
@@ -61,6 +60,8 @@ public class ChildService {
         }else{
             return null;
         }
+
+
 
 
     }
