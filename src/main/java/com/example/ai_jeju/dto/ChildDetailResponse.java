@@ -13,5 +13,6 @@ public class ChildDetailResponse {
     private boolean gender;
     private String profileImg;
     private String relation;
+    private int months;
 
 }

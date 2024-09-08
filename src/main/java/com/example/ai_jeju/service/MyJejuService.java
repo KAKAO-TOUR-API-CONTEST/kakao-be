@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -28,6 +30,15 @@ public class MyJejuService {
     private ChildRepository childRepository;
     @Autowired
     private S3Service s3Service;
+    public static int calculateMonths(String birthDate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+       // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate date = LocalDate.parse(birthDate, formatter);
+        LocalDate currentDate = LocalDate.now();
+        // 생년월일부터 현재까지의 개월 수 계산
+        int months = (int) ChronoUnit.MONTHS.between(date, currentDate);
+        return months;
+    }
 
     LocalDate today = LocalDate.now();
     int year = today.getYear();
@@ -115,13 +126,15 @@ public class MyJejuService {
 
 
         for(int i=0; i<childs.size(); i++){
+            Child child = childs.get(i);
             MyJejuChildDto myJejuChildDto = MyJejuChildDto.builder()
-                    .childId(childs.get(i).getChildId())
-                    .relation(childs.get(i).getRealtion())
-                    .birthDate(childs.get(i).getBirthDate())
+                    .childId(child.getChildId())
+                    .relation(child.getRealtion())
+                    .birthDate(child.getBirthDate())
+                    .months(calculateMonths(child.getBirthDate()))
                     .order(i+1)
                     .imgSrc(childs.get(i).getChildProfile())
-                    .age(year- Integer.parseInt(childs.get(i).getBirthDate().split("\\.")[0])-1)
+                    .age(year- Integer.parseInt(child.getBirthDate().split("\\.")[0])-1)
                     .build();
             myJejuChildDtos.add(myJejuChildDto);
         }
@@ -144,6 +157,7 @@ public class MyJejuService {
                     .birthDate(registeredChild.getBirthDate())
                     .age((year-1)- Integer.parseInt(registeredChild.getBirthDate().split("\\.")[0]))
                     .gender(registeredChild.getGender())
+                    .months(calculateMonths(registeredChild.getBirthDate()))
                     .profileImg(registeredChild.getChildProfile())
                     .relation(registeredChild.getRealtion())
                     .build();
