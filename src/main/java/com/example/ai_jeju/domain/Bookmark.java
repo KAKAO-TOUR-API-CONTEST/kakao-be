@@ -16,8 +16,9 @@ public class Bookmark {
     @Column(name = "bmk_id")
     private Long bookmarkId;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
 
     @Column(name = "store_id")
     private Long storeId;

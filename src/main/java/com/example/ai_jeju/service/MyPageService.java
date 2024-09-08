@@ -63,14 +63,17 @@ public class MyPageService {
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
 
         // 닉네임 업데이트
-        modifyMyPageRequest.getNickname().ifPresent(nickname -> {
-            user.setNickname(nickname);
-        });
+        // 수정된 사용자 빌드
+        User updatedUser = User.builder()
+                .id(user.getId())  // 기존 ID 유지
+                .nickname(modifyMyPageRequest.getNickname().orElse(user.getNickname()))  // 닉네임 수정
+                .phoneNum(modifyMyPageRequest.getPhoneNum().orElse(user.getPhoneNum()))  // 전화번호 수정
+                // 추가적으로 수정할 필드가 있다면 여기에 추가
+                .build();
 
-        // 전화번호 업데이트
-        modifyMyPageRequest.getPhoneNum().ifPresent(phoneNum -> {
-            user.setPhoneNum(phoneNum);
-        });
+        // 변경된 사용자 정보를 저장
+        userRepository.save(updatedUser);
+
         // 변경된 사용자 정보를 저장
         userRepository.save(user);
     }

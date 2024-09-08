@@ -11,7 +11,11 @@ import java.util.Optional;
 
 @Repository
 public interface StoreRepository extends JpaRepository<Store, Long> {
+
+    Optional<Store> findByStoreId(Long storeId);
+
     Optional<Store> findById(Long id);
+
     List<Store> findByCategoryId(int categoryId);
     @Query(value = "SELECT * FROM stores ORDER BY RAND()", nativeQuery = true)
     List<Store> findAllOrderByRandomNative();
@@ -21,5 +25,8 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     @Query(value = "SELECT * FROM stores WHERE name LIKE %:keyword% AND categoryId = :categoryId", nativeQuery = true)
     List<Store> findByKeywordAndCategoryId(String keyword, int categoryId);
+
+    List<Store> findByCategoryId(Long categoryId);
+
 
 }

@@ -48,7 +48,6 @@ public class ChildService {
                             .build();
                     scheduleItemDtos.add(scheduleItemDto);
                 }
-
                 ChildResponseDto childResponseDto = ChildResponseDto.builder()
                         .childId(child.getChildId())
                         .childName(child.getChildName())

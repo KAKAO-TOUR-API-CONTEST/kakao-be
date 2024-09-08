@@ -2,10 +2,12 @@ package com.example.ai_jeju.service;
 
 import com.example.ai_jeju.domain.Bookmark;
 import com.example.ai_jeju.domain.Store;
+import com.example.ai_jeju.domain.User;
 import com.example.ai_jeju.dto.MainListResponse;
 import com.example.ai_jeju.dto.DetailListResponse;
 import com.example.ai_jeju.repository.BookmarkRepository;
 import com.example.ai_jeju.repository.StoreRepository;
+import com.example.ai_jeju.repository.UserRepository;
 import com.example.ai_jeju.util.ResponseDto;
 import com.example.ai_jeju.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +28,13 @@ public class MainVIewService {
     @Autowired
     private BookmarkRepository bookmarkRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     public DetailListResponse getDetailList(Long userId,Long storeId){
-
+        Optional<User> user = userRepository.findById(userId);
         Optional<Store> store = storeRepository.findById(storeId);
-
         List<Bookmark> bmks = bookmarkRepository.findByStoreId(storeId);
-
         if(store.isPresent()){
             Store innerStore = store.get();
             DetailListResponse detailListResponse = DetailListResponse.builder()
@@ -50,7 +53,7 @@ public class MainVIewService {
                     .operationTime(innerStore.getOperationTime())
                     .tel(innerStore.getTel())
                     .noBmk(bmks.size())
-                    .bmkStatus(bookmarkRepository.existsByUserIdAndStoreId(userId,storeId))
+                    .bmkStatus(bookmarkRepository.existsByUserAndStoreId(user.get(),storeId))
                     .build();
 
             return detailListResponse;
@@ -63,7 +66,7 @@ public class MainVIewService {
     public List<MainListResponse> getMainList(Long userId){
 
         List<Store> storeList= storeRepository.findAllOrderByRandomNative();
-
+        Optional<User> user = userRepository.findById(userId);
         List<MainListResponse> mainListResponses= new ArrayList<>();
 
         for(Store store : storeList){
@@ -77,7 +80,7 @@ public class MainVIewService {
                     .address(store.getAddress())
                     .noKidsZone(store.getNoKidsZone())
                     .noBmk(bmks.size())
-                    .bmkSatus(bookmarkRepository.existsByUserIdAndStoreId(userId,store.getStoreId()))
+                    .bmkSatus(bookmarkRepository.existsByUserAndStoreId(user.get(),store.getStoreId()))
                     .build();
             mainListResponses.add(mainListResponse);
         }
