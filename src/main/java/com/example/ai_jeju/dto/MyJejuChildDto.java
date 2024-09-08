@@ -12,6 +12,7 @@ public class MyJejuChildDto {
     private String birthDate;
     private int order;
     private int age;
+    private int months;
     private String imgSrc;
 
 }
