@@ -30,10 +30,28 @@ public class BookmarkController {
 
         if (tokenProvider.validToken(accessToken)) {
             Long userId = tokenProvider.getUserId(accessToken);
-            return bookmarkService.addBookmark(userId, storeId);
+            bookmarkService.addBookmark(userId, storeId);
+            return ResponseUtil.SUCCESS("관심목록에 성공적으로 등록하였습니다.",null);
+
         }
         else {
             return ResponseUtil.ERROR("북마크 등록 중 문제가 발생하였습니다.", null);
+        }
+
+    }
+
+    @DeleteMapping("")
+    public ResponseDto deleteBookmark(@RequestHeader("Authorization") String token, @RequestParam Long storeId) {
+
+        String accessToken = token.replace("Bearer ", "");
+
+        if (tokenProvider.validToken(accessToken)) {
+            Long userId = tokenProvider.getUserId(accessToken);
+            bookmarkService.deleteBookmark(userId,storeId);
+            return ResponseUtil.SUCCESS("관심목록을 성공적으로 삭제하였습니다.",null);
+        }
+        else {
+            return ResponseUtil.ERROR("관심목록 삭제중 발생하였습니다.", null);
         }
 
     }
