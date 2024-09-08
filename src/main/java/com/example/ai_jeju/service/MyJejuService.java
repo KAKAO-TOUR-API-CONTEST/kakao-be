@@ -133,6 +133,7 @@ public class MyJejuService {
                     .birthDate(child.getBirthDate())
                     .months(calculateMonths(child.getBirthDate()))
                     .order(i+1)
+                    .name(child.getChildName())
                     .imgSrc(childs.get(i).getChildProfile())
                     .age(year- Integer.parseInt(child.getBirthDate().split("\\.")[0])-1)
                     .build();
