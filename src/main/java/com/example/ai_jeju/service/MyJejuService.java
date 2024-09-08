@@ -1,21 +1,34 @@
 package com.example.ai_jeju.service;
 
+import com.example.ai_jeju.domain.Child;
 import com.example.ai_jeju.domain.User;
 import com.example.ai_jeju.dto.ModifyMyPageRequest;
+import com.example.ai_jeju.dto.MyJejuChildDto;
+import com.example.ai_jeju.dto.MyJejuMyDto;
+import com.example.ai_jeju.dto.MyJejuResponse;
 import com.example.ai_jeju.exception.UserNotFoundException;
+import com.example.ai_jeju.repository.ChildRepository;
 import com.example.ai_jeju.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import static graphql.introspection.IntrospectionQueryBuilder.build;
+
 @Service
-public class MyPageService {
+public class MyJejuService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ChildRepository childRepository;
     @Autowired
     private S3Service s3Service;
 
@@ -76,5 +89,60 @@ public class MyPageService {
 
         // 변경된 사용자 정보를 저장
         userRepository.save(user);
+    }
+
+
+
+    public MyJejuResponse getMyJeju(Long userId){
+        // 나 찾기
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+
+        // 내 아이 찾기
+        List<Child> childs = childRepository.findAllByUser(user);
+
+        MyJejuMyDto myJejuMyDto = MyJejuMyDto.builder()
+                .userId(user.getId())
+                .name(user.getName())
+                .imgSrc(user.getProfileImg())
+                .numOfChild(childs.size())
+                .rgtDate(user.getRgtDate())
+                .build();
+
+        List<MyJejuChildDto> myJejuChildDtos = new ArrayList<>();
+
+        LocalDate today = LocalDate.now();
+        int year = today.getYear();
+
+        for(int i=0; i<childs.size(); i++){
+            MyJejuChildDto myJejuChildDto = MyJejuChildDto.builder()
+                    .childId(childs.get(i).getChildId())
+                    .relation(childs.get(i).getRealtion())
+                    .birthDate(childs.get(i).getBirthDate())
+                    .order(i+1)
+                    .imgSrc(childs.get(i).getChildProfile())
+                    .age(year- Integer.parseInt(childs.get(i).getBirthDate().split("\\.")[0]))
+                    .build();
+            myJejuChildDtos.add(myJejuChildDto);
+        }
+
+        MyJejuResponse myJejuResponse = MyJejuResponse.builder()
+                        .myJejuMyDto(myJejuMyDto)
+                .myJejuChildDtos(myJejuChildDtos)
+                .build();
+
+        return myJejuResponse;
+
+    }
+
+    public void getMyChild(Long childId){
+
+
+    }
+
+    @Transactional
+    public void deleteMyChild(Long childId){
+        Optional<Child> child = childRepository.findByChildId(childId);
+        childRepository.delete(child.get());
     }
 }
