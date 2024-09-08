@@ -62,52 +62,59 @@
                 .then(response => response.json())
                 .then(rooms => {
                     const roomsContainer = document.getElementById('rooms');
-                    rooms.forEach(room => {
-                        const roomElement = document.createElement('div');
-                        roomElement.className = 'room-item';
-                        roomElement.innerHTML = `<strong>${room.name}</strong>`;
 
-                        const lastMessageElement = document.createElement('div');
-                        lastMessageElement.className = 'last-message';
-                        roomElement.appendChild(lastMessageElement);
+                    // 유저 카운트를 한 번에 가져오는 요청
+                    fetch('/chat/users/count')
+                        .then(response => response.json())
+                        .then(allUserCounts => {
+                            rooms.forEach(room => {
+                                const roomElement = document.createElement('div');
+                                roomElement.className = 'room-item';
+                                roomElement.innerHTML = `<strong>${room.name}</strong>`;
 
-                        const userCountElement = document.createElement('div');
-                        userCountElement.className = 'user-count';
-                        roomElement.appendChild(userCountElement);
+                                const lastMessageElement = document.createElement('div');
+                                lastMessageElement.className = 'last-message';
+                                roomElement.appendChild(lastMessageElement);
 
-                        //마지막메시지
-                        fetch(`/chat/room/${room.roomId}/lastmessage`)
-                            .then(response => response.json())
-                            .then(message => {
-                                if (message) {
-                                    lastMessageElement.innerText = `${message.sender}: ${message.message}`;
+                                const userCountElement = document.createElement('div');
+                                userCountElement.className = 'user-count';
+                                roomElement.appendChild(userCountElement);
+
+                                // 마지막 메시지
+                                fetch(`/chat/room/${room.roomId}/lastmessage`)
+                                    .then(response => response.json())
+                                    .then(message => {
+                                        if (message) {
+                                            lastMessageElement.innerText = `${message.sender}: ${message.message}`;
+                                        } else {
+                                            lastMessageElement.innerText = "No messages yet";
+                                        }
+                                    });
+
+                                // 유저 카운트 업데이트
+                                const count = allUserCounts[room.roomId];
+                                if (count !== undefined) {
+                                    userCountElement.innerText = `Users: ${count}`;
                                 } else {
-                                    lastMessageElement.innerText = "No messages yet";
+                                    userCountElement.innerText = `Users: 0`;
                                 }
+
+                                // 실시간 메시지 구독
+                                stompClient.subscribe(`/sub/chat/room/${room.roomId}`, function (message) {
+                                    const parsedMessage = JSON.parse(message.body);
+                                    lastMessageElement.innerText = `${parsedMessage.sender}: ${parsedMessage.message}`;
+                                });
+
+                                roomElement.addEventListener('click', function() {
+                                    window.location.href = `/chatroom?roomId=${room.roomId}`;
+                                });
+
+                                roomsContainer.appendChild(roomElement);
                             });
-
-                        //유저카운트
-                        fetch(`/chat/users/${room.roomId}/count`)
-                            .then(response => response.json())
-                            .then(count => {
-                                userCountElement.innerText = `Users: ${count}`;
-                            })
-                            .catch(error => {
-                                console.error('Error fetching user count:', error);
-                                userCountElement.innerText = `Users: none`;
-                            });
-
-                        stompClient.subscribe(`/sub/chat/room/${room.roomId}`, function (message) {
-                            const parsedMessage = JSON.parse(message.body);
-                            lastMessageElement.innerText = `${parsedMessage.sender}: ${parsedMessage.message}`;
+                        })
+                        .catch(error => {
+                            console.error('Error fetching user counts:', error);
                         });
-
-                        roomElement.addEventListener('click', function() {
-                            window.location.href = `/chatroom?roomId=${room.roomId}`;
-                        });
-
-                        roomsContainer.appendChild(roomElement);
-                    });
                 });
         }, function (error) {
             console.log("Error during connection: ", error);
