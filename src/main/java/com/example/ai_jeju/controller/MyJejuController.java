@@ -41,7 +41,6 @@ public class MyJejuController {
         String accessToken = token.replace("Bearer ", "");
         if (tokenProvider.validToken(accessToken)) {
             Long userId = tokenProvider.getUserId(accessToken);
-
             return ResponseUtil.SUCCESS("마이제주 조회에 성공하였습니다.", myJejuService.getMyJeju(userId));
         } else {
             return ResponseUtil.ERROR("마이제주 조회 중 문제가 발생하였습니다.", null);

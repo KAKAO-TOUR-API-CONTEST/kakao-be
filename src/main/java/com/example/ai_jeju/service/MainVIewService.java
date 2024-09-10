@@ -187,8 +187,6 @@ public class MainVIewService {
     }
 
 
-
-
     public List<MainListResponse> getListBySearch(Long userId, String keyword){
         List<Store> stores = storeRepository.findBySearch(keyword);
         Optional<User> user = userRepository.findById(userId);
