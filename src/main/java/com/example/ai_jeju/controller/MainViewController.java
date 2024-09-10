@@ -77,7 +77,7 @@ public class MainViewController {
     }
 
     @GetMapping("/mainList/filters")
-    public List<Store> getListByCategory(@RequestParam(name = "categoryId") int categoryId){
+    public List<Store> getListByCategory(@RequestParam int categoryId){
         return mainViewService.getListByCategory(categoryId);
     }
 
