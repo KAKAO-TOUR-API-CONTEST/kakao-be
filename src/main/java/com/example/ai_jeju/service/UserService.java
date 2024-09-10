@@ -139,17 +139,10 @@ public class UserService {
         String access_token = tokenProvider.generateToken(newUser, ACCESS_TOKEN_DURATION);
         // DB에 refreshToken 저장
         saveRefreshToken(newUser.getId(), refresh_token);
-
-        Date now = new Date();
-        long accessTokenExpiresAt = now.getTime() + ACCESS_TOKEN_DURATION.toMillis();
         // AccessToken 쿠키로 발급
         addAccessTokenToCookie(request,response, access_token);
 
-        Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("access_token", access_token);
-        responseBody.put("expiresAt", accessTokenExpiresAt);
-
-        return ResponseUtil.SUCCESS("로그인 완료되었습니다.", responseBody);
+        return  ResponseUtil.SUCCESS("로그인 완료되었습니다.", access_token);
     }
 
     public User findByEmail(String email){
