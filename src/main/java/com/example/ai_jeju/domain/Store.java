@@ -60,18 +60,31 @@ public class Store {
     @Column(name = "playground",updatable = false,nullable = true)
     Boolean playground;
 
-    //노키즈존 여부
     @Column(name = "noKidsZone",updatable = false,nullable = true)
-    Boolean noKidsZone;
+    String noKidsZone;
+
+    @Column(name = "nokidsdetail",updatable = false,nullable = true)
+    String nokidsdetail;
 
     @Column(name = "categoryId",updatable = false,nullable = true)
     Integer categoryId;
 
-    @Column(name = "operationTime",updatable = false,nullable = true)
+    @Column(name = "operationTime",updatable = false,nullable = true , length = 1024)
     String operationTime;
+
+    @Column(name = "breakTime",updatable = false,nullable = true , length = 1024)
+    String breakTime;
 
     @Column(name = "tel",updatable = false,nullable = true)
     String tel;
+
+    @Column(name = "pet",updatable = false,nullable = true)
+    Boolean pet;
+
+    @Column(name = "parking",updatable = false,nullable = true)
+    Boolean parking;
+
+
 
 
 }
