@@ -26,7 +26,7 @@ public class DetailListResponse {
     Boolean strollerVal;
     Boolean babySpareChair;
     Boolean playground;
-    Boolean noKidsZone;
+    String noKidsZone;
     Integer categoryId;
     String operationTime;
     String tel;
