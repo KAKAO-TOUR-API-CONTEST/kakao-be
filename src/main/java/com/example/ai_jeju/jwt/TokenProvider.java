@@ -77,6 +77,11 @@ public class TokenProvider {
         return claims.get("id", Long.class);
     }
 
+    public Date getExpiredDate(String token) {
+        Claims claims = getClaims(token);
+        Date date = claims.getExpiration();
+        return date;
+    }
     public String extractNickname(String token) {
         Claims claims = getClaims(token);
         return claims.get("nickname", String.class);
