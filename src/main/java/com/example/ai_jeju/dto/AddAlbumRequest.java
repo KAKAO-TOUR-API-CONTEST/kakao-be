@@ -1,6 +1,5 @@
 package com.example.ai_jeju.dto;
 
-import com.example.ai_jeju.domain.AlbumItem;
 import lombok.Getter;
 import org.openapitools.jackson.nullable.JsonNullable;
 
@@ -13,6 +12,7 @@ public class AddAlbumRequest {
     private JsonNullable<String> albumTitle;
     private JsonNullable<String> albumDesc;
     private List<AlbumItemDto> albumItemDtos;
+    private AlbumOptionDto albumOptionDto;
 
     public AddAlbumRequest(){
         this.albumTitle = JsonNullable.undefined();

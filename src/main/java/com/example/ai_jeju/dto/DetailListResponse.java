@@ -11,10 +11,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class DetailListResponse {
 
-
-
-
-
     private Long storeId;
     String name;
     //이미지 소스
@@ -32,6 +28,5 @@ public class DetailListResponse {
     String tel;
     int noBmk;
     boolean bmkStatus;
-
 
 }
