@@ -18,21 +18,21 @@ public class Store {
     private Long storeId;
 
     @Column(name = "name",updatable = false)
-    String name;
+    private String name;
 
     //이미지 소스
     @Column(name = "imgSrc",updatable = false,nullable = true, columnDefinition = "TEXT")
-    String imgSrc;
+    private String imgSrc;
 
     @Column(name = "address",updatable = false,nullable = true)
-    String address;
+    private String address;
 
 
     @Column(name = "mapX",updatable = false,nullable = true)
-    double mapX;
+    private double mapX;
 
     @Column(name = "mapY",updatable = false,nullable = true)
-    double mapY;
+    private double mapY;
 
 
 
@@ -46,32 +46,31 @@ public class Store {
 
     //유모차 대여여부
     @Column(name = "stroller",updatable = false,nullable = true)
-    Boolean stroller;
+    private Boolean stroller;
 
     //유모차 편의성
     @Column(name = "strollerVal",updatable = false,nullable = true)
-    Boolean strollerVal;
+    private Boolean strollerVal;
 
     //아이 스페어 체어
     @Column(name = "babySpareChair",updatable = false,nullable = true)
-    Boolean babySpareChair;
+    private Boolean babySpareChair;
 
     //아이 놀이방
     @Column(name = "playground",updatable = false,nullable = true)
-    Boolean playground;
+    private Boolean playground;
 
     //노키즈존 여부
     @Column(name = "noKidsZone",updatable = false,nullable = true)
-    Boolean noKidsZone;
+    private String noKidsZone;
 
     @Column(name = "categoryId",updatable = false,nullable = true)
-    Integer categoryId;
+    private Integer categoryId;
 
     @Column(name = "operationTime",updatable = false,nullable = true)
-    String operationTime;
+    private String operationTime;
 
     @Column(name = "tel",updatable = false,nullable = true)
-    String tel;
-
+    private String tel;
 
 }

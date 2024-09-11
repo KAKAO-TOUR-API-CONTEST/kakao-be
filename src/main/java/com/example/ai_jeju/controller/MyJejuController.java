@@ -22,17 +22,13 @@ public class MyJejuController {
     private final TokenProvider tokenProvider;
     @Autowired
     private MyJejuService myJejuService;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private S3Service s3Service;
-
     public MyJejuController(TokenProvider tokenProvider) {
         this.tokenProvider = tokenProvider;
     }
-
     // 마이제주 홈
 
     @GetMapping("/myjeju")

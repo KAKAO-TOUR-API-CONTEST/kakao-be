@@ -16,7 +16,7 @@ public class MainListResponse {
     //이미지 소스
     String imgSrc;
     String address;
-    Boolean noKidsZone;
+    String noKidsZone;
     int noBmk;
     boolean bmkSatus;
 }
