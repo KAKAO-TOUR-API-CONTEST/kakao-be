@@ -3,6 +3,7 @@ package com.example.ai_jeju.controller;
 import com.example.ai_jeju.domain.ChatMessage;
 import com.example.ai_jeju.domain.ChatRoom;
 import com.example.ai_jeju.dto.ChatMessageDto;
+import com.example.ai_jeju.handler.StompHandler;
 import com.example.ai_jeju.jwt.TokenProvider;
 import com.example.ai_jeju.repository.ChatMessageRepository;
 import com.example.ai_jeju.repository.ChatRoomRepository;
@@ -19,10 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Controller
@@ -33,6 +31,7 @@ public class ChatController {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final TokenProvider tokenProvider;
+    private final StompHandler stompHandler;
 
     @Autowired
     private ChatService chatService;
@@ -109,7 +108,7 @@ public class ChatController {
     @ResponseBody
     public List<ChatMessage> getPreviousMessages(
             @RequestParam("roomId") String roomId,
-            @RequestParam(value = "lastMessageid", required = false) Optional<Long> lastMessageId) {
+            @RequestParam(value = "lastMessageId", required = false) Optional<Long> lastMessageId) {
 
         // roomId를 사용해 ChatRoom 객체 가져오기
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId)
@@ -140,8 +139,14 @@ public class ChatController {
         return chatService.getMessageCount(chatRoom);
     }
 
-
-
+    @GetMapping("/chat/users/count")
+    @ResponseBody
+    public Map<String, Integer> getAllUserCounts() {
+        // ChatRoomRepository에서 모든 roomId를 가져와 초기화
+        List<String> roomIds = chatRoomRepository.findAllRoomIds();
+        stompHandler.initializeRoomUserCount(roomIds);  // 모든 방의 사용자 수 초기화
+        return new HashMap<>(stompHandler.getAllUserCounts());
+    }
 
 
 }

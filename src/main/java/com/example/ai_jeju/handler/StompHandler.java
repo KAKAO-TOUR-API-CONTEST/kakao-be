@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.Map;
@@ -25,6 +26,13 @@ public class StompHandler implements ChannelInterceptor {
     private static final String BEARER_PREFIX = "Bearer ";
     private final ConcurrentMap<String, Integer> roomUserCount = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, ConcurrentMap<String, Integer>> userRoomEntryCount = new ConcurrentHashMap<>();
+
+    // 방이 처음 생성될 때 초기값을 설정하는 메서드
+    public void initializeRoomUserCount(List<String> roomIds) {
+        for (String roomId : roomIds) {
+            roomUserCount.putIfAbsent(roomId, 0); // 방에 초기값 0 설정
+        }
+    }
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -74,6 +82,7 @@ public class StompHandler implements ChannelInterceptor {
         // 메시지 전송 요청 처리
         else if (StompCommand.SEND == accessor.getCommand()) {
             String destination = accessor.getDestination();
+
 
             // 메시지의 목적지가 "/pub/chat/message"인지 확인
             if ("/pub/chat/message".equals(destination)) {
@@ -160,4 +169,9 @@ public class StompHandler implements ChannelInterceptor {
     public int getUserCount(String roomId) {
         return roomUserCount.getOrDefault(roomId, 0);
     }
+
+    public Map<String, Integer> getAllUserCounts() {
+        return roomUserCount;
+    }
+
 }
