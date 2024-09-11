@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
+// test
 @Table(name="child")
 @NoArgsConstructor(access= AccessLevel.PROTECTED) //기본생성자
 @Getter
