@@ -18,21 +18,21 @@ public class Store {
     private Long storeId;
 
     @Column(name = "name",updatable = false)
-    private String name;
+    String name;
 
     //이미지 소스
     @Column(name = "imgSrc",updatable = false,nullable = true, columnDefinition = "TEXT")
-    private String imgSrc;
+    String imgSrc;
 
     @Column(name = "address",updatable = false,nullable = true)
-    private String address;
+    String address;
 
 
     @Column(name = "mapX",updatable = false,nullable = true)
-    private double mapX;
+    double mapX;
 
     @Column(name = "mapY",updatable = false,nullable = true)
-    private double mapY;
+    double mapY;
 
 
 
@@ -46,31 +46,45 @@ public class Store {
 
     //유모차 대여여부
     @Column(name = "stroller",updatable = false,nullable = true)
-    private Boolean stroller;
+    Boolean stroller;
 
     //유모차 편의성
     @Column(name = "strollerVal",updatable = false,nullable = true)
-    private Boolean strollerVal;
+    Boolean strollerVal;
 
     //아이 스페어 체어
     @Column(name = "babySpareChair",updatable = false,nullable = true)
-    private Boolean babySpareChair;
+    Boolean babySpareChair;
 
     //아이 놀이방
     @Column(name = "playground",updatable = false,nullable = true)
-    private Boolean playground;
+    Boolean playground;
 
-    //노키즈존 여부
     @Column(name = "noKidsZone",updatable = false,nullable = true)
-    private String noKidsZone;
+    String noKidsZone;
+
+    @Column(name = "nokidsdetail",updatable = false,nullable = true)
+    String nokidsdetail;
 
     @Column(name = "categoryId",updatable = false,nullable = true)
-    private Integer categoryId;
+    Integer categoryId;
 
-    @Column(name = "operationTime",updatable = false,nullable = true)
-    private String operationTime;
+    @Column(name = "operationTime",updatable = false,nullable = true , length = 1024)
+    String operationTime;
+
+    @Column(name = "breakTime",updatable = false,nullable = true , length = 1024)
+    String breakTime;
 
     @Column(name = "tel",updatable = false,nullable = true)
-    private String tel;
+    String tel;
+
+    @Column(name = "pet",updatable = false,nullable = true)
+    Boolean pet;
+
+    @Column(name = "parking",updatable = false,nullable = true)
+    Boolean parking;
+
+
+
 
 }
