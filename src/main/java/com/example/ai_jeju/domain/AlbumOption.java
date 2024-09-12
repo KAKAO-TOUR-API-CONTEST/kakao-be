@@ -9,7 +9,7 @@ import lombok.*;
 @Entity
 @AllArgsConstructor
 @Builder
-public class AlbumItemOption {
+public class AlbumOption {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,7 +53,7 @@ public class AlbumItemOption {
     private boolean op12;
 
     @ManyToOne
-    @JoinColumn(name = "album_item_id")
-    private AlbumItem albumItem;
+    @JoinColumn(name = "album_id")
+    private Album album;
 
 }

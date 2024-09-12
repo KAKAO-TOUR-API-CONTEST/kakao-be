@@ -186,7 +186,7 @@ public class MainVIewService {
         return mainListResponses;
     }
 
-
+    // 회원 - 검색어로 조회하기.
     public List<MainListResponse> getListBySearch(Long userId, String keyword){
         List<Store> stores = storeRepository.findBySearch(keyword);
         Optional<User> user = userRepository.findById(userId);
@@ -207,6 +207,7 @@ public class MainVIewService {
         return mainListResponses;
     }
 
+    // 비회원 - 검색어로 조회하기.
     public List<MainListResponse> getListBySearch(String keyword){
         List<Store> stores = storeRepository.findBySearch(keyword);
 
@@ -227,8 +228,48 @@ public class MainVIewService {
         return mainListResponses;
     }
 
-    public List<Store>searchByCategory(String keyword, int categoryId){
-        return storeRepository.findByKeywordAndCategoryId(keyword,categoryId);
+    // 비회원 - 검색어로 조회결과 카테고리 정렬하기
+    public List<MainListResponse> searchByCategory(String keyword, int categoryId){
+
+        List<Store> stores = storeRepository.findByKeywordAndCategoryId(keyword,categoryId);
+        List<MainListResponse> mainListResponses = new ArrayList<>();
+        for(Store store : stores){
+            List<Bookmark> bookmarks = bookmarkRepository.findByStoreId(store.getStoreId());
+            MainListResponse mainListResponse = MainListResponse.builder()
+                    .storeId(store.getStoreId())
+                    .name(store.getName())
+                    .imgSrc(store.getImgSrc())
+                    .address(store.getAddress())
+                    .noKidsZone(store.getNoKidsZone())
+                    .noBmk(bookmarks.size())
+                    .bmkSatus(false)
+                    .build();
+            mainListResponses.add(mainListResponse);
+        }
+        return mainListResponses;
+
+    }
+    // 회원 - 검색어로 조회결과 카테고리 정렬하기
+    public List<MainListResponse> searchByCategory(Long userId, String keyword, int categoryId){
+
+        List<Store> stores = storeRepository.findByKeywordAndCategoryId(keyword,categoryId);
+        Optional<User> user = userRepository.findById(userId);
+        List<MainListResponse> mainListResponses = new ArrayList<>();
+        for(Store store : stores){
+            List<Bookmark> bookmarks = bookmarkRepository.findByStoreId(store.getStoreId());
+            MainListResponse mainListResponse = MainListResponse.builder()
+                    .storeId(store.getStoreId())
+                    .name(store.getName())
+                    .imgSrc(store.getImgSrc())
+                    .address(store.getAddress())
+                    .noKidsZone(store.getNoKidsZone())
+                    .noBmk(bookmarks.size())
+                    .bmkSatus(bookmarkRepository.existsByUserAndStoreId(user.get(),store.getStoreId()))
+                    .build();
+            mainListResponses.add(mainListResponse);
+        }
+        return mainListResponses;
+
     }
 
 

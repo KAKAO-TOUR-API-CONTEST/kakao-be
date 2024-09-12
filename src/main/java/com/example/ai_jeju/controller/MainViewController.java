@@ -115,9 +115,25 @@ public class MainViewController {
 
     }
 
-    @GetMapping("/searchList/filters")
-    public List<Store> searchByCategory(@RequestParam String keyword, @RequestParam int categoryId){
-        return mainViewService.searchByCategory(keyword,categoryId);
+    @GetMapping("/searchList/category")
+    public ResponseDto searchByCategory(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam String keyword, @RequestParam int categoryId){
+
+        if (token != null) {
+            String accessToken = token.replace("Bearer ", "");
+            if (tokenProvider.validToken(accessToken)) {
+                Long userId = tokenProvider.getUserId(accessToken);
+                try {
+                    return ResponseUtil.SUCCESS("회원 검색어 카테고리 정렬에 성공하였습니다.", mainViewService.searchByCategory(userId,keyword,categoryId));
+                } catch (Exception e) {
+                    return ResponseUtil.ERROR(e.getMessage(), null);
+                }
+            } else {
+                return ResponseUtil.ERROR("검색어 카테고리 정렬에 문제가 발생하였습니다.", null);
+            }
+        }else{
+            return ResponseUtil.SUCCESS("비회원 검색어 카테고리 정렬에 성공하였습니다.",mainViewService.searchByCategory(keyword,categoryId));
+        }
+
     }
 
     @GetMapping("/rcmd")
@@ -128,16 +144,5 @@ public class MainViewController {
             return user.get().isIfRcmd();
         return false;
     }
-
-//    @GetMapping("/stay/detailList")
-//    public Stay getStayById(@RequestParam int stayId) {
-//        return mainViewService.getStayList(stayId);
-//    }
-//
-//
-//    @GetMapping("/play/detailList")
-//    public Stay getStayById(@RequestParam int stayId) {
-//        return mainViewService.getStayList(stayId);
-//    }
 
 }
