@@ -41,6 +41,12 @@ public class AlbumController {
         return ResponseUtil.SUCCESS("사진첩 조회이 성공하셨습니다",albumResponses);
     }
 
+    @GetMapping("/album/detail")
+    public ResponseDto getDetailAlbumList(@RequestParam Long childId ){
+        List<AlbumResponse> albumResponses =albumService.getAlbumList(childId);
+        return ResponseUtil.SUCCESS("사진첩 조회이 성공하셨습니다",albumResponses);
+    }
+
 
 
 

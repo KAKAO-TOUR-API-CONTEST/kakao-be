@@ -1,10 +1,7 @@
 package com.example.ai_jeju.service;
 
 import com.example.ai_jeju.domain.*;
-import com.example.ai_jeju.dto.AddAlbumRequest;
-import com.example.ai_jeju.dto.AlbumItemDto;
-import com.example.ai_jeju.dto.AlbumOptionDto;
-import com.example.ai_jeju.dto.AlbumResponse;
+import com.example.ai_jeju.dto.*;
 import com.example.ai_jeju.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,8 +17,13 @@ public class AlbumService {
 
     @Autowired
     private AlbumRepository albumRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
     @Autowired
     private AlbumItemRepository albumItemRepository;
+
     @Autowired
     private AlbumOptionRepository albumOptionRepository;
 
@@ -90,19 +92,20 @@ public class AlbumService {
 
             AlbumOption albumOption = AlbumOption.builder()
                     .album(savedAlbum)
-                    .op1(albumOptionDto.isOp1())
-                    .op2(albumOptionDto.isOp2())
-                    .op3(albumOptionDto.isOp3())
-                    .op4(albumOptionDto.isOp4())
-                    .op5(albumOptionDto.isOp5())
-                    .op6(albumOptionDto.isOp6())
-                    .op7(albumOptionDto.isOp7())
-                    .op8(albumOptionDto.isOp8())
-                    .op9(albumOptionDto.isOp9())
-                    .op10(albumOptionDto.isOp10())
-                    .op11(albumOptionDto.isOp11())
-                    .op12(albumOptionDto.isOp12())
+                    .optionalPet(albumOptionDto.getOptionalPet().orElse(false))
+                    .optionalFriend(albumOptionDto.getOptionalFriend().orElse(false))
+                    .optionalFamily(albumOptionDto.getOptionalFamily().orElse(false))
+                    .optionalMorning(albumOptionDto.getOptionalMorning().orElse(false))
+                    .optionalAm(albumOptionDto.getOptionalAm().orElse(false))
+                    .optionalPm(albumOptionDto.getOptionalPm().orElse(false))
+                    .optionalDining(albumOptionDto.getOptionalDining().orElse(false))
+                    .optionalSnack(albumOptionDto.getOptionalSnack().orElse(false))
+                    .optionalPlay(albumOptionDto.getOptionalPlay().orElse(false))
+                    .optionalStudy(albumOptionDto.getOptionalStudy().orElse(false))
+                    .optionalExperience(albumOptionDto.getOptionalExperience().orElse(false))
+                    .optionalWalk(albumOptionDto.getOptionalWalk().orElse(false))
                     .build();
+
             albumOptionRepository.save(albumOption);
 
             for(AlbumItemDto albumItemDto : albumItemDtos){
@@ -110,6 +113,7 @@ public class AlbumService {
                         .imgSrc(albumItemDto.getImgSrc())
                         .album(savedAlbum)
                         .build();
+
                 albumItemRepository.save(albumItem);
             }
 
@@ -121,11 +125,37 @@ public class AlbumService {
                     .day(day)
                     .child(child.get())
                     .build();
-
             scheduleItemRepository.save(scheduleItem);
-
         }else{
             return;
         }
     }
+
+    public void getDetailAlbumList(Long albumId){
+
+        Optional<Album> optionalAlbum = albumRepository.findById(albumId);
+        if(optionalAlbum.isPresent()){
+            Album album = optionalAlbum.get();
+            List<ImgSrcDto> imgSrcDtos = new ArrayList<>();
+            //albumItemRepository.getReferenceById()
+            //album.getAlbumId()
+//            for(String imgSrc : ){
+//                imgSrcDtos.add()
+//            }
+            AlbumDetailResponse albumDetailResponse = AlbumDetailResponse.builder()
+                    .childName(album.getChild().getChildName())
+                    .AlbumTitle(album.getAlbumTitle())
+                    .AlbumTitle(album.getAlbumTitle())
+                    .AlbumDesc(album.getAlbumDesc())
+                    .build();
+
+
+
+        }else{
+
+        }
+
+    }
+
+
 }
