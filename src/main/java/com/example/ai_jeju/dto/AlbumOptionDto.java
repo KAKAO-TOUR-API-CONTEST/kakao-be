@@ -9,6 +9,7 @@ import org.openapitools.jackson.nullable.JsonNullable;
 
 @Getter
 @Setter
+//test
  //기본 생성자 꼭 사용해야한다.
 public class AlbumOptionDto {
 
