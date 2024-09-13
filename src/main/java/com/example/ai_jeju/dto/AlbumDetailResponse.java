@@ -15,6 +15,6 @@ public class AlbumDetailResponse {
     private String rgtDate;
     private String AlbumTitle;
     private String AlbumDesc;
-    private List<ImgSrcDto> imgSrcDtos;
+    private List<String> imgSrcDtos;
 
 }

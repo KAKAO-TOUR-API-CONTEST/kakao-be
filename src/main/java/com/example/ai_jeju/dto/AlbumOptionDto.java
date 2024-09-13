@@ -1,11 +1,11 @@
 package com.example.ai_jeju.dto;
 
 import io.swagger.v3.core.util.Json;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.openapitools.jackson.nullable.JsonNullable;
+
+@Builder
+@AllArgsConstructor
 
 @Getter
 @Setter
@@ -42,6 +42,8 @@ public class AlbumOptionDto {
 
 
     }
+
+
 
 
 }

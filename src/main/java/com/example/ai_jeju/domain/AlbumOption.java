@@ -1,7 +1,10 @@
 package com.example.ai_jeju.domain;
 
+import com.example.ai_jeju.dto.AlbumOptionDto;
+import io.swagger.v3.core.util.Json;
 import jakarta.persistence.*;
 import lombok.*;
+import org.openapitools.jackson.nullable.JsonNullable;
 
 @Table(name ="album_item_options")
 @NoArgsConstructor(access= AccessLevel.PROTECTED)
@@ -55,5 +58,49 @@ public class AlbumOption {
     @ManyToOne
     @JoinColumn(name = "album_id")
     private Album album;
+
+    public AlbumOptionDto toDto() {
+        AlbumOptionDto.AlbumOptionDtoBuilder dtoBuilder = AlbumOptionDto.builder();
+
+        if (this.optionalPet) {
+            dtoBuilder.optionalPet(JsonNullable.of(true));
+        }
+        if (this.optionalFriend) {
+            dtoBuilder.optionalFriend(JsonNullable.of(true));
+        }
+        if (this.optionalFamily) {
+            dtoBuilder.optionalFamily(JsonNullable.of(true));
+        }
+        if (this.optionalMorning) {
+            dtoBuilder.optionalMorning(JsonNullable.of(true));
+        }
+        if (this.optionalAm) {
+            dtoBuilder.optionalAm(JsonNullable.of(true));
+        }
+        if (this.optionalPm) {
+            dtoBuilder.optionalPm(JsonNullable.of(true));
+        }
+        if (this.optionalDining) {
+            dtoBuilder.optionalDining(JsonNullable.of(true));
+        }
+        if (this.optionalSnack) {
+            dtoBuilder.optionalSnack(JsonNullable.of(true));
+        }
+        if (this.optionalPlay) {
+            dtoBuilder.optionalPlay(JsonNullable.of(true));
+        }
+        if (this.optionalStudy) {
+            dtoBuilder.optionalStudy(JsonNullable.of(true));
+        }
+        if (this.optionalExperience) {
+            dtoBuilder.optionalExperience(JsonNullable.of(true));
+        }
+        if (this.optionalWalk) {
+            dtoBuilder.optionalWalk(JsonNullable.of(true));
+        }
+
+        return dtoBuilder.build();
+    }
+
 
 }

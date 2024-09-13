@@ -39,13 +39,22 @@ public class AlbumService {
             List<Album> albums = albumRepository.findAllByChild(childOptional.get());
 
             List<AlbumResponse> albumResponses = new ArrayList<>();
-
+            
             for(Album album : albums){
+
+                //albumOption
+                Optional<AlbumOption> OptionalalbumOption = albumOptionRepository.findByAlbum(album);
+
+                AlbumOption albumOption = OptionalalbumOption.get();
+                AlbumOptionDto albumOptionDto = albumOption.toDto();
+
                 AlbumResponse albumResponse = AlbumResponse.builder()
                         .albumId(album.getAlbumId())
                         .title(album.getAlbumTitle())
                         .repImgSrc(album.getRepImgSrc())
+                        .albumOptions(albumOptionDto)
                         .build();
+
                 albumResponses.add(albumResponse);
             }
             return albumResponses;
@@ -131,28 +140,28 @@ public class AlbumService {
         }
     }
 
-    public void getDetailAlbumList(Long albumId){
+    public AlbumDetailResponse getDetailAlbumList(Long albumId){
 
         Optional<Album> optionalAlbum = albumRepository.findById(albumId);
         if(optionalAlbum.isPresent()){
             Album album = optionalAlbum.get();
-            List<ImgSrcDto> imgSrcDtos = new ArrayList<>();
-            //albumItemRepository.getReferenceById()
-            //album.getAlbumId()
-//            for(String imgSrc : ){
-//                imgSrcDtos.add()
-//            }
+            List<String> imgSrcDtos = new ArrayList<>();
+            //album Item list
+            List<AlbumItem> albumItems = albumItemRepository.findByAlbum(album);
+            for(AlbumItem albumItem : albumItems ){
+                imgSrcDtos.add(albumItem.getImgSrc());
+            }
             AlbumDetailResponse albumDetailResponse = AlbumDetailResponse.builder()
                     .childName(album.getChild().getChildName())
                     .AlbumTitle(album.getAlbumTitle())
-                    .AlbumTitle(album.getAlbumTitle())
                     .AlbumDesc(album.getAlbumDesc())
+                    .rgtDate(album.getRgtDate())
+                    .imgSrcDtos(imgSrcDtos)
                     .build();
-
-
-
+            return albumDetailResponse;
         }else{
-
+            //album없을때
+            return null;
         }
 
     }
