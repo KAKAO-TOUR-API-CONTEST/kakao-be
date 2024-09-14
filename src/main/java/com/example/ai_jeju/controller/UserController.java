@@ -4,12 +4,14 @@ import com.example.ai_jeju.dto.SignUpRequest;
 import com.example.ai_jeju.dto.WithdrawRequest;
 import com.example.ai_jeju.service.UserService;
 import com.example.ai_jeju.util.ResponseDto;
+import com.example.ai_jeju.util.ResponseUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -21,12 +23,15 @@ public class UserController {
     //회원가입
     @PostMapping("/register")
     public ResponseDto registerUser(@RequestBody SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
         return userService.registerUser(signUpRequest,request,response);
     }
 
     @GetMapping("/checks")
     public ResponseDto CheckIfUser(@RequestParam(name = "email") String email, HttpServletRequest request, HttpServletResponse response){
-        return userService.checkIfUser(email, request, response);
+
+        String [] result = userService.checkIfUser(email, request, response);
+        return ResponseUtil.SUCCESS(result[1],result[0]);
     }
 
     //탈퇴하기
