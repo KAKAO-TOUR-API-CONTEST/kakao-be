@@ -20,7 +20,7 @@ public class ScheduleItem {
     private String month;
     private String day;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="schedule_id", referencedColumnName = "schedule_id")
     Child child;
 
