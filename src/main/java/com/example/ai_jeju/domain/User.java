@@ -57,6 +57,4 @@ public class User {
     @Column(name ="ag3", nullable = false)
     private boolean ag3;
 
-
-
 }
