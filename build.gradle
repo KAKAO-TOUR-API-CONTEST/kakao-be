@@ -10,16 +10,15 @@ bootWar {
 }
 
 
-
-
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
+		languageVersion = JavaLanguageVersion.of(17)
 	}
 }
+
 
 configurations {
 	compileOnly {
@@ -35,18 +34,13 @@ repositories {
 dependencies {
 	// Swagger(Spring 3.x.x 이상부터 SpringFox 대신, SpringDoc)
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
-
-
-
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-tomcat'
 	//JWT 의존성 추가
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
-    //implementation 'org.springframework.boot:spring-boot-starter-security'
 
 	// graphQL 클래스, 인터페이스를 제공하는 라이브러리
 	implementation 'com.graphql-java-kickstart:graphql-spring-boot-starter:11.0.0'
@@ -54,9 +48,6 @@ dependencies {
     runtimeOnly 'com.graphql-java-kickstart:graphiql-spring-boot-starter:11.0.0'
 	// graphQL 쿼리 요청에 사용되는 라이브러리
 	implementation 'com.graphql-java-kickstart:playground-spring-boot-starter:11.0.0'
-
-
-
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
@@ -73,10 +64,6 @@ dependencies {
 	implementation 'org.openapitools:jackson-databind-nullable:0.2.4'
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.1'
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-
-
-
-
 }
 
 tasks.named('test') {
