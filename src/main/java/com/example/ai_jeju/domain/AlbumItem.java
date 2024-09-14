@@ -17,7 +17,7 @@ public class AlbumItem {
     @Column(name = "album_item_id", updatable = false, unique = true)
     private Long albumItemId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "album_id", referencedColumnName = "album_id")
     private Album album;
 

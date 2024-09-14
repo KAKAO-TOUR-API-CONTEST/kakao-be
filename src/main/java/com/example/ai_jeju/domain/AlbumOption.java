@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.openapitools.jackson.nullable.JsonNullable;
 
-@Table(name ="album_item_options")
+@Table(name ="album_options")
 @NoArgsConstructor(access= AccessLevel.PROTECTED)
 @Getter
 @Entity
@@ -55,7 +55,7 @@ public class AlbumOption {
     @Column(name="optionalWalk")
     private boolean optionalWalk;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "album_id")
     private Album album;
 
