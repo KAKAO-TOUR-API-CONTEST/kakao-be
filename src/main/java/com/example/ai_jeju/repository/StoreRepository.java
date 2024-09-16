@@ -29,4 +29,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     List<Store> findByCategoryId(Long categoryId);
 
 
+
+
 }

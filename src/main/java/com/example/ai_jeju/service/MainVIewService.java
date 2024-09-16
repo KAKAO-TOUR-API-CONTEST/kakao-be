@@ -3,13 +3,16 @@ package com.example.ai_jeju.service;
 import com.example.ai_jeju.domain.Bookmark;
 import com.example.ai_jeju.domain.Store;
 import com.example.ai_jeju.domain.User;
+import com.example.ai_jeju.dto.FilterDto;
 import com.example.ai_jeju.dto.MainListResponse;
 import com.example.ai_jeju.dto.DetailListResponse;
 import com.example.ai_jeju.repository.BookmarkRepository;
 import com.example.ai_jeju.repository.StoreRepository;
+import com.example.ai_jeju.repository.StoreRepositoryCustomImpl;
 import com.example.ai_jeju.repository.UserRepository;
 import com.example.ai_jeju.util.ResponseDto;
 import com.example.ai_jeju.util.ResponseUtil;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +33,9 @@ public class MainVIewService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private StoreRepositoryCustomImpl storeRepositoryCustom;
 
     public DetailListResponse getDetailList(Long userId,Long storeId){
         Optional<User> user = userRepository.findById(userId);
@@ -269,6 +275,16 @@ public class MainVIewService {
             mainListResponses.add(mainListResponse);
         }
         return mainListResponses;
+
+    }
+
+    // BooleanExpression -> null이면 쿼리에 문제 생기지 x
+    public List<Store> getFiltering(FilterDto filterDto){
+
+        System.out.println("service 동작");
+       return storeRepositoryCustom.findByFilterDto(filterDto);
+
+
 
     }
 
