@@ -13,12 +13,15 @@ import com.example.ai_jeju.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ChildService {
+    LocalDate today = LocalDate.now();
+    int year = today.getYear();
 
     @Autowired
     private UserRepository userRepository;
@@ -52,6 +55,8 @@ public class ChildService {
                         .childName(child.getChildName())
                         .birthDate(child.getBirthDate())
                         .scheduleItems(scheduleItemDtos)
+                        .age(year- Integer.parseInt(child.getBirthDate().split("\\.")[0])-1)
+                        .profieImg(child.getChildProfile())
                         .build();
                 childResponseDtos.add(childResponseDto);
             }

@@ -66,8 +66,6 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 builder.and(strollerVarExpression);
             }
         }
-
-
         // 동적 쿼리 실행
         return queryFactory.selectFrom(qStore)
                 .where(builder)
