@@ -279,12 +279,46 @@ public class MainVIewService {
     }
 
     // BooleanExpression -> null이면 쿼리에 문제 생기지 x
-    public List<Store> getFiltering(FilterDto filterDto){
+    public List<MainListResponse> getMain(FilterDto filterDto, Long userId){
 
-        System.out.println("service 동작");
-       return storeRepositoryCustom.findByFilterDto(filterDto);
+        List<Store> stores =storeRepositoryCustom.findByFilterDto(filterDto);
+        Optional<User> user = userRepository.findById(userId);
+        List<MainListResponse> mainListResponses = new ArrayList<>();
+        for(Store store : stores){
+            List<Bookmark> bookmarks = bookmarkRepository.findByStoreId(store.getStoreId());
+            MainListResponse mainListResponse = MainListResponse.builder()
+                    .storeId(store.getStoreId())
+                    .name(store.getName())
+                    .imgSrc(store.getImgSrc())
+                    .address(store.getAddress())
+                    .noKidsZone(store.getNoKidsZone())
+                    .noBmk(bookmarks.size())
+                    .bmkSatus(bookmarkRepository.existsByUserAndStoreId(user.get(),store.getStoreId()))
+                    .build();
+            mainListResponses.add(mainListResponse);
+        }
+        return mainListResponses;
 
+    }
 
+    public List<MainListResponse> getMain(FilterDto filterDto){
+
+        List<Store> stores =storeRepositoryCustom.findByFilterDto(filterDto);
+        List<MainListResponse> mainListResponses = new ArrayList<>();
+        for(Store store : stores){
+            List<Bookmark> bookmarks = bookmarkRepository.findByStoreId(store.getStoreId());
+            MainListResponse mainListResponse = MainListResponse.builder()
+                    .storeId(store.getStoreId())
+                    .name(store.getName())
+                    .imgSrc(store.getImgSrc())
+                    .address(store.getAddress())
+                    .noKidsZone(store.getNoKidsZone())
+                    .noBmk(bookmarks.size())
+                    .bmkSatus(false)
+                    .build();
+            mainListResponses.add(mainListResponse);
+        }
+        return mainListResponses;
 
     }
 
