@@ -2,11 +2,14 @@ package com.example.ai_jeju.controller;
 
 import com.example.ai_jeju.domain.Store;
 import com.example.ai_jeju.domain.User;
+import com.example.ai_jeju.dto.FilterDto;
 import com.example.ai_jeju.jwt.TokenProvider;
 import com.example.ai_jeju.service.MainVIewService;
 import com.example.ai_jeju.service.UserService;
 import com.example.ai_jeju.util.ResponseDto;
 import com.example.ai_jeju.util.ResponseUtil;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -145,5 +148,26 @@ public class MainViewController {
         return false;
     }
 
+
+    @GetMapping("/filter")
+    public ResponseDto getFiltering(
+            @RequestParam(required = false) Boolean parking,
+            @RequestParam(required = false) Boolean strollerVar,
+            @RequestParam(required = false) String noKidsZone,
+            @RequestParam(required = false) Boolean playground,
+            @RequestParam(required = false) Boolean babySpareChair,
+            @RequestParam(required = false) Boolean rcmd) {
+
+        FilterDto filterDto = FilterDto.builder()
+                .parking(JsonNullable.of(parking))
+                .strollerVal(JsonNullable.of(strollerVar))
+                .noKidsZone(JsonNullable.of(noKidsZone))
+                .playground(JsonNullable.of(playground))
+                .babySpareChair(JsonNullable.of(babySpareChair))
+                .rcmd(JsonNullable.of(rcmd))
+                .build();
+
+        return ResponseUtil.SUCCESS("필터링 된 데이터", mainViewService.getFiltering(filterDto));
+    }
 
 }
