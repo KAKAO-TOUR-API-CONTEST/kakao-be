@@ -27,6 +27,10 @@ public class QStore extends EntityPathBase<Store> {
 
     public final NumberPath<Integer> categoryId = createNumber("categoryId", Integer.class);
 
+    public final StringPath checkin = createString("checkin");
+
+    public final StringPath checkout = createString("checkout");
+
     public final StringPath imgSrc = createString("imgSrc");
 
     public final NumberPath<Double> mapX = createNumber("mapX", Double.class);
@@ -46,6 +50,8 @@ public class QStore extends EntityPathBase<Store> {
     public final BooleanPath pet = createBoolean("pet");
 
     public final BooleanPath playground = createBoolean("playground");
+
+    public final BooleanPath rcmd = createBoolean("rcmd");
 
     public final NumberPath<Long> storeId = createNumber("storeId", Long.class);
 

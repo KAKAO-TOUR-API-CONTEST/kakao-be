@@ -9,6 +9,7 @@ import com.example.ai_jeju.service.UserService;
 import com.example.ai_jeju.util.ResponseDto;
 import com.example.ai_jeju.util.ResponseUtil;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import io.swagger.v3.core.util.Json;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -149,25 +150,46 @@ public class MainViewController {
     }
 
 
-    @GetMapping("/filter")
-    public ResponseDto getFiltering(
+    @GetMapping("/main")
+    public ResponseDto getFiltering(@RequestHeader(value = "Authorization", required = false) String token,
             @RequestParam(required = false) Boolean parking,
             @RequestParam(required = false) Boolean strollerVar,
-            @RequestParam(required = false) String noKidsZone,
+            @RequestParam(required = false) Boolean kidsZone,
             @RequestParam(required = false) Boolean playground,
             @RequestParam(required = false) Boolean babySpareChair,
-            @RequestParam(required = false) Boolean rcmd) {
+            @RequestParam(required = false) Boolean rcmd,
+            @RequestParam(required = false) Integer category,
+            @RequestParam(required = false) String keyword) {
 
         FilterDto filterDto = FilterDto.builder()
                 .parking(JsonNullable.of(parking))
                 .strollerVal(JsonNullable.of(strollerVar))
-                .noKidsZone(JsonNullable.of(noKidsZone))
+                .KidsZone(JsonNullable.of(kidsZone))
                 .playground(JsonNullable.of(playground))
                 .babySpareChair(JsonNullable.of(babySpareChair))
                 .rcmd(JsonNullable.of(rcmd))
+                .categoryId(JsonNullable.of(category))
+                .keyword(JsonNullable.of(keyword))
                 .build();
 
-        return ResponseUtil.SUCCESS("필터링 된 데이터", mainViewService.getFiltering(filterDto));
+        if (token != null) {
+            String accessToken = token.replace("Bearer ", "");
+            if (tokenProvider.validToken(accessToken)) {
+                Long userId = tokenProvider.getUserId(accessToken);
+                try {
+                    return ResponseUtil.SUCCESS("회원 조회에 성공하였습니다.", mainViewService.getMain(filterDto,userId));
+                } catch (Exception e) {
+                    return ResponseUtil.ERROR(e.getMessage(), null);
+                }
+            } else {
+
+                return ResponseUtil.ERROR("유효하지 않은 사용자입니다.", null);
+            }
+        }else{
+            return ResponseUtil.SUCCESS("비회원 조회에 성공하였습니다.",mainViewService.getMain(filterDto));
+        }
+
+
     }
 
 }
