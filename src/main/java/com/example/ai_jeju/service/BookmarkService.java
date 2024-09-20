@@ -54,15 +54,18 @@ public class BookmarkService {
     }
 
     public List<BookMarkItem> getBookmark(Long userId) {
+        List<BookMarkItem> bookMarkItems = new ArrayList<>();
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             List<Bookmark> bookmarks = bookmarkRepository.findByUser(user.get());
-            List<BookMarkItem> bookMarkItems = new ArrayList<>();
+
+            System.out.println("log : cnt = "+bookmarks.size());
             for (Bookmark bookmark : bookmarks) {
                 //1. boookmark의 storeId 기반으로 스토어들을 찾고
                 Optional<Store> store = storeRepository.findByStoreId(bookmark.getStoreId());
-                //2. 그 storeId를 몇명이나 북마크로 등록했는지지를 확인한다.
+                //2. 그 storeId를 몇명이나 북마크로 등록했는지를 확인한다.
                 List<Bookmark> bmks = bookmarkRepository.findByStoreId(store.get().getStoreId());
+
                 if (store.isPresent()) {
                     BookMarkItem bookMarkItem = BookMarkItem.builder()
                             .storeId(bookmark.getStoreId())
@@ -72,13 +75,12 @@ public class BookmarkService {
                             .numOfBmk(bmks.size())
                             .build();
                     bookMarkItems.add(bookMarkItem);
-                    return bookMarkItems;
                 } else {
                     return null;
                 }
             }
         }
-        return null;
+        return bookMarkItems;
     }
         public List<BookMarkItem> getBookmarkByCategoryId (Long userId, int categoryId){
             Optional<User> user = userRepository.findById(userId);
