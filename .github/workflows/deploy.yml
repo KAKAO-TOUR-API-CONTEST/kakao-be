@@ -24,5 +24,6 @@ jobs:
             cd /java/BACKEND
             git restore .
             git pull
-           
-
+            ./gradlew clean
+            ./gradlew build
+            systemctl restart aijeju
