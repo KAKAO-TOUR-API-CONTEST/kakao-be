@@ -24,7 +24,6 @@ public class AlbumController {
     @Autowired
     private ChildRepository childRepository;
 
-
     @PostMapping("/album")
     public ResponseDto getAlbumList(@RequestBody AddAlbumRequest addAlbumRequest){
 
