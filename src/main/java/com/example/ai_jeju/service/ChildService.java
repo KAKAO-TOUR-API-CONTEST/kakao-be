@@ -4,6 +4,7 @@ import com.example.ai_jeju.domain.Album;
 import com.example.ai_jeju.domain.Child;
 import com.example.ai_jeju.domain.ScheduleItem;
 import com.example.ai_jeju.domain.User;
+import com.example.ai_jeju.dto.AlbumResponse;
 import com.example.ai_jeju.dto.ChildResponseDto;
 import com.example.ai_jeju.dto.ScheduleItemDto;
 import com.example.ai_jeju.repository.AlbumRepository;
@@ -38,23 +39,22 @@ public class ChildService {
             List<ChildResponseDto> childResponseDtos = new ArrayList<>();
             List<Child> childs = childRepository.findAllByUser(user.get());
             for(Child child : childs){
-                List<ScheduleItem> scheduleItems = scheduleItemRepository.findAllByChild(child);
-                List<ScheduleItemDto> scheduleItemDtos = new ArrayList<>();
+
                 List<Album> albums = albumRepository.findAllByChild(child);
+                List<AlbumResponse> albumResponses = new ArrayList<>();
                 for(Album album : albums){
-                    ScheduleItemDto scheduleItemDto = ScheduleItemDto.builder()
-                            .scheduleTitle(album.getAlbumTitle())
-                            .year(album.getRgtDate().split("-")[0])
-                            .month(album.getRgtDate().split("-")[1])
-                            .day(album.getRgtDate().split("-")[2])
+                    AlbumResponse albumResponse = AlbumResponse.builder()
+                            .albumId(album.getAlbumId())
+                            .rgtDate(album.getRgtDate())
                             .build();
-                    scheduleItemDtos.add(scheduleItemDto);
+
+                    albumResponses.add(albumResponse);
                 }
                 ChildResponseDto childResponseDto = ChildResponseDto.builder()
                         .childId(child.getChildId())
                         .childName(child.getChildName())
                         .birthDate(child.getBirthDate())
-                        .scheduleItems(scheduleItemDtos)
+                        .album(albumResponses)
                         .age(year- Integer.parseInt(child.getBirthDate().split("\\.")[0])-1)
                         .profieImg(child.getChildProfile())
                         .build();

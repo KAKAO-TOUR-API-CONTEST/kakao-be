@@ -26,7 +26,7 @@ public class QAlbumOption extends EntityPathBase<AlbumOption> {
 
     public final NumberPath<Long> albumItemId = createNumber("albumItemId", Long.class);
 
-    public final BooleanPath optionalAm = createBoolean("optionalAm");
+    public final BooleanPath optionalAfterNoon = createBoolean("optionalAfterNoon");
 
     public final BooleanPath optionalDining = createBoolean("optionalDining");
 
@@ -38,11 +38,11 @@ public class QAlbumOption extends EntityPathBase<AlbumOption> {
 
     public final BooleanPath optionalMorning = createBoolean("optionalMorning");
 
+    public final BooleanPath optionalNight = createBoolean("optionalNight");
+
     public final BooleanPath optionalPet = createBoolean("optionalPet");
 
     public final BooleanPath optionalPlay = createBoolean("optionalPlay");
-
-    public final BooleanPath optionalPm = createBoolean("optionalPm");
 
     public final BooleanPath optionalSnack = createBoolean("optionalSnack");
 

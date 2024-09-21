@@ -33,29 +33,33 @@ public class AlbumService {
     @Autowired
     private ScheduleItemRepository scheduleItemRepository;
 
-    public List<AlbumResponse> getAlbumList(Long childId){
+    public List<AlbumListResponse> getAlbumList(Long childId, String rgtDate){
         Optional<Child> childOptional = childRepository.findByChildId(childId);
         if(childOptional.isPresent()){
-            List<Album> albums = albumRepository.findAllByChild(childOptional.get());
-
-            List<AlbumResponse> albumResponses = new ArrayList<>();
-            
+            List<Album> albums = albumRepository.findAllByChildAndRgtDate(childOptional.get(),rgtDate);
+            List<AlbumListResponse> albumResponses = new ArrayList<>();
             for(Album album : albums){
 
-                //albumOption
+                //albumOption 찾기.
                 Optional<AlbumOption> OptionalalbumOption = albumOptionRepository.findByAlbum(album);
+                AlbumOption albumOption;
+                AlbumOptionDto albumOptionDto;
+                //albumOption이 존재하지 않은 경우도 있으니까.
+                if(OptionalalbumOption.isPresent()){
+                    albumOption = OptionalalbumOption.get();
+                    albumOptionDto = albumOption.toDto();
+                }else{
+                    albumOptionDto = null;
+                }
 
-                AlbumOption albumOption = OptionalalbumOption.get();
-                AlbumOptionDto albumOptionDto = albumOption.toDto();
-
-                AlbumResponse albumResponse = AlbumResponse.builder()
+                AlbumListResponse albumListResponse = AlbumListResponse.builder()
                         .albumId(album.getAlbumId())
+                       // .albumOption(albumOptionDto)
                         .title(album.getAlbumTitle())
                         .repImgSrc(album.getRepImgSrc())
-                        .albumOptions(albumOptionDto)
                         .build();
 
-                albumResponses.add(albumResponse);
+                albumResponses.add(albumListResponse);
             }
             return albumResponses;
         }else{
@@ -105,8 +109,8 @@ public class AlbumService {
                     .optionalFriend(albumOptionDto.getOptionalFriend().orElse(false))
                     .optionalFamily(albumOptionDto.getOptionalFamily().orElse(false))
                     .optionalMorning(albumOptionDto.getOptionalMorning().orElse(false))
-                    .optionalAm(albumOptionDto.getOptionalAm().orElse(false))
-                    .optionalPm(albumOptionDto.getOptionalPm().orElse(false))
+                    .optionalAfterNoon(albumOptionDto.getOptionalAm().orElse(false))
+                    .optionalNight(albumOptionDto.getOptionalPm().orElse(false))
                     .optionalDining(albumOptionDto.getOptionalDining().orElse(false))
                     .optionalSnack(albumOptionDto.getOptionalSnack().orElse(false))
                     .optionalPlay(albumOptionDto.getOptionalPlay().orElse(false))
@@ -125,7 +129,6 @@ public class AlbumService {
 
                 albumItemRepository.save(albumItem);
             }
-
             // 3. 스케쥴 저장하기.
             ScheduleItem scheduleItem = ScheduleItem.builder()
                     .scheduleItemId(savedAlbum.getAlbumId())

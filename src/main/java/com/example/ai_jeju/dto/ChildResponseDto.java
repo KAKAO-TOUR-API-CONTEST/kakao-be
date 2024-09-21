@@ -15,6 +15,7 @@ public class ChildResponseDto {
     private String birthDate;
     private int age;
     private String profieImg;
-    private List<ScheduleItemDto> scheduleItems;
+   // private List<ScheduleItemDto> scheduleItems;
+    private List<AlbumResponse> album;
 
 }
