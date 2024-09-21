@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.ai_jeju.service.MyJejuService.calculateMonths;
+
 @Service
 public class ChildService {
     LocalDate today = LocalDate.now();
@@ -55,6 +57,7 @@ public class ChildService {
                         .childName(child.getChildName())
                         .birthDate(child.getBirthDate())
                         .album(albumResponses)
+                        .months(calculateMonths(child.getBirthDate()))
                         .age(year- Integer.parseInt(child.getBirthDate().split("\\.")[0])-1)
                         .profieImg(child.getChildProfile())
                         .build();
