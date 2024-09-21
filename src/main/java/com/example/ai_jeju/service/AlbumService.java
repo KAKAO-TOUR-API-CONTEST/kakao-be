@@ -3,6 +3,7 @@ package com.example.ai_jeju.service;
 import com.example.ai_jeju.domain.*;
 import com.example.ai_jeju.dto.*;
 import com.example.ai_jeju.repository.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,28 +34,35 @@ public class AlbumService {
     @Autowired
     private ScheduleItemRepository scheduleItemRepository;
 
+    @Transactional
     public List<AlbumListResponse> getAlbumList(Long childId, String rgtDate){
         Optional<Child> childOptional = childRepository.findByChildId(childId);
         if(childOptional.isPresent()){
             List<Album> albums = albumRepository.findAllByChildAndRgtDate(childOptional.get(),rgtDate);
             List<AlbumListResponse> albumResponses = new ArrayList<>();
-            for(Album album : albums){
 
+            for(Album album : albums){
                 //albumOption 찾기.
-                Optional<AlbumOption> OptionalalbumOption = albumOptionRepository.findByAlbum(album);
-                AlbumOption albumOption;
-                AlbumOptionDto albumOptionDto;
+                List<String> options = new ArrayList<>();
+                Optional<AlbumOption> optionalAlbumOption = albumOptionRepository.findByAlbum(album);
+                AlbumOption albumOption = optionalAlbumOption.orElse(null);
                 //albumOption이 존재하지 않은 경우도 있으니까.
-                if(OptionalalbumOption.isPresent()){
-                    albumOption = OptionalalbumOption.get();
-                    albumOptionDto = albumOption.toDto();
-                }else{
-                    albumOptionDto = null;
-                }
+                if(albumOption.isOptionalPet()) options.add("동물");
+                if(albumOption.isOptionalFriend()) options.add("친구");
+                if(albumOption.isOptionalFamily()) options.add("가족");
+                if(albumOption.isOptionalMorning()) options.add("아침");
+                if(albumOption.isOptionalAfterNoon()) options.add("낮");
+                if(albumOption.isOptionalNight()) options.add("저녁");
+                if(albumOption.isOptionalDining()) options.add("식사");
+                if(albumOption.isOptionalSnack()) options.add("간식");
+                if(albumOption.isOptionalPlay()) options.add("놀이");
+                if(albumOption.isOptionalStudy()) options.add("공부");
+                if(albumOption.isOptionalExperience()) options.add("체험");
+                if(albumOption.isOptionalWalk()) options.add("산책");
 
                 AlbumListResponse albumListResponse = AlbumListResponse.builder()
                         .albumId(album.getAlbumId())
-                       // .albumOption(albumOptionDto)
+                        .albumOptions(options)
                         .title(album.getAlbumTitle())
                         .repImgSrc(album.getRepImgSrc())
                         .build();
