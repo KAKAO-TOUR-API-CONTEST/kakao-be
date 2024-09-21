@@ -4,13 +4,12 @@ import com.example.ai_jeju.domain.AlbumOption;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.List;
-
-@Getter
 @Builder
-public class AlbumResponse {
-
+@Getter
+public class AlbumListResponse {
     private Long albumId;
-    private String rgtDate;
+    private String title;
+    private String repImgSrc;
+    private AlbumOption albumOption;
 
 }

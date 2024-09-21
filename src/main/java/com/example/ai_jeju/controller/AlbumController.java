@@ -3,6 +3,7 @@ package com.example.ai_jeju.controller;
 
 import com.example.ai_jeju.dto.AddAlbumRequest;
 import com.example.ai_jeju.dto.AlbumDetailResponse;
+import com.example.ai_jeju.dto.AlbumListResponse;
 import com.example.ai_jeju.dto.AlbumResponse;
 import com.example.ai_jeju.repository.ChildRepository;
 import com.example.ai_jeju.service.AlbumService;
@@ -37,8 +38,8 @@ public class AlbumController {
 
 
     @GetMapping("/album")
-    public ResponseDto getAlbumList(@RequestParam Long childId ){
-        List<AlbumResponse> albumResponses =albumService.getAlbumList(childId);
+    public ResponseDto getAlbumList(@RequestParam Long childId ,String rgtDate){
+        List<AlbumListResponse> albumResponses =albumService.getAlbumList(childId,rgtDate);
         return ResponseUtil.SUCCESS("사진첩 조회이 성공하셨습니다",albumResponses);
     }
 

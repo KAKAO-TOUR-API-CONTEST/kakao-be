@@ -14,5 +14,6 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
     List<Album> findAllByChild(Child child);
 
     Optional<Album> findByAlbumId(Long albumId);
+    List<Album> findAllByChildAndRgtDate(Child child, String rgtDate);
 
 }
