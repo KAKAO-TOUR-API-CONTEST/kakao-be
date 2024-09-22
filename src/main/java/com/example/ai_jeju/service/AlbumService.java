@@ -3,6 +3,7 @@ package com.example.ai_jeju.service;
 import com.example.ai_jeju.domain.*;
 import com.example.ai_jeju.dto.*;
 import com.example.ai_jeju.repository.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,29 +34,40 @@ public class AlbumService {
     @Autowired
     private ScheduleItemRepository scheduleItemRepository;
 
-    public List<AlbumResponse> getAlbumList(Long childId){
+    @Transactional
+    public List<AlbumListResponse> getAlbumList(Long childId, String rgtDate){
         Optional<Child> childOptional = childRepository.findByChildId(childId);
         if(childOptional.isPresent()){
-            List<Album> albums = albumRepository.findAllByChild(childOptional.get());
+            List<Album> albums = albumRepository.findAllByChildAndRgtDate(childOptional.get(),rgtDate);
+            List<AlbumListResponse> albumResponses = new ArrayList<>();
 
-            List<AlbumResponse> albumResponses = new ArrayList<>();
-            
             for(Album album : albums){
+                //albumOption 찾기.
+                List<String> options = new ArrayList<>();
+                Optional<AlbumOption> optionalAlbumOption = albumOptionRepository.findByAlbum(album);
+                AlbumOption albumOption = optionalAlbumOption.orElse(null);
+                //albumOption이 존재하지 않은 경우도 있으니까.
+                if(albumOption.isOptionalPet()) options.add("동물");
+                if(albumOption.isOptionalFriend()) options.add("친구");
+                if(albumOption.isOptionalFamily()) options.add("가족");
+                if(albumOption.isOptionalMorning()) options.add("아침");
+                if(albumOption.isOptionalAfterNoon()) options.add("낮");
+                if(albumOption.isOptionalNight()) options.add("저녁");
+                if(albumOption.isOptionalDining()) options.add("식사");
+                if(albumOption.isOptionalSnack()) options.add("간식");
+                if(albumOption.isOptionalPlay()) options.add("놀이");
+                if(albumOption.isOptionalStudy()) options.add("공부");
+                if(albumOption.isOptionalExperience()) options.add("체험");
+                if(albumOption.isOptionalWalk()) options.add("산책");
 
-                //albumOption
-                Optional<AlbumOption> OptionalalbumOption = albumOptionRepository.findByAlbum(album);
-
-                AlbumOption albumOption = OptionalalbumOption.get();
-                AlbumOptionDto albumOptionDto = albumOption.toDto();
-
-                AlbumResponse albumResponse = AlbumResponse.builder()
+                AlbumListResponse albumListResponse = AlbumListResponse.builder()
                         .albumId(album.getAlbumId())
+                        .albumOptions(options)
                         .title(album.getAlbumTitle())
                         .repImgSrc(album.getRepImgSrc())
-                        .albumOptions(albumOptionDto)
                         .build();
 
-                albumResponses.add(albumResponse);
+                albumResponses.add(albumListResponse);
             }
             return albumResponses;
         }else{
@@ -67,13 +79,8 @@ public class AlbumService {
 
         Optional<Child> child = childRepository.findByChildId(addAlbumRequest.getChildId());
         if(child.isPresent()){
-            // 현재 시간 가져오기
-            LocalDateTime now = LocalDateTime.now();
-            // 포맷 정의 (예: yyyy-MM-dd HH:mm:ss)
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            // 문자열로 변환
-            String rgtDate = now.format(formatter);
 
+            String rgtDate = addAlbumRequest.getRgtDate();
             //제목이 비어있을수도 있으니까 예상해서 -> title이 비었다면 현재 시간으로
             String albumTitle = addAlbumRequest.getAlbumTitle().orElse(rgtDate);
             //설명이 비어있을수도 있으니까 예상해서 -> Desc가 비었다면 빈 문자열로
@@ -105,8 +112,8 @@ public class AlbumService {
                     .optionalFriend(albumOptionDto.getOptionalFriend().orElse(false))
                     .optionalFamily(albumOptionDto.getOptionalFamily().orElse(false))
                     .optionalMorning(albumOptionDto.getOptionalMorning().orElse(false))
-                    .optionalAm(albumOptionDto.getOptionalAm().orElse(false))
-                    .optionalPm(albumOptionDto.getOptionalPm().orElse(false))
+                    .optionalAfterNoon(albumOptionDto.getOptionalAm().orElse(false))
+                    .optionalNight(albumOptionDto.getOptionalPm().orElse(false))
                     .optionalDining(albumOptionDto.getOptionalDining().orElse(false))
                     .optionalSnack(albumOptionDto.getOptionalSnack().orElse(false))
                     .optionalPlay(albumOptionDto.getOptionalPlay().orElse(false))
@@ -125,7 +132,6 @@ public class AlbumService {
 
                 albumItemRepository.save(albumItem);
             }
-
             // 3. 스케쥴 저장하기.
             ScheduleItem scheduleItem = ScheduleItem.builder()
                     .scheduleItemId(savedAlbum.getAlbumId())
@@ -140,6 +146,7 @@ public class AlbumService {
         }
     }
 
+    @Transactional
     public AlbumDetailResponse getDetailAlbumList(Long albumId){
 
         Optional<Album> optionalAlbum = albumRepository.findById(albumId);

@@ -3,6 +3,7 @@ package com.example.ai_jeju.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 @Table(name="stores")
 @NoArgsConstructor(access= AccessLevel.PROTECTED) //기본생성자
@@ -33,9 +34,6 @@ public class Store {
 
     @Column(name = "mapY",updatable = false,nullable = true)
     double mapY;
-
-
-
 
     /**
      카테고리 value
@@ -84,6 +82,18 @@ public class Store {
     @Column(name = "parking",updatable = false,nullable = true)
     Boolean parking;
 
+    @Column(name = "rcmd",updatable = false,nullable = true)
+    Boolean rcmd;
+
+    @Column(name = "checkin",updatable = false,nullable = true)
+    String checkin;
+
+    @Column(name = "checkout",updatable = false,nullable = true)
+    String checkout;
+
+    @Column(name = "bookmarks")
+    @ColumnDefault("0")
+    int noBmk = 0;
 
 
 

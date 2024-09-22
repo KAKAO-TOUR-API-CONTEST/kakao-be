@@ -3,13 +3,16 @@ package com.example.ai_jeju.service;
 import com.example.ai_jeju.domain.Bookmark;
 import com.example.ai_jeju.domain.Store;
 import com.example.ai_jeju.domain.User;
+import com.example.ai_jeju.dto.FilterDto;
 import com.example.ai_jeju.dto.MainListResponse;
 import com.example.ai_jeju.dto.DetailListResponse;
 import com.example.ai_jeju.repository.BookmarkRepository;
 import com.example.ai_jeju.repository.StoreRepository;
+import com.example.ai_jeju.repository.StoreRepositoryCustomImpl;
 import com.example.ai_jeju.repository.UserRepository;
 import com.example.ai_jeju.util.ResponseDto;
 import com.example.ai_jeju.util.ResponseUtil;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +33,25 @@ public class MainVIewService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private StoreRepositoryCustomImpl storeRepositoryCustom;
+
+    public static String printCategory(int category) {
+        switch (category) {
+            case 1:
+                return ("음식점");
+
+            case 2:
+                return ("음식점");
+
+            case 3:
+                return ("레저");
+
+            default:
+                return ("기타");
+
+        }}
 
     public DetailListResponse getDetailList(Long userId,Long storeId){
         Optional<User> user = userRepository.findById(userId);
@@ -64,11 +86,12 @@ public class MainVIewService {
     public DetailListResponse getDetailList(Long storeId){
         //Optional<User> user = userRepository.findById(userId);
         Optional<Store> store = storeRepository.findById(storeId);
-        List<Bookmark> bmks = bookmarkRepository.findByStoreId(storeId);
+        //List<Bookmark> bmks = bookmarkRepository.findByStoreId(storeId);
         if(store.isPresent()){
             Store innerStore = store.get();
             DetailListResponse detailListResponse = DetailListResponse.builder()
                     .storeId(innerStore.getStoreId())
+                    .item(printCategory(innerStore.getCategoryId()))
                     .name(innerStore.getName())
                     .imgSrc(innerStore.getImgSrc())
                     .address(innerStore.getAddress())
@@ -82,7 +105,7 @@ public class MainVIewService {
                     .categoryId(innerStore.getCategoryId())
                     .operationTime(innerStore.getOperationTime())
                     .tel(innerStore.getTel())
-                    .noBmk(bmks.size())
+                    .noBmk(innerStore.getNoBmk())
                     .bmkStatus(false)
                     .build();
 
@@ -265,6 +288,49 @@ public class MainVIewService {
                     .noKidsZone(store.getNoKidsZone())
                     .noBmk(bookmarks.size())
                     .bmkSatus(bookmarkRepository.existsByUserAndStoreId(user.get(),store.getStoreId()))
+                    .build();
+            mainListResponses.add(mainListResponse);
+        }
+        return mainListResponses;
+
+    }
+
+    // BooleanExpression -> null이면 쿼리에 문제 생기지 x
+    public List<MainListResponse> getMain(FilterDto filterDto, Long userId){
+        List<Store> stores =storeRepositoryCustom.findByFilterDto(filterDto);
+        Optional<User> user = userRepository.findById(userId);
+        List<MainListResponse> mainListResponses = new ArrayList<>();
+        for(Store store : stores){
+            List<Bookmark> bookmarks = bookmarkRepository.findByStoreId(store.getStoreId());
+            MainListResponse mainListResponse = MainListResponse.builder()
+                    .storeId(store.getStoreId())
+                    .name(store.getName())
+                    .imgSrc(store.getImgSrc())
+                    .address(store.getAddress())
+                    .noKidsZone(store.getNoKidsZone())
+                    .noBmk(bookmarks.size())
+                    .bmkSatus(bookmarkRepository.existsByUserAndStoreId(user.get(),store.getStoreId()))
+                    .build();
+            mainListResponses.add(mainListResponse);
+        }
+        return mainListResponses;
+
+    }
+
+    public List<MainListResponse> getMain(FilterDto filterDto){
+
+        List<Store> stores =storeRepositoryCustom.findByFilterDto(filterDto);
+        List<MainListResponse> mainListResponses = new ArrayList<>();
+        for(Store store : stores){
+            List<Bookmark> bookmarks = bookmarkRepository.findByStoreId(store.getStoreId());
+            MainListResponse mainListResponse = MainListResponse.builder()
+                    .storeId(store.getStoreId())
+                    .name(store.getName())
+                    .imgSrc(store.getImgSrc())
+                    .address(store.getAddress())
+                    .noKidsZone(store.getNoKidsZone())
+                    .noBmk(bookmarks.size())
+                    .bmkSatus(false)
                     .build();
             mainListResponses.add(mainListResponse);
         }

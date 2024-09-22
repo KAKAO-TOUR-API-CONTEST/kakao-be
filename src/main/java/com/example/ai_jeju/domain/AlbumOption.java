@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.openapitools.jackson.nullable.JsonNullable;
 
-@Table(name ="album_item_options")
+@Table(name ="album_options")
 @NoArgsConstructor(access= AccessLevel.PROTECTED)
 @Getter
 @Entity
@@ -19,23 +19,24 @@ public class AlbumOption {
     @Column(name ="album_item_option_id",updatable = false)
     private Long albumItemId;
 
-    @Column(name="optionalPet")
-    private boolean optionalPet;
-
     @Column(name="optionalFriend")
     private boolean optionalFriend;
 
+    @Column(name="optionalPet")
+    private boolean optionalPet;
+
     @Column(name="optionalFamily")
     private boolean optionalFamily;
+
 
     @Column(name="optionalMorning")
     private boolean optionalMorning;
 
     @Column(name="optionalAm")
-    private boolean optionalAm;
+    private boolean optionalAfterNoon;
 
     @Column(name="optionalPm")
-    private boolean optionalPm;
+    private boolean optionalNight;
 
     @Column(name="optionalDining")
     private boolean optionalDining;
@@ -55,7 +56,7 @@ public class AlbumOption {
     @Column(name="optionalWalk")
     private boolean optionalWalk;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "album_id")
     private Album album;
 
@@ -74,10 +75,10 @@ public class AlbumOption {
         if (this.optionalMorning) {
             dtoBuilder.optionalMorning(JsonNullable.of(true));
         }
-        if (this.optionalAm) {
+        if (this.optionalAfterNoon) {
             dtoBuilder.optionalAm(JsonNullable.of(true));
         }
-        if (this.optionalPm) {
+        if (this.optionalNight) {
             dtoBuilder.optionalPm(JsonNullable.of(true));
         }
         if (this.optionalDining) {
@@ -101,6 +102,7 @@ public class AlbumOption {
 
         return dtoBuilder.build();
     }
+
 
 
 }

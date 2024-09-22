@@ -13,7 +13,10 @@ public class ChildResponseDto {
     private Long childId;
     private String childName;
     private String birthDate;
-    private String age;
-    private List<ScheduleItemDto> scheduleItems;
+    private int age;
+    private String profieImg;
+   // private List<ScheduleItemDto> scheduleItems;
+    private int months;
+    private List<AlbumResponse> album;
 
 }

@@ -27,4 +27,3 @@ jobs:
             ./gradlew clean
             ./gradlew build
             systemctl restart aijeju
-

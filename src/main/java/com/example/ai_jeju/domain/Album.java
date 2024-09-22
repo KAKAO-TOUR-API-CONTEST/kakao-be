@@ -28,7 +28,7 @@ public class Album {
     @Column(name = "rep_imgsrc")
     private String repImgSrc;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="child_id")
     private Child child;
 

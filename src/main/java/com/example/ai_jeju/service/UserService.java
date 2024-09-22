@@ -55,17 +55,27 @@ public class UserService {
      * checkIfUser : 기존 회원여부 확인
      * 기존 회원이라면 객체 (아이디만) 반환 , AccessToken 쿠키로 발급
      */
-    public ResponseDto checkIfUser(String email, HttpServletRequest request, HttpServletResponse response) {
+    public String [] checkIfUser(String email, HttpServletRequest request, HttpServletResponse response) {
         Optional<User> existingUser = userRepository.findByEmail(email);
 
-        Map<String, Object> result = new HashMap<>();
+        String [] result = new String [2];
+
 
         if (existingUser.isPresent()) {
             User user = existingUser.get();
             String accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_DURATION);
-            return ResponseUtil.SUCCESS("로그인 완료되었습니다.", accessToken);
+
+            Date expiredDate = tokenProvider.getExpiredDate(accessToken);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            // Date를 String으로 변환
+            String dateString = formatter.format(expiredDate);
+
+            result[0] = accessToken;
+            result[1] = dateString;
+
+            return result;
         } else {
-            return ResponseUtil.FAILURE("등록되어 있지 않은 유저입니다.", null);
+            return null;
         }
     }
 
