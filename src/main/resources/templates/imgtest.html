@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Images</title>
+</head>
+<body>
+
+<h1>Test Images</h1>
+
+<div>
+    <ul>
+        <!-- Loop through each test entity and display its image -->
+        <th:block th:each="test : ${tests}">
+            <li>
+                <p th:text="${test.name}"></p>
+                <img th:src="${test.imgSrc}" alt="Test Image" width="300" height="200">
+            </li>
+        </th:block>
+    </ul>
+</div>
+
+</body>
+</html>
