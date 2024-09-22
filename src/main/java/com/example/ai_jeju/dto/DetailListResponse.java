@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class DetailListResponse {
 
     private Long storeId;
+    private String item;
     String name;
     //이미지 소스
     String imgSrc;

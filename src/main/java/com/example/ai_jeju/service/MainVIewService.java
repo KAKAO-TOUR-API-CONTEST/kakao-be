@@ -37,6 +37,22 @@ public class MainVIewService {
     @Autowired
     private StoreRepositoryCustomImpl storeRepositoryCustom;
 
+    public static String printCategory(int category) {
+        switch (category) {
+            case 1:
+                return ("음식점");
+
+            case 2:
+                return ("음식점");
+
+            case 3:
+                return ("레저");
+
+            default:
+                return ("기타");
+
+        }}
+
     public DetailListResponse getDetailList(Long userId,Long storeId){
         Optional<User> user = userRepository.findById(userId);
         Optional<Store> store = storeRepository.findById(storeId);
@@ -75,6 +91,7 @@ public class MainVIewService {
             Store innerStore = store.get();
             DetailListResponse detailListResponse = DetailListResponse.builder()
                     .storeId(innerStore.getStoreId())
+                    .item(printCategory(innerStore.getCategoryId()))
                     .name(innerStore.getName())
                     .imgSrc(innerStore.getImgSrc())
                     .address(innerStore.getAddress())

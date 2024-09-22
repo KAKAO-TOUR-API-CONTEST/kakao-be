@@ -30,7 +30,7 @@ public class MainViewController {
         this.tokenProvider = tokenProvider;
     }
 
-    @GetMapping("/detailList")
+    @GetMapping("/main/detail")
     public ResponseDto getUserById(@RequestHeader(value = "Authorization", required = false) String token,@RequestParam Long storeId) {
         if (token != null) {
             String accessToken = token.replace("Bearer ", "");
