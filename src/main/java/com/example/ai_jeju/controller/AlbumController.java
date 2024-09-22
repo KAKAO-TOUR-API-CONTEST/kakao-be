@@ -1,12 +1,12 @@
 package com.example.ai_jeju.controller;
 
 
+import com.example.ai_jeju.config.UUIDOneTimeTokenManager;
 import com.example.ai_jeju.dto.AddAlbumRequest;
 import com.example.ai_jeju.dto.AlbumDetailResponse;
 import com.example.ai_jeju.dto.AlbumListResponse;
-import com.example.ai_jeju.dto.AlbumResponse;
-import com.example.ai_jeju.repository.ChildRepository;
 import com.example.ai_jeju.service.AlbumService;
+import com.example.ai_jeju.service.UUIDTokenService;
 import com.example.ai_jeju.util.ResponseDto;
 import com.example.ai_jeju.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +21,8 @@ public class AlbumController {
     @Autowired
     private AlbumService albumService;
 
-    @Autowired
-    private ChildRepository childRepository;
+    UUIDOneTimeTokenManager tokenManager = new UUIDOneTimeTokenManager();
+    UUIDTokenService UUIDtokenService = new UUIDTokenService(tokenManager);
 
     @PostMapping("/album")
     public ResponseDto getAlbumList(@RequestBody AddAlbumRequest addAlbumRequest){
@@ -48,6 +48,14 @@ public class AlbumController {
         return ResponseUtil.SUCCESS("사진첩 조회이 성공하셨습니다",albumDetailResponse);
     }
 
+    @GetMapping("/album/shares")
+    public ResponseDto getLinkforSharing(){
+        // TokenService를 이용하여 토큰 생성
+
+        String token = UUIDtokenService.createToken();
+
+        return ResponseUtil.SUCCESS("임시 토큰",token);
+    }
 
 
 

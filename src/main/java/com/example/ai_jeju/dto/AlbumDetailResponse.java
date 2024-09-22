@@ -16,5 +16,6 @@ public class AlbumDetailResponse {
     private String AlbumTitle;
     private String AlbumDesc;
     private List<String> imgSrcDtos;
+    private List<String> options;
 
 }
