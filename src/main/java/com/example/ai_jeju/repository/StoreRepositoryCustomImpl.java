@@ -17,7 +17,6 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
 
     @Autowired
     private JPAQueryFactory queryFactory;
-
     @Override
     public List<Store> findByFilterDto(FilterDto filterDto) {
 
@@ -30,9 +29,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
 
         QStore qStore = QStore.store;
 
-
         BooleanBuilder builder = new BooleanBuilder();
-
         // parking 조건 추가
         if (filterDto.getParking() != null && filterDto.getParking().isPresent()) {
             Boolean parkingValue = filterDto.getParking().orElse(null);
@@ -108,9 +105,6 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 builder.and(nameContainsKeyword);
             }
         }
-
-
-
 
         // 동적 쿼리 실행
         return queryFactory.selectFrom(qStore)
