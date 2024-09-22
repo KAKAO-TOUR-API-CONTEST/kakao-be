@@ -146,6 +146,7 @@ public class AlbumService {
         }
     }
 
+    @Transactional
     public AlbumDetailResponse getDetailAlbumList(Long albumId){
 
         Optional<Album> optionalAlbum = albumRepository.findById(albumId);

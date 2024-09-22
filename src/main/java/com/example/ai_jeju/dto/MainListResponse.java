@@ -19,4 +19,5 @@ public class MainListResponse {
     private String noKidsZone;
     int noBmk;
     boolean bmkSatus;
+    private Long categoryId;
 }

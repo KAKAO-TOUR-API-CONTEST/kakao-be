@@ -3,6 +3,7 @@ package com.example.ai_jeju.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 @Table(name="stores")
 @NoArgsConstructor(access= AccessLevel.PROTECTED) //기본생성자
@@ -90,8 +91,10 @@ public class Store {
     @Column(name = "checkout",updatable = false,nullable = true)
     String checkout;
 
-    @Column(name = "bookmarks",updatable = false,nullable = true)
-    int noBmk;
+    @Column(name = "bookmarks")
+    @ColumnDefault("0")
+    int noBmk = 0;
+
 
 
 }
