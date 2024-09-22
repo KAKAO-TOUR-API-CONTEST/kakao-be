@@ -90,7 +90,8 @@ public class Store {
     @Column(name = "checkout",updatable = false,nullable = true)
     String checkout;
 
-
+    @Column(name = "bookmarks",updatable = false,nullable = true)
+    int noBmk;
 
 
 }

@@ -13,6 +13,7 @@ public class AddAlbumRequest {
     private JsonNullable<String> albumDesc;
     private List<AlbumItemDto> albumItemDtos;
     private AlbumOptionDto albumOptionDto;
+    private String rgtDate;
 
     public AddAlbumRequest(){
         this.albumTitle = JsonNullable.undefined();

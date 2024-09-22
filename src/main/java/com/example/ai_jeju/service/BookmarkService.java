@@ -29,6 +29,9 @@ public class BookmarkService {
     @Autowired
     private StoreRepository storeRepository;
 
+    @Autowired
+    private StoreService storeService;
+
     public void addBookmark(Long userId, Long storeId) {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
@@ -37,7 +40,9 @@ public class BookmarkService {
                         .user(user.get())
                         .storeId(storeId)
                         .build();
+                List<Bookmark> bookmarks = bookmarkRepository.findByStoreId(storeId);
                 bookmarkRepository.save(bookmark);
+                storeService.updateNoBmk(storeId,bookmarks.size());
             }
 
         }
