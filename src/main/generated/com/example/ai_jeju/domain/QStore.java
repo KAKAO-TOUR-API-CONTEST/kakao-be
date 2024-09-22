@@ -39,6 +39,8 @@ public class QStore extends EntityPathBase<Store> {
 
     public final StringPath name = createString("name");
 
+    public final NumberPath<Integer> noBmk = createNumber("noBmk", Integer.class);
+
     public final StringPath nokidsdetail = createString("nokidsdetail");
 
     public final StringPath noKidsZone = createString("noKidsZone");

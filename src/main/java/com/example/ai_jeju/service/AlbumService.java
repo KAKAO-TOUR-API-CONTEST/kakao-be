@@ -79,13 +79,8 @@ public class AlbumService {
 
         Optional<Child> child = childRepository.findByChildId(addAlbumRequest.getChildId());
         if(child.isPresent()){
-            // 현재 시간 가져오기
-            LocalDateTime now = LocalDateTime.now();
-            // 포맷 정의 (예: yyyy-MM-dd HH:mm:ss)
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            // 문자열로 변환
-            String rgtDate = now.format(formatter);
 
+            String rgtDate = addAlbumRequest.getRgtDate();
             //제목이 비어있을수도 있으니까 예상해서 -> title이 비었다면 현재 시간으로
             String albumTitle = addAlbumRequest.getAlbumTitle().orElse(rgtDate);
             //설명이 비어있을수도 있으니까 예상해서 -> Desc가 비었다면 빈 문자열로
