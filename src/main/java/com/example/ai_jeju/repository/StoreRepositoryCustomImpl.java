@@ -24,7 +24,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
         QStore qStore = QStore.store;
 
         BooleanBuilder builder = new BooleanBuilder();
-        StringBuilder sb = new StringBuilder();
+
         // parking 조건 추가
         if (filterDto.getParking() != null && filterDto.getParking().isPresent()) {
             Boolean parkingValue = filterDto.getParking().orElse(null);
@@ -72,11 +72,11 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             }
         }
 
-        // rcmd 조건 추가
-        if (filterDto.getRcmd() != null && filterDto.getRcmd().isPresent()) {
-            Boolean rcmdValue = filterDto.getRcmd().orElse(null);
-            if (rcmdValue != null) {
-                BooleanExpression rcmdExpression = qStore.rcmd.eq(rcmdValue);
+        // rcmdType 조건 추가
+        if (filterDto.getRcmdType() != null && filterDto.getRcmdType().isPresent()) {
+            Integer rcmdTypeValue = filterDto.getRcmdType().orElse(null);
+            if (rcmdTypeValue != null) {
+                BooleanExpression rcmdExpression = qStore.rcmdType.eq(rcmdTypeValue);
                 builder.and(rcmdExpression);
             }
         }
