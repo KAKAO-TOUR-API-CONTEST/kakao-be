@@ -32,21 +32,24 @@ public class BookmarkService {
     @Autowired
     private StoreService storeService;
 
+    @Transactional
     public void addBookmark(Long userId, Long storeId) {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
-            if (!bookmarkRepository.existsByUserAndStoreId(user.get(), storeId)) {
                 Bookmark bookmark = Bookmark.builder()
                         .user(user.get())
                         .storeId(storeId)
                         .build();
-                List<Bookmark> bookmarks = bookmarkRepository.findByStoreId(storeId);
+
+
                 bookmarkRepository.save(bookmark);
-                storeService.updateNoBmk(storeId,bookmarks.size());
+                List<Bookmark> bookmarks = bookmarkRepository.findByStoreId(storeId);
+                System.out.println("북마크 수 "+bookmarks.size());
+                storeRepository.updateBookmarks(storeId,bookmarks.size());
             }
 
         }
-    }
+
 
     @Transactional
     public void deleteBookmark(Long userId, Long storeId) {
@@ -63,14 +66,11 @@ public class BookmarkService {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             List<Bookmark> bookmarks = bookmarkRepository.findByUser(user.get());
-
-            System.out.println("log : cnt = "+bookmarks.size());
             for (Bookmark bookmark : bookmarks) {
                 //1. boookmark의 storeId 기반으로 스토어들을 찾고
                 Optional<Store> store = storeRepository.findByStoreId(bookmark.getStoreId());
                 //2. 그 storeId를 몇명이나 북마크로 등록했는지를 확인한다.
                 List<Bookmark> bmks = bookmarkRepository.findByStoreId(store.get().getStoreId());
-
                 if (store.isPresent()) {
                     BookMarkItem bookMarkItem = BookMarkItem.builder()
                             .storeId(bookmark.getStoreId())

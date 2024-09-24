@@ -1,4 +1,5 @@
 package com.example.ai_jeju.repository;
+import com.example.ai_jeju.domain.QBookmark;
 import com.example.ai_jeju.domain.QStore;
 import com.example.ai_jeju.domain.Store;
 import com.example.ai_jeju.dto.FilterDto;
@@ -20,16 +21,10 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     @Override
     public List<Store> findByFilterDto(FilterDto filterDto) {
 
-//        Boolean parking = filterDto.getParking().orElse(null);
-//        Boolean strollerVar = filterDto.getStrollerVal().orElse(null);
-//        String noKidsZone = filterDto.getNoKidsZone().orElse(null);
-//        Boolean playground = filterDto.getPlayground().orElse(null);
-//        Boolean babySpareChair = filterDto.getBabySpareChair().orElse(null);
-//        Boolean rcmd = filterDto.getRcmd().orElse(null);
-
         QStore qStore = QStore.store;
 
         BooleanBuilder builder = new BooleanBuilder();
+        StringBuilder sb = new StringBuilder();
         // parking 조건 추가
         if (filterDto.getParking() != null && filterDto.getParking().isPresent()) {
             Boolean parkingValue = filterDto.getParking().orElse(null);
@@ -106,9 +101,28 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             }
         }
 
-        // 동적 쿼리 실행
+        // bookmarks순으로 정렬하기
+
+
+            Boolean popularityValue = filterDto.getPopularity().orElse(null);
+            if (popularityValue) {
+                System.out.println("인기순 정렬하기 동작");
+
+                System.out.println("result"+queryFactory.selectFrom(qStore)
+                        .where(builder)
+                        .orderBy(qStore.noBmk.asc()) // bookmarks를 내림차순으로 정렬
+                        .toString());
+                return queryFactory.selectFrom(qStore)
+                        .where(builder)
+                        .orderBy(qStore.noBmk.asc()) // bookmarks를 내림차순으로 정렬
+                        .fetch();
+            }
+
+
+        // 동적 쿼리 실행 (popularity가 null이거나 false인 경우)
         return queryFactory.selectFrom(qStore)
                 .where(builder)
                 .fetch();
+
     }
 }

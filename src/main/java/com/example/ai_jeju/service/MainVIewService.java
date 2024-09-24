@@ -16,9 +16,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -56,9 +54,12 @@ public class MainVIewService {
     public DetailListResponse getDetailList(Long userId,Long storeId){
         Optional<User> user = userRepository.findById(userId);
         Optional<Store> store = storeRepository.findById(storeId);
+
         List<Bookmark> bmks = bookmarkRepository.findByStoreId(storeId);
         if(store.isPresent()){
             Store innerStore = store.get();
+
+
             DetailListResponse detailListResponse = DetailListResponse.builder()
                     .storeId(innerStore.getStoreId())
                     .name(innerStore.getName())
@@ -297,6 +298,7 @@ public class MainVIewService {
 
     // BooleanExpression -> null이면 쿼리에 문제 생기지 x
     public List<MainListResponse> getMain(FilterDto filterDto, Long userId){
+
         List<Store> stores =storeRepositoryCustom.findByFilterDto(filterDto);
         Optional<User> user = userRepository.findById(userId);
         List<MainListResponse> mainListResponses = new ArrayList<>();
@@ -321,6 +323,8 @@ public class MainVIewService {
 
         List<Store> stores =storeRepositoryCustom.findByFilterDto(filterDto);
         List<MainListResponse> mainListResponses = new ArrayList<>();
+
+
         for(Store store : stores){
             List<Bookmark> bookmarks = bookmarkRepository.findByStoreId(store.getStoreId());
             MainListResponse mainListResponse = MainListResponse.builder()
