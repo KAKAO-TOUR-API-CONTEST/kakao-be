@@ -297,6 +297,7 @@ public class MainVIewService {
 
     // BooleanExpression -> null이면 쿼리에 문제 생기지 x
     public List<MainListResponse> getMain(FilterDto filterDto, Long userId){
+
         List<Store> stores =storeRepositoryCustom.findByFilterDto(filterDto);
         Optional<User> user = userRepository.findById(userId);
         List<MainListResponse> mainListResponses = new ArrayList<>();

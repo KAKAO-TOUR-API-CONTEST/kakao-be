@@ -93,7 +93,7 @@ public class Store {
 
     @Column(name = "bookmarks")
     @ColumnDefault("0")
-    int noBmk = 0;
+    int noBmk;
 
     @Column
     int rmcdType;
