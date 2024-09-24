@@ -20,12 +20,6 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     private JPAQueryFactory queryFactory;
     @Override
     public List<Store> findByFilterDto(FilterDto filterDto) {
-//        Boolean parking = filterDto.getParking().orElse(null);
-//        Boolean strollerVar = filterDto.getStrollerVal().orElse(null);
-//        String noKidsZone = filterDto.getNoKidsZone().orElse(null);
-//        Boolean playground = filterDto.getPlayground().orElse(null);
-//        Boolean babySpareChair = filterDto.getBabySpareChair().orElse(null);
-//        Boolean rcmd = filterDto.getRcmd().orElse(null);
 
         QStore qStore = QStore.store;
 
@@ -108,21 +102,24 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
         }
 
         // bookmarks순으로 정렬하기
-        if (filterDto.getPopularity() != null && filterDto.getPopularity().isPresent()) {
+
+
             Boolean popularityValue = filterDto.getPopularity().orElse(null);
-            if (popularityValue != null) {
+            if (popularityValue) {
+                System.out.println("인기순 정렬하기 동작");
 
-                // popularity가 true일 때 orderBy bookmarks
-                if (popularityValue) {
-                    return queryFactory.selectFrom(qStore)
-                            .where(builder)
-                            .orderBy(qStore.noBmk.desc()) // bookmarks를 내림차순으로 정렬
-                            .fetch();
-                }
+                System.out.println("result"+queryFactory.selectFrom(qStore)
+                        .where(builder)
+                        .orderBy(qStore.noBmk.asc()) // bookmarks를 내림차순으로 정렬
+                        .toString());
+                return queryFactory.selectFrom(qStore)
+                        .where(builder)
+                        .orderBy(qStore.noBmk.asc()) // bookmarks를 내림차순으로 정렬
+                        .fetch();
             }
-        }
 
-// 동적 쿼리 실행 (popularity가 null이거나 false인 경우)
+
+        // 동적 쿼리 실행 (popularity가 null이거나 false인 경우)
         return queryFactory.selectFrom(qStore)
                 .where(builder)
                 .fetch();

@@ -41,8 +41,9 @@ public class BookmarkService {
                         .storeId(storeId)
                         .build();
 
-                List<Bookmark> bookmarks = bookmarkRepository.findByStoreId(storeId);
+
                 bookmarkRepository.save(bookmark);
+                List<Bookmark> bookmarks = bookmarkRepository.findByStoreId(storeId);
                 System.out.println("북마크 수 "+bookmarks.size());
                 storeRepository.updateBookmarks(storeId,bookmarks.size());
             }
