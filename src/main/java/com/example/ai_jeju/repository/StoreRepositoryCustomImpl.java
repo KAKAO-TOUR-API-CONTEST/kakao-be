@@ -105,16 +105,13 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
 
 
             Boolean popularityValue = filterDto.getPopularity().orElse(null);
-            if (popularityValue) {
-                System.out.println("인기순 정렬하기 동작");
-
+            if (popularityValue!=null&&popularityValue) {
 
                 return queryFactory.selectFrom(qStore)
                         .where(builder)
                         .orderBy(qStore.noBmk.desc()) // bookmarks를 내림차순으로 정렬
                         .fetch();
             }
-
 
         // 동적 쿼리 실행 (popularity가 null이거나 false인 경우)
         return queryFactory.selectFrom(qStore)
