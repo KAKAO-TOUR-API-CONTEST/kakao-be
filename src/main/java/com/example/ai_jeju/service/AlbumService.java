@@ -6,6 +6,7 @@ import com.example.ai_jeju.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -170,6 +171,28 @@ public class AlbumService {
             //album없을때
             return null;
         }
+
+    }
+
+
+    public ScheduleResponse getScheculeListByChild(Long childId){
+
+        Optional<Child> childOptional = childRepository.findByChildId(childId);
+        List<String> schedules = new ArrayList<>();
+
+        if(childOptional.isPresent()) {
+            List<Album> albums = albumRepository.findAllByChild(childOptional.get());
+            for(Album album : albums){
+                schedules.add(album.getRgtDate());
+            }
+        }
+
+            ScheduleResponse scheduleResponse = ScheduleResponse.builder()
+                    .schedules(schedules)
+                    .build();
+
+            return scheduleResponse;
+
 
     }
 

@@ -10,7 +10,7 @@ public class ScheduleItemController {
 
     private final TokenProvider tokenProvider;
 
-
+    @Autowired
 
     public ScheduleItemController(TokenProvider tokenProvider) {
         this.tokenProvider = tokenProvider;
