@@ -108,13 +108,10 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             if (popularityValue) {
                 System.out.println("인기순 정렬하기 동작");
 
-                System.out.println("result"+queryFactory.selectFrom(qStore)
-                        .where(builder)
-                        .orderBy(qStore.noBmk.asc()) // bookmarks를 내림차순으로 정렬
-                        .toString());
+
                 return queryFactory.selectFrom(qStore)
                         .where(builder)
-                        .orderBy(qStore.noBmk.asc()) // bookmarks를 내림차순으로 정렬
+                        .orderBy(qStore.noBmk.desc()) // bookmarks를 내림차순으로 정렬
                         .fetch();
             }
 

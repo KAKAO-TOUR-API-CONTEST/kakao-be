@@ -98,7 +98,7 @@ public class Store {
 
     @Column
     @ColumnDefault("0")
-    int rmcdType;
+    int rcmdType;
 
 
 }
