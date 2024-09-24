@@ -157,7 +157,7 @@ public class MainViewController {
             @RequestParam(required = false) Boolean kidsZone,
             @RequestParam(required = false) Boolean playground,
             @RequestParam(required = false) Boolean babySpareChair,
-            @RequestParam(required = false) Boolean rcmd,
+            @RequestParam(required = false) Integer rcmdType,
             @RequestParam(required = false) Integer category,
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) Boolean popularity) {
@@ -169,7 +169,7 @@ public class MainViewController {
                 .KidsZone(JsonNullable.of(kidsZone))
                 .playground(JsonNullable.of(playground))
                 .babySpareChair(JsonNullable.of(babySpareChair))
-                .rcmd(JsonNullable.of(rcmd))
+                .rcmdType(JsonNullable.of(rcmdType))
                 .categoryId(JsonNullable.of(category))
                 .keyword(JsonNullable.of(keyword))
                 .build();

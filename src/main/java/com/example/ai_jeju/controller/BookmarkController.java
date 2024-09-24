@@ -32,7 +32,6 @@ public class BookmarkController {
             Long userId = tokenProvider.getUserId(accessToken);
             bookmarkService.addBookmark(userId, storeId);
             return ResponseUtil.SUCCESS("관심목록에 성공적으로 등록하였습니다.",null);
-
         }
         else {
             return ResponseUtil.ERROR("북마크 등록 중 문제가 발생하였습니다.", null);

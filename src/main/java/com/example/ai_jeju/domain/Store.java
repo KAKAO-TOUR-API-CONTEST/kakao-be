@@ -82,9 +82,7 @@ public class Store {
     @Column(name = "parking",updatable = false,nullable = true)
     Boolean parking;
 
-    @Column(name = "rcmd",nullable = true)
-    @ColumnDefault("false")
-    Boolean rcmd;
+
 
     @Column(name = "checkin",updatable = false,nullable = true)
     String checkin;
