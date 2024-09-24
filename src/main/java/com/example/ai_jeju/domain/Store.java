@@ -95,6 +95,8 @@ public class Store {
     @ColumnDefault("0")
     int noBmk = 0;
 
+    @Column
+    int rmcdType;
 
 
 }

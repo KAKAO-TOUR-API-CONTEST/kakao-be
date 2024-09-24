@@ -1,12 +1,12 @@
 package com.example.ai_jeju.controller;
 
 
+import com.example.ai_jeju.config.UUIDOneTimeTokenManager;
 import com.example.ai_jeju.dto.AddAlbumRequest;
 import com.example.ai_jeju.dto.AlbumDetailResponse;
 import com.example.ai_jeju.dto.AlbumListResponse;
-import com.example.ai_jeju.dto.AlbumResponse;
-import com.example.ai_jeju.repository.ChildRepository;
 import com.example.ai_jeju.service.AlbumService;
+import com.example.ai_jeju.service.UUIDTokenService;
 import com.example.ai_jeju.util.ResponseDto;
 import com.example.ai_jeju.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +15,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/album")
 public class AlbumController {
 
     @Autowired
     private AlbumService albumService;
 
-    @Autowired
-    private ChildRepository childRepository;
+    UUIDOneTimeTokenManager tokenManager = new UUIDOneTimeTokenManager();
+    UUIDTokenService UUIDtokenService = new UUIDTokenService(tokenManager);
 
-    @PostMapping("/album")
+    @PostMapping("")
     public ResponseDto getAlbumList(@RequestBody AddAlbumRequest addAlbumRequest){
 
       try{
@@ -36,19 +36,37 @@ public class AlbumController {
     }
 
 
-    @GetMapping("/album")
+    @GetMapping("")
     public ResponseDto getAlbumList(@RequestParam Long childId ,String rgtDate){
         List<AlbumListResponse> albumResponses =albumService.getAlbumList(childId,rgtDate);
         return ResponseUtil.SUCCESS("사진첩 조회이 성공하셨습니다",albumResponses);
     }
 
-    @GetMapping("/album/detail")
+    @GetMapping("/detail")
     public ResponseDto getDetailAlbumList(@RequestParam Long albumId){
         AlbumDetailResponse albumDetailResponse = albumService.getDetailAlbumList(albumId);
         return ResponseUtil.SUCCESS("사진첩 조회이 성공하셨습니다",albumDetailResponse);
     }
 
+    @GetMapping("/shares")
+    public ResponseDto getLinkforSharing(){
+        // TokenService를 이용하여 토큰 생성
 
+        String token = UUIDtokenService.createToken();
+
+        return ResponseUtil.SUCCESS("임시 토큰",token);
+    }
+
+    @GetMapping("/schedule")
+    public ResponseDto getScheculeListByChild(@RequestParam Long childId){
+        try{
+            return ResponseUtil.SUCCESS("아이의 캘린더 날짜 목록",albumService.getScheculeListByChild(childId));
+        }catch(Exception e){
+            return ResponseUtil.ERROR("아이의 캘린더 날짜 목록을 조회하는 실패하였습니다.",e);
+        }
+
+
+    }
 
 
 }
