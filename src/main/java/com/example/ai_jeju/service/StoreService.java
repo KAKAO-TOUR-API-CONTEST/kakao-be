@@ -24,18 +24,17 @@ public class StoreService {
     @Autowired
     private EntityManager entityManager;
 
-    @Transactional
+
     public void updateNoBmk(Long storeId, int noBmk) {
 
-        if (store != null) {
             // JPQL을 사용하여 noBmk 값을 직접 수정
+            System.out.println("북마크 수"+noBmk);
             entityManager.createQuery("UPDATE Store s SET s.noBmk = :noBmk WHERE s.storeId = :storeId")
                     .setParameter("noBmk", noBmk)
+                    .setParameter("storeId", storeId)
                     .executeUpdate();
-        } else {
-            // Store 객체가 존재하지 않을 때의 처리
-            System.out.println("Store not found with id: " + storeId);
-        }
+
+
 
     }
 

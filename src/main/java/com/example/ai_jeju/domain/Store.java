@@ -82,8 +82,7 @@ public class Store {
     @Column(name = "parking",updatable = false,nullable = true)
     Boolean parking;
 
-    @Column(name = "rcmd",updatable = false,nullable = true)
-    Boolean rcmd;
+
 
     @Column(name = "checkin",updatable = false,nullable = true)
     String checkin;
@@ -93,8 +92,11 @@ public class Store {
 
     @Column(name = "bookmarks")
     @ColumnDefault("0")
-    int noBmk = 0;
+    int noBmk;
 
+    @Column
+    @ColumnDefault("0")
+    int rcmdType;
 
 
 }

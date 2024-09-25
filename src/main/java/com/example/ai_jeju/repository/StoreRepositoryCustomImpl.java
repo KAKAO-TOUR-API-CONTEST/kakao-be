@@ -1,4 +1,5 @@
 package com.example.ai_jeju.repository;
+import com.example.ai_jeju.domain.QBookmark;
 import com.example.ai_jeju.domain.QStore;
 import com.example.ai_jeju.domain.Store;
 import com.example.ai_jeju.dto.FilterDto;
@@ -20,16 +21,10 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     @Override
     public List<Store> findByFilterDto(FilterDto filterDto) {
 
-//        Boolean parking = filterDto.getParking().orElse(null);
-//        Boolean strollerVar = filterDto.getStrollerVal().orElse(null);
-//        String noKidsZone = filterDto.getNoKidsZone().orElse(null);
-//        Boolean playground = filterDto.getPlayground().orElse(null);
-//        Boolean babySpareChair = filterDto.getBabySpareChair().orElse(null);
-//        Boolean rcmd = filterDto.getRcmd().orElse(null);
-
         QStore qStore = QStore.store;
 
         BooleanBuilder builder = new BooleanBuilder();
+
         // parking 조건 추가
         if (filterDto.getParking() != null && filterDto.getParking().isPresent()) {
             Boolean parkingValue = filterDto.getParking().orElse(null);
@@ -77,11 +72,11 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             }
         }
 
-        // rcmd 조건 추가
-        if (filterDto.getRcmd() != null && filterDto.getRcmd().isPresent()) {
-            Boolean rcmdValue = filterDto.getRcmd().orElse(null);
-            if (rcmdValue != null) {
-                BooleanExpression rcmdExpression = qStore.rcmd.eq(rcmdValue);
+        // rcmdType 조건 추가
+        if (filterDto.getRcmdType() != null && filterDto.getRcmdType().isPresent()) {
+            Integer rcmdTypeValue = filterDto.getRcmdType().orElse(null);
+            if (rcmdTypeValue != null) {
+                BooleanExpression rcmdExpression = qStore.rcmdType.eq(rcmdTypeValue);
                 builder.and(rcmdExpression);
             }
         }
@@ -106,9 +101,22 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             }
         }
 
-        // 동적 쿼리 실행
+        // bookmarks순으로 정렬하기
+
+
+            Boolean popularityValue = filterDto.getPopularity().orElse(null);
+            if (popularityValue!=null&&popularityValue) {
+
+                return queryFactory.selectFrom(qStore)
+                        .where(builder)
+                        .orderBy(qStore.noBmk.desc()) // bookmarks를 내림차순으로 정렬
+                        .fetch();
+            }
+
+        // 동적 쿼리 실행 (popularity가 null이거나 false인 경우)
         return queryFactory.selectFrom(qStore)
                 .where(builder)
                 .fetch();
+
     }
 }

@@ -9,12 +9,13 @@ import org.openapitools.jackson.nullable.JsonNullable;
 @Builder
 public class FilterDto {
 
+    private JsonNullable<Boolean> popularity;
     private JsonNullable<Boolean> parking;
     private JsonNullable<Boolean> strollerVal;
     private JsonNullable<Boolean> KidsZone;
     private JsonNullable<Boolean> playground;
     private JsonNullable<Boolean> babySpareChair;
-    private JsonNullable<Boolean> rcmd;
+    private JsonNullable<Integer> rcmdType;
     private JsonNullable<Integer> categoryId;
     private JsonNullable<String> keyword;
 
