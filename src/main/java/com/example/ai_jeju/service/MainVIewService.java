@@ -323,7 +323,9 @@ public class MainVIewService {
 
         List<Store> stores =storeRepositoryCustom.findByFilterDto(filterDto, randomSeed,page);
         List<MainListResponse> mainListResponses = new ArrayList<>();
-
+        int pageSize = 50; // 한 페이지당 아이템 수
+        int totalItems = stores.size(); // 필터 조건에 맞는 전체 데이터 수
+        int lastPage = (int) Math.ceil((double) totalItems / pageSize);
 
         for(Store store : stores){
             List<Bookmark> bookmarks = bookmarkRepository.findByStoreId(store.getStoreId());
