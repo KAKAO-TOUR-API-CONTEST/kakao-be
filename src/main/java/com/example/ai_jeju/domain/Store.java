@@ -70,9 +70,6 @@ public class Store {
     @Column(name = "operationTime",updatable = false,nullable = true , length = 1024)
     String operationTime;
 
-    //@Column(name = "breakTime",updatable = false,nullable = true , length = 1024)
-    //String breakTime;
-
     @Column(name = "tel",updatable = false,nullable = true)
     String tel;
 

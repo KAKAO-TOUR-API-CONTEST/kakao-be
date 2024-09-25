@@ -7,5 +7,5 @@ import java.util.List;
 
 @Repository
 public interface StoreRepositoryCustom {
-    List<Store> findByFilterDto(FilterDto filterDto);
+    List<Store> findByFilterDto(FilterDto filterDto,int randomSeed, int page);
 }

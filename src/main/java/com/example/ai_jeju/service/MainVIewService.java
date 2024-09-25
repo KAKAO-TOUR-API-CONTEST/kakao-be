@@ -297,9 +297,9 @@ public class MainVIewService {
     }
 
     // BooleanExpression -> null이면 쿼리에 문제 생기지 x
-    public List<MainListResponse> getMain(FilterDto filterDto, Long userId){
+    public List<MainListResponse> getMain(FilterDto filterDto, Long userId, int randomSeed, int page){
 
-        List<Store> stores =storeRepositoryCustom.findByFilterDto(filterDto);
+        List<Store> stores =storeRepositoryCustom.findByFilterDto(filterDto,randomSeed, page);
         Optional<User> user = userRepository.findById(userId);
         List<MainListResponse> mainListResponses = new ArrayList<>();
         for(Store store : stores){
@@ -319,11 +319,13 @@ public class MainVIewService {
 
     }
 
-    public List<MainListResponse> getMain(FilterDto filterDto){
+    public List<MainListResponse> getMain(FilterDto filterDto, int randomSeed, int page){
 
-        List<Store> stores =storeRepositoryCustom.findByFilterDto(filterDto);
+        List<Store> stores =storeRepositoryCustom.findByFilterDto(filterDto, randomSeed,page);
         List<MainListResponse> mainListResponses = new ArrayList<>();
-
+        int pageSize = 50; // 한 페이지당 아이템 수
+        int totalItems = stores.size(); // 필터 조건에 맞는 전체 데이터 수
+        int lastPage = (int) Math.ceil((double) totalItems / pageSize);
 
         for(Store store : stores){
             List<Bookmark> bookmarks = bookmarkRepository.findByStoreId(store.getStoreId());
