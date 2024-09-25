@@ -30,11 +30,13 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     List<Store> findByKeywordAndCategoryId(String keyword, int categoryId);
 
     List<Store> findByCategoryId(Long categoryId);
-
     @Modifying
     @Transactional
     @Query(value = "UPDATE Store s SET s.noBmk = :noBmk WHERE s.storeId = :storeId")
     void updateBookmarks(@Param("storeId") Long storeId, @Param("noBmk") int noBmk);
+
+    List<Store> findByStoreIdIn(List<Long> storeIds);
+
 
 
 

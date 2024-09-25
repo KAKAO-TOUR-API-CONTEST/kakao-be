@@ -70,6 +70,7 @@ public class Store {
     @Column(name = "operationTime",updatable = false,nullable = true , length = 1024)
     String operationTime;
 
+
     @Column(name = "tel",updatable = false,nullable = true)
     String tel;
 

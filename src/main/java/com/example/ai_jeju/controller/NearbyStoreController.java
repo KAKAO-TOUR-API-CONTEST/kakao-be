@@ -1,29 +1,26 @@
 package com.example.ai_jeju.controller;
+import org.springframework.http.HttpStatus;
 
-
-import com.example.ai_jeju.domain.NearbyStore;
-import com.example.ai_jeju.service.NearbyStoreService;
+import com.example.ai_jeju.domain.Store;
+import com.example.ai_jeju.service.StoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/")
 public class NearbyStoreController {
 
     @Autowired
-    private NearbyStoreService nearbyStoreService;
+    private StoreService storeService;
 
-    // storeId로 근처 매장 3개 가져오기
+
     @GetMapping("/{storeId}/nearby")
-    public ResponseEntity<List<NearbyStore>> getNearbyStores(@PathVariable("storeId") Long storeId) {
-        List<NearbyStore> nearbyStores = nearbyStoreService.getNearbyStores(storeId);
-        return ResponseEntity.ok(nearbyStores);
+    public ResponseEntity<List<Store>> getNearbyStores(@PathVariable("storeId")Long storeId) {
+        List<Store> nearbyStores = storeService.getNearbyStores(storeId);
+        return new ResponseEntity<>(nearbyStores, HttpStatus.OK);
     }
-
 }

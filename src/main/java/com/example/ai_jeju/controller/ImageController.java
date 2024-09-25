@@ -12,7 +12,7 @@ public class ImageController {
     @GetMapping("/presignedurl")
     @ResponseBody
     String getURL(@RequestParam(name = "filename") String filename){
-        var result = s3Service.createPresignedUrl("test/" + filename);
+        var result = s3Service.createPresignedUrl("aijejualbum/" + filename);
         System.out.println(result);
         return result;
     }
