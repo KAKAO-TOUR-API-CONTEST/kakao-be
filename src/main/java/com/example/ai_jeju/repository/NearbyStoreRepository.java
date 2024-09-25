@@ -12,6 +12,6 @@ import java.util.List;
 @Repository
 public interface NearbyStoreRepository extends JpaRepository<NearbyStore, Long> {
 
-    @Query("SELECT ns.nearbyStoreId FROM NearbyStores ns WHERE ns.storeId = :storeId")
-    List<Long> findNearbyStoreIdsByStoreId(@Param("storeId") Long storeId);
+    List<NearbyStore> findByStoreId(Long storeId);
+
 }

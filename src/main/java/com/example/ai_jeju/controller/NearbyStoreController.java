@@ -1,5 +1,5 @@
 package com.example.ai_jeju.controller;
-
+import org.springframework.http.HttpStatus;
 
 import com.example.ai_jeju.domain.Store;
 import com.example.ai_jeju.service.StoreService;
@@ -19,9 +19,8 @@ public class NearbyStoreController {
 
 
     @GetMapping("/{storeId}/nearby")
-    public ResponseEntity<List<Store>> getNearbyStores(@PathVariable("storeId") Long storeId) {
-        // 3. 서비스에서 근처 가게 정보를 가져와서 반환
+    public ResponseEntity<List<Store>> getNearbyStores(@PathVariable("storeId")Long storeId) {
         List<Store> nearbyStores = storeService.getNearbyStores(storeId);
-        return ResponseEntity.ok(nearbyStores);
+        return new ResponseEntity<>(nearbyStores, HttpStatus.OK);
     }
 }

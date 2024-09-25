@@ -1,5 +1,6 @@
 package com.example.ai_jeju.service;
 
+import com.example.ai_jeju.domain.NearbyStore;
 import com.example.ai_jeju.domain.Store;
 import com.example.ai_jeju.repository.NearbyStoreRepository;
 import com.example.ai_jeju.repository.StoreRepository;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.example.ai_jeju.domain.QStore.store;
 
@@ -38,12 +40,17 @@ public class StoreService {
 
     }
 
-    public List<Store> getNearbyStores(Long storeId) {
-        // 1. storeId로 nearbyStoreId 목록을 가져옴
-        List<Long> nearbyStoreIds = nearbyStoresRepository.findNearbyStoreIdsByStoreId(storeId);
 
-        // 2. 가져온 nearbyStoreId로 stores 테이블에서 해당 가게 정보 조회
-        return storeRepository.findByIdIn(nearbyStoreIds);
+
+    public List<Store> getNearbyStores(Long storeId) {
+        // Step 1: Get nearby store IDs
+        List<NearbyStore> nearbyStores = nearbyStoresRepository.findByStoreId(storeId);
+        List<Long> nearbyStoreIds = nearbyStores.stream()
+                .map(NearbyStore::getNearbyStoreId)
+                .collect(Collectors.toList());
+
+        // Step 2: Get store details using nearbyStoreIds
+        return storeRepository.findByStoreIdIn(nearbyStoreIds);
     }
 
 
