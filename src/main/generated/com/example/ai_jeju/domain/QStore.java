@@ -23,8 +23,6 @@ public class QStore extends EntityPathBase<Store> {
 
     public final BooleanPath babySpareChair = createBoolean("babySpareChair");
 
-    public final StringPath breakTime = createString("breakTime");
-
     public final NumberPath<Integer> categoryId = createNumber("categoryId", Integer.class);
 
     public final StringPath checkin = createString("checkin");
