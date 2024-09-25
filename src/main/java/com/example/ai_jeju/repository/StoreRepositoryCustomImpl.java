@@ -5,6 +5,8 @@ import com.example.ai_jeju.domain.Store;
 import com.example.ai_jeju.dto.FilterDto;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +21,11 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     @Autowired
     private JPAQueryFactory queryFactory;
     @Override
-    public List<Store> findByFilterDto(FilterDto filterDto) {
+    public List<Store> findByFilterDto(FilterDto filterDto, int randomSeed, int page) {
 
         QStore qStore = QStore.store;
+
+        int pageSize = 50; // 한 페이지에 보여줄 개수
 
         BooleanBuilder builder = new BooleanBuilder();
 
@@ -101,21 +105,28 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             }
         }
 
-        // bookmarks순으로 정렬하기
+        // 랜덤 시드를 적용한 랜덤 정렬 추가
+        NumberExpression<Double> randomExpression = Expressions.numberTemplate(Double.class, "RAND({0})", randomSeed);
 
+        // bookmarks순으로 정렬하기
 
             Boolean popularityValue = filterDto.getPopularity().orElse(null);
             if (popularityValue!=null&&popularityValue) {
 
                 return queryFactory.selectFrom(qStore)
                         .where(builder)
-                        .orderBy(qStore.noBmk.desc()) // bookmarks를 내림차순으로 정렬
+                        .orderBy(qStore.noBmk.desc(), randomExpression.asc())
+                        .limit(pageSize) // 50개씩 제한
+                        .offset((page - 1) * pageSize) // 페이지 번호에 따라 오프셋 적용// bookmarks를 내림차순으로 정렬
                         .fetch();
             }
 
         // 동적 쿼리 실행 (popularity가 null이거나 false인 경우)
         return queryFactory.selectFrom(qStore)
                 .where(builder)
+                .orderBy(randomExpression.asc())
+                .limit(pageSize) // 50개씩 제한
+                .offset((page - 1) * pageSize) // 페이지 번호에 따라 오프셋 적용// 랜덤 정렬 추가
                 .fetch();
 
     }

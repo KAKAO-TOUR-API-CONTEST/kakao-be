@@ -160,7 +160,9 @@ public class MainViewController {
             @RequestParam(required = false) Integer rcmdType,
             @RequestParam(required = false) Integer category,
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) Boolean popularity) {
+            @RequestParam(required = false) Boolean popularity,
+                                    @RequestParam int randomSeed,
+                                    @RequestParam int page) {
 
         FilterDto filterDto = FilterDto.builder()
                 .popularity(JsonNullable.of(popularity))
@@ -179,7 +181,7 @@ public class MainViewController {
             if (tokenProvider.validToken(accessToken)) {
                 Long userId = tokenProvider.getUserId(accessToken);
                 try {
-                    return ResponseUtil.SUCCESS("회원 조회에 성공하였습니다.", mainViewService.getMain(filterDto,userId));
+                    return ResponseUtil.SUCCESS("회원 조회에 성공하였습니다.", mainViewService.getMain(filterDto,userId,randomSeed,page));
                 } catch (Exception e) {
                     return ResponseUtil.ERROR(e.getMessage(), null);
                 }
@@ -188,7 +190,7 @@ public class MainViewController {
                 return ResponseUtil.ERROR("유효하지 않은 사용자입니다.", null);
             }
         }else{
-            return ResponseUtil.SUCCESS("비회원 조회에 성공하였습니다.",mainViewService.getMain(filterDto));
+            return ResponseUtil.SUCCESS("비회원 조회에 성공하였습니다.",mainViewService.getMain(filterDto,randomSeed,page));
         }
 
 
