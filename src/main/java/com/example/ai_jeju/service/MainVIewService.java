@@ -304,15 +304,16 @@ public class MainVIewService {
         Optional<User> user = userRepository.findById(userId);
         List<MainListResponse> mainListResponses = new ArrayList<>();
         List<Store> stores = (List<Store>) result.get("stores");
+
         for(Store store : stores){
-            List<Bookmark> bookmarks = bookmarkRepository.findByStoreId(store.getStoreId());
+
             MainListResponse mainListResponse = MainListResponse.builder()
                     .storeId(store.getStoreId())
                     .name(store.getName())
                     .imgSrc(store.getImgSrc())
                     .address(store.getAddress())
                     .noKidsZone(store.getNoKidsZone())
-                    .noBmk(bookmarks.size())
+                    .noBmk(store.getNoBmk())
                     .bmkSatus(bookmarkRepository.existsByUserAndStoreId(user.get(),store.getStoreId()))
                     .build();
             mainListResponses.add(mainListResponse);
@@ -329,14 +330,14 @@ public class MainVIewService {
 
         List<Store> stores = (List<Store>) result.get("stores");
         for(Store store : stores){
-            List<Bookmark> bookmarks = bookmarkRepository.findByStoreId(store.getStoreId());
+
             MainListResponse mainListResponse = MainListResponse.builder()
                     .storeId(store.getStoreId())
                     .name(store.getName())
                     .imgSrc(store.getImgSrc())
                     .address(store.getAddress())
                     .noKidsZone(store.getNoKidsZone())
-                    .noBmk(bookmarks.size())
+                    .noBmk(store.getNoBmk())
                     .bmkSatus(false)
                     .build();
             mainListResponses.add(mainListResponse);
@@ -345,6 +346,7 @@ public class MainVIewService {
         return mainResponse;
 
     }
+
 
 
 
