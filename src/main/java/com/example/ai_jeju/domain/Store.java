@@ -92,7 +92,6 @@ public class Store {
     int noBmk;
 
     @Column
-    @ColumnDefault("0")
     int rcmdType;
 
 
