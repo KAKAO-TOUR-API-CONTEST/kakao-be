@@ -22,44 +22,7 @@ public class NearbyStore {
 
     private Long storeId;
     private Long nearbyStoreId;
-    private String name;
-    private String address;
-    private String tel;
-    private Long categoryId;
-    private Boolean playground;
-    private Boolean stroller;
-    @Column(name = "strollerVal",updatable = false,nullable = true)
-    Boolean strollerVal;
 
-    @Column(name = "noKidsZone",updatable = false,nullable = true)
-    String noKidsZone;
-
-    @Column(name = "nokidsdetail",updatable = false,nullable = true)
-    String nokidsdetail;
-
-    @Column(name = "pet",updatable = false,nullable = true)
-    Boolean pet;
-
-    @Column(name = "parking",updatable = false,nullable = true)
-    Boolean parking;
-
-    @Column(name = "babySpareChair",updatable = false,nullable = true)
-    Boolean babySpareChair;
-
-    @Column(name = "mapX",updatable = false,nullable = true)
-    Double mapX;
-
-    @Column(name = "mapY",updatable = false,nullable = true)
-    Double mapY;
-
-    @Column(name = "imgSrc",updatable = false,nullable = true, columnDefinition = "TEXT")
-    String imgSrc;
-
-    @Column(name = "operationTime",updatable = false,nullable = true , length = 1024)
-    String operationTime;
-
-    @Column(name = "breakTime",updatable = false,nullable = true , length = 1024)
-    String breakTime;
 
     public NearbyStore() {
     }
