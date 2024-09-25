@@ -5,7 +5,6 @@
     <title>Title</title>
 </head>
 <body>
-
 <input type="file" onchange="getURL(this)">
 <script>
  async function getURL(e){
@@ -13,14 +12,11 @@
     let name = encodeURIComponent(file.name)
     let result = await fetch('/presignedurl?filename=' + name)
     result = await result.text()
-
     let 결과 = await fetch(result, {
       method: 'PUT',
       body: e.files[0]
     })
-
     console.log(결과.url.split("?")[0])
-
   }
 </script>
 </body>

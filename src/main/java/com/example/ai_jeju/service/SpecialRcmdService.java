@@ -19,6 +19,7 @@ public class SpecialRcmdService {
     @Autowired
     private BookmarkRepository bookmarkRepositoryRepository;
 
+
     public List<MainListResponse> getSpecialRcmd(int rcmdType, int category){
         List<MainListResponse> mainListResponses = new ArrayList<>();
 
