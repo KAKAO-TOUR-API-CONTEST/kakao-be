@@ -34,7 +34,6 @@ public class Store {
 
     @Column(name = "mapY",updatable = false,nullable = true)
     double mapY;
-
     /**
      카테고리 value
      1 : 숙박
@@ -94,6 +93,5 @@ public class Store {
 
     @Column
     int rcmdType;
-
 
 }
