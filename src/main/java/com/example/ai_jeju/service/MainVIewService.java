@@ -297,9 +297,9 @@ public class MainVIewService {
     }
 
     // BooleanExpression -> null이면 쿼리에 문제 생기지 x
-    public List<MainListResponse> getMain(FilterDto filterDto, Long userId){
+    public List<MainListResponse> getMain(FilterDto filterDto, Long userId, int randomSeed, int page){
 
-        List<Store> stores =storeRepositoryCustom.findByFilterDto(filterDto);
+        List<Store> stores =storeRepositoryCustom.findByFilterDto(filterDto,randomSeed, page);
         Optional<User> user = userRepository.findById(userId);
         List<MainListResponse> mainListResponses = new ArrayList<>();
         for(Store store : stores){
@@ -319,9 +319,9 @@ public class MainVIewService {
 
     }
 
-    public List<MainListResponse> getMain(FilterDto filterDto){
+    public List<MainListResponse> getMain(FilterDto filterDto, int randomSeed, int page){
 
-        List<Store> stores =storeRepositoryCustom.findByFilterDto(filterDto);
+        List<Store> stores =storeRepositoryCustom.findByFilterDto(filterDto, randomSeed,page);
         List<MainListResponse> mainListResponses = new ArrayList<>();
 
 

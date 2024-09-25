@@ -73,18 +73,6 @@ dependencies {
 	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta" // 수정
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
-
-//	//kafka
-//  implementation 'org.springframework.boot:spring-boot-starter-data-kafka'
-//	implementation 'org.springframework.boot:spring-boot-starter-web'
-//	implementation 'org.springframework.boot:spring-boot-starter'
-//	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-//	//spark
-	//implementation 'org.apache.spark:spark-core_2.12:3.3.1'
-	//implementation 'org.apache.spark:spark-sql_2.12:3.3.1'
-	//implementation 'org.apache.spark:spark-mllib_2.12:3.3.1'
-
 }
 
 def querydslDir = "$buildDir/generated/querydsl"
