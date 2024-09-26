@@ -15,7 +15,7 @@ public class FilterDto {
     private JsonNullable<Boolean> KidsZone;
     private JsonNullable<Boolean> playground;
     private JsonNullable<Boolean> babySpareChair;
-    private JsonNullable<Integer> rcmdType;
+    private JsonNullable<Boolean> rcmd;
     private JsonNullable<Integer> categoryId;
     private JsonNullable<String> keyword;
 

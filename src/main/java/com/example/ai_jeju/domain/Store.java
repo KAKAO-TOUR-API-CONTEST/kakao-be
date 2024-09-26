@@ -94,4 +94,8 @@ public class Store {
     @Column
     int rcmdType;
 
+    @Column(name = "rcmd")
+    @ColumnDefault("false")
+    boolean rcmd;
+
 }
