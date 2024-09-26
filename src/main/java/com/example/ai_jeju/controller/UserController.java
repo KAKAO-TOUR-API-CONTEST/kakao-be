@@ -31,7 +31,12 @@ public class UserController {
     public ResponseDto CheckIfUser(@RequestParam(name = "email") String email, HttpServletRequest request, HttpServletResponse response){
 
         String [] result = userService.checkIfUser(email, request, response);
-        return ResponseUtil.SUCCESS(result[1],result[0]);
+        if(result == null){
+            return ResponseUtil.FAILURE("없는 회원입니다", null);
+        }else{
+            return ResponseUtil.SUCCESS(result[1],result[0]);
+        }
+
     }
 
     //탈퇴하기
