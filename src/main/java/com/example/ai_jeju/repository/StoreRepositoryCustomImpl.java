@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.ai_jeju.domain.Qrcmd.rcmd;
+
 @Repository
 public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
 
@@ -28,9 +30,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     public Map<String, Object> findByFilterDto(FilterDto filterDto, int randomSeed, int page) {
 
         QStore qStore = QStore.store;
-
         int pageSize = 50; // 한 페이지에 보여줄 개수
-
         BooleanBuilder builder = new BooleanBuilder();
 
         // parking 조건 추가
@@ -81,10 +81,10 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
         }
 
         // rcmdType 조건 추가
-        if (filterDto.getRcmdType() != null && filterDto.getRcmdType().isPresent()) {
-            Integer rcmdTypeValue = filterDto.getRcmdType().orElse(null);
-            if (rcmdTypeValue != null) {
-                BooleanExpression rcmdExpression = qStore.rcmdType.eq(rcmdTypeValue);
+        if (filterDto.getRcmd() != null && filterDto.getRcmd().isPresent()) {
+            Boolean rcmdValue = filterDto.getRcmd().orElse(null);
+            if (rcmdValue != null) {
+                BooleanExpression rcmdExpression = qStore.rcmd.eq(rcmdValue);
                 builder.and(rcmdExpression);
             }
         }

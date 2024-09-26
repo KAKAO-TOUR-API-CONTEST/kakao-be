@@ -51,6 +51,8 @@ public class QStore extends EntityPathBase<Store> {
 
     public final BooleanPath playground = createBoolean("playground");
 
+    public final BooleanPath rcmd = createBoolean("rcmd");
+
     public final NumberPath<Integer> rcmdType = createNumber("rcmdType", Integer.class);
 
     public final NumberPath<Long> storeId = createNumber("storeId", Long.class);
