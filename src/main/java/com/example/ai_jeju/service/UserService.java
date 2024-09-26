@@ -59,7 +59,9 @@ public class UserService {
         Optional<User> existingUser = userRepository.findByEmail(email);
 
         String [] result = new String [2];
-
+        if (result==null){
+            return null;
+        }
 
         if (existingUser.isPresent()) {
             User user = existingUser.get();
@@ -69,7 +71,6 @@ public class UserService {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             // Date를 String으로 변환
             String dateString = formatter.format(expiredDate);
-
             result[0] = accessToken;
             result[1] = dateString;
 
