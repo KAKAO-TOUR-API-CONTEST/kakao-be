@@ -306,7 +306,6 @@ public class MainVIewService {
         List<Store> stores = (List<Store>) result.get("stores");
 
         for(Store store : stores){
-
             MainListResponse mainListResponse = MainListResponse.builder()
                     .storeId(store.getStoreId())
                     .name(store.getName())
@@ -320,7 +319,6 @@ public class MainVIewService {
         }
         MainResponse mainResponse = new MainResponse(mainListResponses, (Long) result.get("totalPages"));
         return mainResponse;
-
     }
 
     public MainResponse getMain(FilterDto filterDto, int randomSeed, int page){

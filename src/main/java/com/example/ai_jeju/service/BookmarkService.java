@@ -44,7 +44,7 @@ public class BookmarkService {
 
                 bookmarkRepository.save(bookmark);
                 List<Bookmark> bookmarks = bookmarkRepository.findByStoreId(storeId);
-                System.out.println("북마크 수 "+bookmarks.size());
+                //System.out.println("북마크 수 "+bookmarks.size());
                 storeRepository.updateBookmarks(storeId,bookmarks.size());
             }
 
@@ -57,6 +57,8 @@ public class BookmarkService {
         if (user.isPresent()) {
             if (bookmarkRepository.existsByUserAndStoreId(user.get(), storeId)) {
                 bookmarkRepository.deleteByUserAndStoreId(user.get(), storeId);
+                List<Bookmark> bookmarks = bookmarkRepository.findByStoreId(storeId);
+                storeRepository.updateBookmarks(storeId,bookmarks.size());
             }
         }
     }
