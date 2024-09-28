@@ -35,7 +35,6 @@ public class AlbumController {
       }
     }
 
-
     @GetMapping("")
     public ResponseDto getAlbumList(@RequestParam Long childId ,String rgtDate){
         List<AlbumListResponse> albumResponses =albumService.getAlbumList(childId,rgtDate);
@@ -51,9 +50,7 @@ public class AlbumController {
     @GetMapping("/shares")
     public ResponseDto getLinkforSharing(){
         // TokenService를 이용하여 토큰 생성
-
         String token = UUIDtokenService.createToken();
-
         return ResponseUtil.SUCCESS("임시 토큰",token);
     }
 
@@ -64,8 +61,6 @@ public class AlbumController {
         }catch(Exception e){
             return ResponseUtil.ERROR("아이의 캘린더 날짜 목록을 조회하는 실패하였습니다.",e);
         }
-
-
     }
 
 

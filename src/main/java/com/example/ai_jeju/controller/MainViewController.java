@@ -139,12 +139,10 @@ public class MainViewController {
         }else{
             return ResponseUtil.SUCCESS("비회원 검색어 카테고리 정렬에 성공하였습니다.",mainViewService.searchByCategory(keyword,categoryId));
         }
-
     }
 
     @GetMapping("/rcmd")
     public boolean getIfrcmd(@RequestParam Long userId) {
-
         Optional<User> user  = userService.findById(userId);
         if(user.isPresent())
             return user.get().isIfRcmd();
@@ -185,7 +183,6 @@ public class MainViewController {
             if (tokenProvider.validToken(accessToken)) {
                 Long userId = tokenProvider.getUserId(accessToken);
                 try {
-
                     MainResponse result = mainViewService.getMain(filterDto,userId,randomSeed,page);
 
                     return ResponseUtil.SUCCESS("회원 조회에 성공하였습니다.",result);
@@ -198,7 +195,6 @@ public class MainViewController {
             }
         }else{
             MainResponse result = mainViewService.getMain(filterDto,randomSeed,page);
-
             return ResponseUtil.SUCCESS("비회원 조회에 성공하였습니다.",result);
         }
 

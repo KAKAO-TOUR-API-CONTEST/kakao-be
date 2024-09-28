@@ -28,7 +28,6 @@ public class Store {
     @Column(name = "address",updatable = false,nullable = true)
     String address;
 
-
     @Column(name = "mapX",updatable = false,nullable = true)
     double mapX;
 

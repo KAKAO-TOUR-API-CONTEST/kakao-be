@@ -151,4 +151,30 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
         // 마지막 페이지와 결과 반환
         return response;
     }
+    @Override
+    public List<Store> findTasteOption(int category, int randomSeed) {
+
+        QStore qStore = QStore.store;
+        int pageSize = 9; // 한 페이지에 보여줄 개수
+        BooleanBuilder builder = new BooleanBuilder();
+
+        BooleanExpression categoryExpression = qStore.categoryId.eq(category);
+        builder.and(categoryExpression);
+
+
+        // 랜덤 시드를 적용한 랜덤 정렬 추가
+        NumberExpression<Double> randomExpression = Expressions.numberTemplate(Double.class, "RAND({0})", randomSeed);
+
+
+        List<Store> stores = queryFactory.selectFrom(qStore)
+                .where(builder)
+                .orderBy(randomExpression.asc())
+                .limit(pageSize) // 50개씩 제한
+                // 페이지 번호에 따라 오프셋 적용// 랜덤 정렬 추가
+                .fetch();
+
+
+        // 마지막 페이지와 결과 반환
+        return stores;
+    }
 }

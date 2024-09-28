@@ -9,4 +9,6 @@ import java.util.Map;
 @Repository
 public interface StoreRepositoryCustom {
     Map<String, Object> findByFilterDto(FilterDto filterDto, int randomSeed, int page);
-}
+    List<Store> findTasteOption(int category,int randomSeed);
+
+    }
