@@ -19,10 +19,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-
 @Service
 public class MainVIewService {
-
 
     @Autowired
     private StoreRepository storeRepository;
@@ -340,6 +338,7 @@ public class MainVIewService {
                     .build();
             mainListResponses.add(mainListResponse);
         }
+
         MainResponse mainResponse = new MainResponse(mainListResponses,(Long) result.get("totalPages"));
         return mainResponse;
 
