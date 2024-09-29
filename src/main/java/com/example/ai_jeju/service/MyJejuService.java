@@ -94,6 +94,7 @@ public class MyJejuService {
         }
     }
 
+    //원래대로
     public void updateUser(Long userId, ModifyMyPageRequest modifyMyPageRequest) {
         //수정당할 애 찾기
         User user = userRepository.findById(userId)
