@@ -56,11 +56,7 @@ public class ChatController {
             if (messageDto.getProfileImg() == null) {
                 messageDto.setProfileImg(profileImg);
             }
-
-            if (messageDto.getTimestamp() == null) {
-                messageDto.setTimestamp(LocalDateTime.now());
-            }
-
+            //시간삭제
 
 
             switch (messageDto.getType()) {
