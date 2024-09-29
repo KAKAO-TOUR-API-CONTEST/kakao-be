@@ -40,7 +40,7 @@ public class UserController {
     }
 
     //탈퇴하기
-    @GetMapping("/withdraw")
+    @PostMapping("/withdraw")
     public ResponseEntity<String> signOut(@RequestBody WithdrawRequest withdrawRequest) {
         String response = userService.withDraw(withdrawRequest);
         return ResponseEntity.ok(response);
