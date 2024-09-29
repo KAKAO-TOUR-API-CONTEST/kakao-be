@@ -11,6 +11,7 @@ import com.example.ai_jeju.repository.AlbumRepository;
 import com.example.ai_jeju.repository.ChildRepository;
 import com.example.ai_jeju.repository.ScheduleItemRepository;
 import com.example.ai_jeju.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -68,6 +69,8 @@ public class ChildService {
         }else{
             return null;
         }
+
+
 
 
 

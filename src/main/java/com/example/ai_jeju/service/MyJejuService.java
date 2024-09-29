@@ -63,6 +63,19 @@ public class MyJejuService {
         userRepository.save(user);
     }
 
+    @Transactional
+    public void updateChildProfile(Long childId, String profileimg) {
+        // Find the child by childId
+        Child child = childRepository.findById(childId)
+                .orElseThrow(() -> new RuntimeException("Child not found"));
+
+        // Set the profile image URL
+        child.setChildProfile(profileimg);
+
+        // Save the updated child entity
+        childRepository.save(child);
+    }
+
     //프로필 이미지 반환
     public String getProfileUrl(Long id) {
         User user = userRepository.findById(id)
