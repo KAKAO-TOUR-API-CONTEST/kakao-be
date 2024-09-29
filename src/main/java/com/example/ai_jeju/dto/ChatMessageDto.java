@@ -23,6 +23,5 @@ public class ChatMessageDto {
     private String sender;
     private String message;
     private String profileImg;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-    private LocalDateTime timestamp;
+    //시간삭제
 }
