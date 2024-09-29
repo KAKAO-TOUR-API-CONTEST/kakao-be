@@ -23,4 +23,6 @@ void deleteByUserAndStoreId(User user, Long storeId);
 void deleteByUser(User user);
 
 
+
+
 }
