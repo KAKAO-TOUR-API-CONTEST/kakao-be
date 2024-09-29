@@ -3,6 +3,8 @@ package com.example.ai_jeju.controller;
 import com.example.ai_jeju.domain.Store;
 import com.example.ai_jeju.domain.User;
 import com.example.ai_jeju.dto.FilterDto;
+import com.example.ai_jeju.dto.MainListResponse;
+import com.example.ai_jeju.dto.MainResponse;
 import com.example.ai_jeju.jwt.TokenProvider;
 import com.example.ai_jeju.service.MainVIewService;
 import com.example.ai_jeju.service.UserService;
@@ -137,12 +139,10 @@ public class MainViewController {
         }else{
             return ResponseUtil.SUCCESS("비회원 검색어 카테고리 정렬에 성공하였습니다.",mainViewService.searchByCategory(keyword,categoryId));
         }
-
     }
 
     @GetMapping("/rcmd")
     public boolean getIfrcmd(@RequestParam Long userId) {
-
         Optional<User> user  = userService.findById(userId);
         if(user.isPresent())
             return user.get().isIfRcmd();
@@ -157,7 +157,7 @@ public class MainViewController {
             @RequestParam(required = false) Boolean kidsZone,
             @RequestParam(required = false) Boolean playground,
             @RequestParam(required = false) Boolean babySpareChair,
-            @RequestParam(required = false) Integer rcmdType,
+            @RequestParam(required = false) boolean rcmd,
             @RequestParam(required = false) Integer category,
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) Boolean popularity,
@@ -171,17 +171,21 @@ public class MainViewController {
                 .KidsZone(JsonNullable.of(kidsZone))
                 .playground(JsonNullable.of(playground))
                 .babySpareChair(JsonNullable.of(babySpareChair))
-                .rcmdType(JsonNullable.of(rcmdType))
+                .rcmd(JsonNullable.of(rcmd))
                 .categoryId(JsonNullable.of(category))
                 .keyword(JsonNullable.of(keyword))
                 .build();
+
+
 
         if (token != null) {
             String accessToken = token.replace("Bearer ", "");
             if (tokenProvider.validToken(accessToken)) {
                 Long userId = tokenProvider.getUserId(accessToken);
                 try {
-                    return ResponseUtil.SUCCESS("회원 조회에 성공하였습니다.", mainViewService.getMain(filterDto,userId,randomSeed,page));
+                    MainResponse result = mainViewService.getMain(filterDto,userId,randomSeed,page);
+
+                    return ResponseUtil.SUCCESS("회원 조회에 성공하였습니다.",result);
                 } catch (Exception e) {
                     return ResponseUtil.ERROR(e.getMessage(), null);
                 }
@@ -190,7 +194,8 @@ public class MainViewController {
                 return ResponseUtil.ERROR("유효하지 않은 사용자입니다.", null);
             }
         }else{
-            return ResponseUtil.SUCCESS("비회원 조회에 성공하였습니다.",mainViewService.getMain(filterDto,randomSeed,page));
+            MainResponse result = mainViewService.getMain(filterDto,randomSeed,page);
+            return ResponseUtil.SUCCESS("비회원 조회에 성공하였습니다.",result);
         }
 
 

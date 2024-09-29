@@ -28,13 +28,11 @@ public class Store {
     @Column(name = "address",updatable = false,nullable = true)
     String address;
 
-
     @Column(name = "mapX",updatable = false,nullable = true)
     double mapX;
 
     @Column(name = "mapY",updatable = false,nullable = true)
     double mapY;
-
     /**
      카테고리 value
      1 : 숙박
@@ -70,6 +68,7 @@ public class Store {
     @Column(name = "operationTime",updatable = false,nullable = true , length = 1024)
     String operationTime;
 
+
     @Column(name = "tel",updatable = false,nullable = true)
     String tel;
 
@@ -92,8 +91,10 @@ public class Store {
     int noBmk;
 
     @Column
-    @ColumnDefault("0")
     int rcmdType;
 
+    @Column(name = "rcmd")
+    @ColumnDefault("false")
+    boolean rcmd;
 
 }

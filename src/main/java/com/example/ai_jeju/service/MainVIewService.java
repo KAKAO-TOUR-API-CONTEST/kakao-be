@@ -6,6 +6,7 @@ import com.example.ai_jeju.domain.User;
 import com.example.ai_jeju.dto.FilterDto;
 import com.example.ai_jeju.dto.MainListResponse;
 import com.example.ai_jeju.dto.DetailListResponse;
+import com.example.ai_jeju.dto.MainResponse;
 import com.example.ai_jeju.repository.BookmarkRepository;
 import com.example.ai_jeju.repository.StoreRepository;
 import com.example.ai_jeju.repository.StoreRepositoryCustomImpl;
@@ -18,10 +19,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-
 @Service
 public class MainVIewService {
-
 
     @Autowired
     private StoreRepository storeRepository;
@@ -67,13 +66,22 @@ public class MainVIewService {
                     .address(innerStore.getAddress())
                     .mapX(innerStore.getMapX())
                     .mapY(innerStore.getMapY())
+
+                    .parking(innerStore.getParking())
+                    .pet(innerStore.getPet())
                     .stroller(innerStore.getStroller())
-                    .strollerVal(innerStore.getStrollerVal())
+                    .playground(innerStore.getPlayground())
+
                     .babySpareChair(innerStore.getBabySpareChair())
                     .playground(innerStore.getPlayground())
+
+                    .strollerVal(innerStore.getStrollerVal())
+
                     .noKidsZone(innerStore.getNoKidsZone())
                     .categoryId(innerStore.getCategoryId())
                     .operationTime(innerStore.getOperationTime())
+                    .checkin(innerStore.getCheckin())
+                    .checkout(innerStore.getCheckout())
                     .tel(innerStore.getTel())
                     .noBmk(bmks.size())
                     .bmkStatus(bookmarkRepository.existsByUserAndStoreId(user.get(),storeId))
@@ -98,13 +106,21 @@ public class MainVIewService {
                     .address(innerStore.getAddress())
                     .mapX(innerStore.getMapX())
                     .mapY(innerStore.getMapY())
+                    //
+                    .pet(innerStore.getPet())
+                    .parking(innerStore.getParking())
                     .stroller(innerStore.getStroller())
+                    //
                     .strollerVal(innerStore.getStrollerVal())
                     .babySpareChair(innerStore.getBabySpareChair())
                     .playground(innerStore.getPlayground())
                     .noKidsZone(innerStore.getNoKidsZone())
                     .categoryId(innerStore.getCategoryId())
                     .operationTime(innerStore.getOperationTime())
+                    //
+                    .checkin(innerStore.getCheckin())
+                    .checkout(innerStore.getCheckout())
+                    //
                     .tel(innerStore.getTel())
                     .noBmk(innerStore.getNoBmk())
                     .bmkStatus(false)
@@ -297,52 +313,54 @@ public class MainVIewService {
     }
 
     // BooleanExpression -> null이면 쿼리에 문제 생기지 x
-    public List<MainListResponse> getMain(FilterDto filterDto, Long userId, int randomSeed, int page){
+    public MainResponse getMain(FilterDto filterDto, Long userId, int randomSeed, int page){
 
-        List<Store> stores =storeRepositoryCustom.findByFilterDto(filterDto,randomSeed, page);
+        Map<String, Object> result =storeRepositoryCustom.findByFilterDto(filterDto,randomSeed, page);
         Optional<User> user = userRepository.findById(userId);
         List<MainListResponse> mainListResponses = new ArrayList<>();
+        List<Store> stores = (List<Store>) result.get("stores");
+
         for(Store store : stores){
-            List<Bookmark> bookmarks = bookmarkRepository.findByStoreId(store.getStoreId());
             MainListResponse mainListResponse = MainListResponse.builder()
                     .storeId(store.getStoreId())
                     .name(store.getName())
                     .imgSrc(store.getImgSrc())
                     .address(store.getAddress())
                     .noKidsZone(store.getNoKidsZone())
-                    .noBmk(bookmarks.size())
+                    .noBmk(store.getNoBmk())
                     .bmkSatus(bookmarkRepository.existsByUserAndStoreId(user.get(),store.getStoreId()))
                     .build();
             mainListResponses.add(mainListResponse);
         }
-        return mainListResponses;
-
+        MainResponse mainResponse = new MainResponse(mainListResponses, (Long) result.get("totalPages"));
+        return mainResponse;
     }
 
-    public List<MainListResponse> getMain(FilterDto filterDto, int randomSeed, int page){
+    public MainResponse getMain(FilterDto filterDto, int randomSeed, int page){
 
-        List<Store> stores =storeRepositoryCustom.findByFilterDto(filterDto, randomSeed,page);
+        Map<String, Object> result =storeRepositoryCustom.findByFilterDto(filterDto, randomSeed,page);
         List<MainListResponse> mainListResponses = new ArrayList<>();
-        int pageSize = 50; // 한 페이지당 아이템 수
-        int totalItems = stores.size(); // 필터 조건에 맞는 전체 데이터 수
-        int lastPage = (int) Math.ceil((double) totalItems / pageSize);
 
+        List<Store> stores = (List<Store>) result.get("stores");
         for(Store store : stores){
-            List<Bookmark> bookmarks = bookmarkRepository.findByStoreId(store.getStoreId());
+
             MainListResponse mainListResponse = MainListResponse.builder()
                     .storeId(store.getStoreId())
                     .name(store.getName())
                     .imgSrc(store.getImgSrc())
                     .address(store.getAddress())
                     .noKidsZone(store.getNoKidsZone())
-                    .noBmk(bookmarks.size())
+                    .noBmk(store.getNoBmk())
                     .bmkSatus(false)
                     .build();
             mainListResponses.add(mainListResponse);
         }
-        return mainListResponses;
+
+        MainResponse mainResponse = new MainResponse(mainListResponses,(Long) result.get("totalPages"));
+        return mainResponse;
 
     }
+
 
 
 

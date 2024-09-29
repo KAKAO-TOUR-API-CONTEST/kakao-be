@@ -5,6 +5,8 @@ import com.example.ai_jeju.config.UUIDOneTimeTokenManager;
 import com.example.ai_jeju.dto.AddAlbumRequest;
 import com.example.ai_jeju.dto.AlbumDetailResponse;
 import com.example.ai_jeju.dto.AlbumListResponse;
+import com.example.ai_jeju.dto.ModifyMyPageRequest;
+import com.example.ai_jeju.exception.UserNotFoundException;
 import com.example.ai_jeju.service.AlbumService;
 import com.example.ai_jeju.service.UUIDTokenService;
 import com.example.ai_jeju.util.ResponseDto;
@@ -35,6 +37,19 @@ public class AlbumController {
       }
     }
 
+//    @PostMapping("/modify")
+//    public ResponseDto modifyAlbum(@RequestBody AddAlbumRequest){
+//
+//        try{
+//            albumService.addAlbum(addAlbumRequest);
+//            return ResponseUtil.SUCCESS("사진첩 등록에 성공하셨습니다",null);
+//        } catch (Exception e){
+//            return ResponseUtil.FAILURE(e.getMessage(),null);
+//        }
+//    }
+
+
+
 
     @GetMapping("")
     public ResponseDto getAlbumList(@RequestParam Long childId ,String rgtDate){
@@ -51,9 +66,7 @@ public class AlbumController {
     @GetMapping("/shares")
     public ResponseDto getLinkforSharing(){
         // TokenService를 이용하여 토큰 생성
-
         String token = UUIDtokenService.createToken();
-
         return ResponseUtil.SUCCESS("임시 토큰",token);
     }
 
@@ -64,8 +77,6 @@ public class AlbumController {
         }catch(Exception e){
             return ResponseUtil.ERROR("아이의 캘린더 날짜 목록을 조회하는 실패하였습니다.",e);
         }
-
-
     }
 
 

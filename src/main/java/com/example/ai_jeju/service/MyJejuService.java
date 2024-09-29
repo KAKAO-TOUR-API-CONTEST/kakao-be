@@ -29,7 +29,7 @@ public class MyJejuService {
     @Autowired
     private ChildRepository childRepository;
     @Autowired
-    private S3Service s3Service;
+    //private S3Service s3Service;
     public static int calculateMonths(String birthDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
        // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
