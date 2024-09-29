@@ -29,7 +29,6 @@ public class MyJejuService {
     @Autowired
     private ChildRepository childRepository;
     @Autowired
-    //private S3Service s3Service;
     public static int calculateMonths(String birthDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
        // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -48,6 +47,8 @@ public class MyJejuService {
         return userRepository.findById(id);
     }
 
+
+    @Transactional
     public void updateNickname(Long id, String nickname) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -59,7 +60,7 @@ public class MyJejuService {
     public void updateProfile(Long id, String profileimg) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        user.setProfileImg(profileimg); // S3에 업로드된 이미지의 URL을 프로필 이미지로 설정
+        user.setProfileImg(profileimg);
         userRepository.save(user);
     }
 
@@ -95,25 +96,23 @@ public class MyJejuService {
     }
 
     public void updateUser(Long userId, ModifyMyPageRequest modifyMyPageRequest) {
-        //수정당할 애 찾기
+        // 수정할 유저 찾기
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
 
-        // 닉네임 업데이트
-        // 수정된 사용자 빌드
-        User updatedUser = User.builder()
-                .id(user.getId())  // 기존 ID 유지
-                .nickname(modifyMyPageRequest.getNickname().orElse(user.getNickname()))  // 닉네임 수정
-                .phoneNum(modifyMyPageRequest.getPhoneNum().orElse(user.getPhoneNum()))  // 전화번호 수정
-                // 추가적으로 수정할 필드가 있다면 여기에 추가
-                .build();
+        // 닉네임과 전화번호 업데이트
+        if (modifyMyPageRequest.getNickname().isPresent()) {
+            user.setNickname(modifyMyPageRequest.getNickname().get());
+        }
 
-        // 변경된 사용자 정보를 저장
-        userRepository.save(updatedUser);
+        if (modifyMyPageRequest.getPhoneNum().isPresent()) {
+            user.setPhoneNum(modifyMyPageRequest.getPhoneNum().get());
+        }
 
         // 변경된 사용자 정보를 저장
         userRepository.save(user);
     }
+
 
 
 
