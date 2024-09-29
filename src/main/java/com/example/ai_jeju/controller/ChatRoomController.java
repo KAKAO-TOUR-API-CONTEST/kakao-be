@@ -56,6 +56,15 @@ public class ChatRoomController {
         return stompHandler.getUserCount(roomId);
     }
 
+    @GetMapping("/room/{roomId}/lastmessages")
+    public List<ChatMessage> getLastTwoMessages(@PathVariable("roomId") String roomId) {
+        ChatRoom chatRoom = chatService.findRoomById(roomId);
+        if (chatRoom == null) {
+            throw new IllegalArgumentException("Invalid roomId: " + roomId);
+        }
+        return chatService.findLastMessages(chatRoom, 2);
+    }
+
 
 
 
