@@ -79,7 +79,7 @@ public class ChatController {
                             .sender(messageDto.getSender())
                             .message(messageDto.getMessage())
                             .profileImg(messageDto.getProfileImg())
-                            .timestamp(LocalDateTime.now())
+                            .timestamp(new java.sql.Timestamp(System.currentTimeMillis()))
                             .type(messageDto.getType().name())
                             .build();
                     log.info("Saving ChatMessage: " + chatMessage.toString());
@@ -147,6 +147,8 @@ public class ChatController {
         stompHandler.initializeRoomUserCount(roomIds);  // 모든 방의 사용자 수 초기화
         return new HashMap<>(stompHandler.getAllUserCounts());
     }
+
+
 
 
 }

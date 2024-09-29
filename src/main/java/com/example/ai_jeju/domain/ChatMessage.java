@@ -12,6 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -34,9 +35,7 @@ public class ChatMessage {
     private String type;
     @UpdateTimestamp
     @Column(name = "timestamp")
-    @JsonSerialize(using = LocalDateTimeSerializer.class) // 직렬화 시 필요
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class) // 역직렬화 시 필요
-    @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss") // 원하는 형태의 LocalDateTime 설정
-    private LocalDateTime timestamp;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    private Timestamp timestamp;
     private String profileImg;
 }

@@ -7,6 +7,7 @@ import com.example.ai_jeju.repository.ChatRoomRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,6 +35,11 @@ public class ChatService {
 
     public ChatRoom findRoomById(String roomId) {
         return chatRoomRepository.findByRoomId(roomId).orElse(null);
+    }
+
+    public List<ChatMessage> findLastMessages(ChatRoom chatRoom, int limit) {
+        // 마지막 두 개의 메시지를 가져오는 로직
+        return chatMessageRepository.findTop2ByChatRoomOrderByTimestampDesc(chatRoom);
     }
 
     public List<ChatMessage> getAllMessages(ChatRoom chatRoom) {

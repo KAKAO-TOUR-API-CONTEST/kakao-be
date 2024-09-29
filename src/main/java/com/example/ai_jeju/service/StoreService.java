@@ -43,13 +43,11 @@ public class StoreService {
 
 
     public List<Store> getNearbyStores(Long storeId) {
-        // Step 1: Get nearby store IDs
         List<NearbyStore> nearbyStores = nearbyStoresRepository.findByStoreId(storeId);
         List<Long> nearbyStoreIds = nearbyStores.stream()
                 .map(NearbyStore::getNearbyStoreId)
                 .collect(Collectors.toList());
 
-        // Step 2: Get store details using nearbyStoreIds
         return storeRepository.findByStoreIdIn(nearbyStoreIds);
     }
 
