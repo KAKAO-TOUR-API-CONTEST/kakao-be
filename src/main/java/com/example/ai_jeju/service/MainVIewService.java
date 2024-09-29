@@ -339,7 +339,9 @@ public class MainVIewService {
     public MainResponse getMain(FilterDto filterDto, int randomSeed, int page){
 
         Map<String, Object> result =storeRepositoryCustom.findByFilterDto(filterDto, randomSeed,page);
+
         List<MainListResponse> mainListResponses = new ArrayList<>();
+
         List<Store> stores = (List<Store>) result.get("stores");
 
         for(Store store : stores){

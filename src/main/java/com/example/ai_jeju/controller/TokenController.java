@@ -22,17 +22,21 @@ public class TokenController {
     }
 
     @GetMapping("")
-    public ResponseDto getMyTokenInfo(@RequestHeader("") String token) {
+    public ResponseDto getMyTokenInfo(@RequestHeader("custom") String token) {
         // Bearer 토큰 형식에서 "Bearer " 부분 제거
         String accessToken = token.replace("Bearer ", "");
-        Date expiredDate = tokenProvider.getExpiredDate(token);
-        // 날짜 포맷 지정 (예: yyyy-MM-dd HH:mm:ss)
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
         // Date를 String으로 변환
-        String dateString = formatter.format(expiredDate);
-        if (tokenProvider.validToken(token)) {
+        if (tokenProvider.validToken(accessToken)) {
+
+            Date expiredDate = tokenProvider.getExpiredDate(accessToken);
+            // 날짜 포맷 지정 (예: yyyy-MM-dd HH:mm:ss)
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String dateString = formatter.format(expiredDate);
+
             return ResponseUtil.SUCCESS(true,dateString);
         } else {
+
             return ResponseUtil.ERROR(false, null);
         }
 
