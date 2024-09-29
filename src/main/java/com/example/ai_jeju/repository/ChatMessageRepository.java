@@ -3,6 +3,8 @@ package com.example.ai_jeju.repository;
 import com.example.ai_jeju.domain.ChatMessage;
 import com.example.ai_jeju.domain.ChatRoom;
 import org.apache.logging.log4j.message.Message;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -22,4 +24,6 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
     Optional<ChatMessage> findTop1ByChatRoomOrderByIdDesc(ChatRoom chatRoom);
 
     int countByChatRoom(ChatRoom chatRoom);
+
+    List<ChatMessage> findTop2ByChatRoomOrderByTimestampDesc(ChatRoom chatRoom);
 }

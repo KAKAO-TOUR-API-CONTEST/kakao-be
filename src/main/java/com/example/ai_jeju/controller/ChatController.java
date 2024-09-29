@@ -18,6 +18,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import software.amazon.ion.Timestamp;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -56,6 +57,12 @@ public class ChatController {
                 messageDto.setProfileImg(profileImg);
             }
 
+            if (messageDto.getTimestamp() == null) {
+                messageDto.setTimestamp(LocalDateTime.now());
+            }
+
+
+
             switch (messageDto.getType()) {
                 case ENTER:
                     messageDto.setMessage(nickname + "님이 입장하셨습니다.");
@@ -79,7 +86,7 @@ public class ChatController {
                             .sender(messageDto.getSender())
                             .message(messageDto.getMessage())
                             .profileImg(messageDto.getProfileImg())
-                            .timestamp(LocalDateTime.now())
+                            .timestamp(new java.sql.Timestamp(System.currentTimeMillis()))
                             .type(messageDto.getType().name())
                             .build();
                     log.info("Saving ChatMessage: " + chatMessage.toString());
@@ -147,6 +154,8 @@ public class ChatController {
         stompHandler.initializeRoomUserCount(roomIds);  // 모든 방의 사용자 수 초기화
         return new HashMap<>(stompHandler.getAllUserCounts());
     }
+
+
 
 
 }
