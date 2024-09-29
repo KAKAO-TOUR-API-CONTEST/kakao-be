@@ -58,9 +58,9 @@ public class MainVIewService {
         if(store.isPresent()){
             Store innerStore = store.get();
 
-
             DetailListResponse detailListResponse = DetailListResponse.builder()
                     .storeId(innerStore.getStoreId())
+                    .item(printCategory(innerStore.getCategoryId()))
                     .name(innerStore.getName())
                     .imgSrc(innerStore.getImgSrc())
                     .address(innerStore.getAddress())
