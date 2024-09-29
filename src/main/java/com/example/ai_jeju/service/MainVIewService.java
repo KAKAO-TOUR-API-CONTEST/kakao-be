@@ -66,13 +66,22 @@ public class MainVIewService {
                     .address(innerStore.getAddress())
                     .mapX(innerStore.getMapX())
                     .mapY(innerStore.getMapY())
+
+                    .parking(innerStore.getParking())
+                    .pet(innerStore.getPet())
                     .stroller(innerStore.getStroller())
-                    .strollerVal(innerStore.getStrollerVal())
+                    .playground(innerStore.getPlayground())
+
                     .babySpareChair(innerStore.getBabySpareChair())
                     .playground(innerStore.getPlayground())
+
+                    .strollerVal(innerStore.getStrollerVal())
+
                     .noKidsZone(innerStore.getNoKidsZone())
                     .categoryId(innerStore.getCategoryId())
                     .operationTime(innerStore.getOperationTime())
+                    .checkin(innerStore.getCheckin())
+                    .checkout(innerStore.getCheckout())
                     .tel(innerStore.getTel())
                     .noBmk(bmks.size())
                     .bmkStatus(bookmarkRepository.existsByUserAndStoreId(user.get(),storeId))
@@ -97,13 +106,21 @@ public class MainVIewService {
                     .address(innerStore.getAddress())
                     .mapX(innerStore.getMapX())
                     .mapY(innerStore.getMapY())
+                    //
+                    .pet(innerStore.getPet())
+                    .parking(innerStore.getParking())
                     .stroller(innerStore.getStroller())
+                    //
                     .strollerVal(innerStore.getStrollerVal())
                     .babySpareChair(innerStore.getBabySpareChair())
                     .playground(innerStore.getPlayground())
                     .noKidsZone(innerStore.getNoKidsZone())
                     .categoryId(innerStore.getCategoryId())
                     .operationTime(innerStore.getOperationTime())
+                    //
+                    .checkin(innerStore.getCheckin())
+                    .checkout(innerStore.getCheckout())
+                    //
                     .tel(innerStore.getTel())
                     .noBmk(innerStore.getNoBmk())
                     .bmkStatus(false)

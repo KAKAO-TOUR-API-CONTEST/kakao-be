@@ -5,7 +5,6 @@ import com.example.ai_jeju.dto.ModifyMyPageRequest;
 import com.example.ai_jeju.exception.UserNotFoundException;
 import com.example.ai_jeju.jwt.TokenProvider;
 import com.example.ai_jeju.service.MyJejuService;
-import com.example.ai_jeju.service.S3Service;
 import com.example.ai_jeju.service.UserService;
 import com.example.ai_jeju.util.ResponseDto;
 import com.example.ai_jeju.util.ResponseUtil;
@@ -24,8 +23,8 @@ public class MyJejuController {
     private MyJejuService myJejuService;
     @Autowired
     private UserService userService;
-    @Autowired
-    private S3Service s3Service;
+//    @Autowired
+//    private S3Service s3Service;
     public MyJejuController(TokenProvider tokenProvider) {
         this.tokenProvider = tokenProvider;
     }
@@ -110,19 +109,18 @@ public class MyJejuController {
     }
 
 
-    @PostMapping("/myjeju/mypage/presign")
-    public ResponseEntity<String> createPresignedUrl(@RequestBody Map<String, String> request) {
-        String filePath = request.get("filePath");
-        String presignedUrl = s3Service.createPresignedUrl(filePath);
-        return ResponseEntity.ok(presignedUrl);
-    }
+//    @PostMapping("/myjeju/mypage/presign")
+//    public ResponseEntity<String> createPresignedUrl(@RequestBody Map<String, String> request) {
+//        String filePath = request.get("filePath");
+//        String presignedUrl = s3Service.createPresignedUrl(filePath);
+//        return ResponseEntity.ok(presignedUrl);
+//    }
 
 
     @PutMapping("/myjeju/mypage/update")
     public ResponseDto updateMyPage (@RequestHeader("Authorization") String token, @RequestBody ModifyMyPageRequest modifyMyPageRequest) {
 
         String accessToken = token.replace("Bearer ", "");
-
         if (tokenProvider.validToken(accessToken)) {
             Long userId = tokenProvider.getUserId(accessToken);
             try {

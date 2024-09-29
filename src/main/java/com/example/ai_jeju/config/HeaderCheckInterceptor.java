@@ -18,10 +18,15 @@ public class HeaderCheckInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // 예시로 "X-Custom-Header"라는 헤더를 확인
+        // "X-Custom-Header" 확인
+        String customHeader = request.getHeader("X-Custom-Header");
+        if (customHeader != null) {
+            System.out.println(customHeader);
+        }
+
         //String headerValue = request.getHeader("access-token");
 
         String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);
-
         // 가져온 값에서 접두사 제거
         String token = getAccesToken(authorizationHeader);
 

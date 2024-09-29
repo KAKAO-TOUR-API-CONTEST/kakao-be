@@ -81,7 +81,6 @@ public class UserService {
     }
 
     public void registerChild(Long userId, ChildRequest childRequest){
-
         Child child = Child.builder()
                 .user(userRepository.findById(userId).get())
                 .childName(childRequest.getChildName())
