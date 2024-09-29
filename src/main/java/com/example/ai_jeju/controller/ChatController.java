@@ -18,6 +18,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import software.amazon.ion.Timestamp;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -55,6 +56,12 @@ public class ChatController {
             if (messageDto.getProfileImg() == null) {
                 messageDto.setProfileImg(profileImg);
             }
+
+            if (messageDto.getTimestamp() == null) {
+                messageDto.setTimestamp(LocalDateTime.now());
+            }
+
+
 
             switch (messageDto.getType()) {
                 case ENTER:

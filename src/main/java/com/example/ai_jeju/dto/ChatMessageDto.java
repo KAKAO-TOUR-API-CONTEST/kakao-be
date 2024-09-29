@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import software.amazon.ion.Timestamp;
 
+import java.time.LocalDateTime;
+
 @Builder
 @Getter
 @Setter
@@ -22,5 +24,5 @@ public class ChatMessageDto {
     private String message;
     private String profileImg;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-    private Timestamp timestamp;
+    private LocalDateTime timestamp;
 }
