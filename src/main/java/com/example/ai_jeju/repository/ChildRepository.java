@@ -20,5 +20,7 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
 
     Optional<Child> findByChildId(Long childId);
 
+    void deleteByUser(User user);
+
 
 }

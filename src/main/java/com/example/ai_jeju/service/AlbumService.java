@@ -175,8 +175,23 @@ public class AlbumService {
     public AlbumDetailResponse getDetailAlbumList(Long albumId){
 
         Optional<Album> optionalAlbum = albumRepository.findById(albumId);
+        List<String> options = new ArrayList<>();
+        //albumOption이 존재하지 않은 경우도 있으니까.
         if(optionalAlbum.isPresent()){
             Album album = optionalAlbum.get();
+            AlbumOption albumOption = albumOptionRepository.findByAlbum(album).get();
+            if(albumOption.isOptionalPet()) options.add("동물");
+            if(albumOption.isOptionalFriend()) options.add("친구");
+            if(albumOption.isOptionalFamily()) options.add("가족");
+            if(albumOption.isOptionalMorning()) options.add("아침");
+            if(albumOption.isOptionalAfterNoon()) options.add("낮");
+            if(albumOption.isOptionalNight()) options.add("저녁");
+            if(albumOption.isOptionalDining()) options.add("식사");
+            if(albumOption.isOptionalSnack()) options.add("간식");
+            if(albumOption.isOptionalPlay()) options.add("놀이");
+            if(albumOption.isOptionalStudy()) options.add("공부");
+            if(albumOption.isOptionalExperience()) options.add("체험");
+            if(albumOption.isOptionalWalk()) options.add("산책");
             List<String> imgSrcDtos = new ArrayList<>();
             //album Item list
             List<AlbumItem> albumItems = albumItemRepository.findByAlbum(album);
@@ -189,6 +204,7 @@ public class AlbumService {
                     .AlbumDesc(album.getAlbumDesc())
                     .rgtDate(album.getRgtDate())
                     .imgSrcDtos(imgSrcDtos)
+                    .options(options)
                     .build();
             return albumDetailResponse;
         }else{

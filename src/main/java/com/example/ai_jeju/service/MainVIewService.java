@@ -340,10 +340,9 @@ public class MainVIewService {
 
         Map<String, Object> result =storeRepositoryCustom.findByFilterDto(filterDto, randomSeed,page);
         List<MainListResponse> mainListResponses = new ArrayList<>();
-
         List<Store> stores = (List<Store>) result.get("stores");
-        for(Store store : stores){
 
+        for(Store store : stores){
             MainListResponse mainListResponse = MainListResponse.builder()
                     .storeId(store.getStoreId())
                     .name(store.getName())
