@@ -32,7 +32,7 @@ public class QChatMessage extends EntityPathBase<ChatMessage> {
 
     public final StringPath sender = createString("sender");
 
-    public final DateTimePath<java.time.LocalDateTime> timestamp = createDateTime("timestamp", java.time.LocalDateTime.class);
+    public final DateTimePath<java.sql.Timestamp> timestamp = createDateTime("timestamp", java.sql.Timestamp.class);
 
     public final StringPath type = createString("type");
 

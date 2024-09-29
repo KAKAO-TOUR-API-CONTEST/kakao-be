@@ -58,8 +58,6 @@ public class ChatController {
             }
 
 
-
-
             switch (messageDto.getType()) {
                 case ENTER:
                     messageDto.setMessage(nickname + "님이 입장하셨습니다.");
