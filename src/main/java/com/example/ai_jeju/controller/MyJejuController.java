@@ -9,6 +9,7 @@ import com.example.ai_jeju.service.UserService;
 import com.example.ai_jeju.util.ResponseDto;
 import com.example.ai_jeju.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -95,11 +96,29 @@ public class MyJejuController {
 
     // 마이제주 : 마이페이지 프로필 이미지 변경
     @PutMapping("/myjeju/mypage/profileimg")
-    public ResponseEntity<String> updateProfileImage(@RequestParam Long userId, @RequestBody Map<String, String> request) {
-        String profileimg = request.get("profileimg");
-        myJejuService.updateProfile(userId, profileimg);
-        return ResponseEntity.ok("success");
+    public ResponseEntity<String> updateProfileImage(@RequestHeader("Authorization") String token, @RequestBody Map<String, String> request) {
+        // JWT 토큰에서 "Bearer "를 제거하여 순수한 토큰 값만 추출
+        String accessToken = token.replace("Bearer ", "");
+
+        // 토큰이 유효한지 확인
+        if (tokenProvider.validToken(accessToken)) {
+            // 유효한 토큰에서 userId 추출
+            Long userId = tokenProvider.getUserId(accessToken);
+
+            // 요청 바디에서 프로필 이미지 URL 추출
+            String profileimg = request.get("profileimg");
+
+            // 서비스 메서드를 호출하여 프로필 이미지 업데이트
+            myJejuService.updateProfile(userId, profileimg);
+
+            // 성공 메시지 반환
+            return ResponseEntity.ok("success");
+        } else {
+            // 유효하지 않은 토큰일 경우 401 Unauthorized 반환
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지않은토큰");
+        }
     }
+
 
     // 마이제주 : 마이페이지 프로필 이미지 삭제
     @DeleteMapping("/myjeju/mypage/profileimg")
