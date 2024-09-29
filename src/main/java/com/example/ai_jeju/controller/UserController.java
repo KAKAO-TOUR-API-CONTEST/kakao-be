@@ -40,10 +40,16 @@ public class UserController {
     }
 
     //탈퇴하기
-    @PostMapping("/withdraw")
-    public ResponseEntity<String> signOut(@RequestBody WithdrawRequest withdrawRequest) {
-        String response = userService.withDraw(withdrawRequest);
-        return ResponseEntity.ok(response);
-    }
+    @DeleteMapping("/withdraw")
+    public ResponseDto  signOut(@RequestHeader(value = "Authorization") String token, @RequestParam String email) {
+        String accessToken = token.replace("Bearer ","");
 
+        try {
+            userService.withDraw(accessToken, email);
+            return ResponseUtil.SUCCESS("탈퇴에 성공하였습니다.",null);
+        }catch (Exception e){
+            return ResponseUtil.FAILURE(e, null);
+        }
+
+    }
 }

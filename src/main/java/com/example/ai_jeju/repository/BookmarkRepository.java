@@ -20,6 +20,7 @@ boolean existsByUserAndStoreId(User user, Long storeId);
 List<Bookmark> findByStoreId(Long storeId);
 List<Bookmark> findByUser(User user);
 void deleteByUserAndStoreId(User user, Long storeId);
+void deleteByUser(User user);
 
 
 }
