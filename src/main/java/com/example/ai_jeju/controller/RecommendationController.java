@@ -1,5 +1,6 @@
 package com.example.ai_jeju.controller;
 
+import com.example.ai_jeju.dto.RecommendRequest;
 import com.example.ai_jeju.jwt.TokenProvider;
 import com.example.ai_jeju.service.RecommendationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 @RestController
 @RequestMapping("/api")
 public class RecommendationController {
@@ -23,13 +23,13 @@ public class RecommendationController {
     }
 
     @PostMapping("/recommendsave")
-    public ResponseEntity<String> saveRecommendations(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody List<List<Long>> recommendIdsList) {
+    public ResponseEntity<String> saveRecommendations(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody RecommendRequest recommendRequest) {
         if (token != null) {
             String accessToken = token.replace("Bearer ", "");
             if (tokenProvider.validToken(accessToken)) {
                 Long userId = tokenProvider.getUserId(accessToken);
                 try {
-                    recommendationService.saveRecommendations(userId, recommendIdsList);
+                    recommendationService.saveRecommendations(userId, recommendRequest.getRecommendations());
                     return ResponseEntity.ok("선택ID저장");
                 } catch (IllegalArgumentException e) {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 데이터: " + e.getMessage());
@@ -43,7 +43,4 @@ public class RecommendationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("토큰없음");
         }
     }
-
-
-
 }
