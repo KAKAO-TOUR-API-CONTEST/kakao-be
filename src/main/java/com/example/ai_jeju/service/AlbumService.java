@@ -2,6 +2,7 @@ package com.example.ai_jeju.service;
 
 import com.example.ai_jeju.domain.*;
 import com.example.ai_jeju.dto.*;
+import com.example.ai_jeju.exception.UserNotFoundException;
 import com.example.ai_jeju.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,6 +146,29 @@ public class AlbumService {
         }else{
             return;
         }
+    }
+
+    @Transactional
+    public void updateAlbum(ModifyAlbumRequest modifyAlbumRequest){
+
+            //수정당할 애 찾기
+        Album album = albumRepository.findByAlbumId(modifyAlbumRequest.getAlbumId()).orElseThrow(() -> new UserNotFoundException("not found album"));
+
+            // 닉네임 업데이트
+            // 수정된 사용자 빌드
+        Album updatedAlbum = Album.builder()
+                .albumId(modifyAlbumRequest.getAlbumId()) // 기존 ID 유지
+                .albumTitle(modifyAlbumRequest.getAlbumTitle().orElse(album.getAlbumTitle()))
+                .rgtDate(album.getRgtDate())
+                .repImgSrc(album.getRepImgSrc())
+                .child(album.getChild())// 닉네임 수정
+                .albumDesc(modifyAlbumRequest.getAlbumDesc().orElse(album.getAlbumDesc()))  // 전화번호 수정
+                    // 추가적으로 수정할 필드가 있다면 여기에 추가
+                    .build();
+
+            // 변경된 사용자 정보를 저장
+            albumRepository.save(updatedAlbum);
+
     }
 
     @Transactional
