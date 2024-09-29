@@ -97,11 +97,10 @@ public class MyJejuService {
 
     //원래대로
     public void updateUser(Long userId, ModifyMyPageRequest modifyMyPageRequest) {
-        // 수정할 유저 찾기
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
 
-        // 닉네임과 전화번호 업데이트
         if (modifyMyPageRequest.getNickname().isPresent()) {
             user.setNickname(modifyMyPageRequest.getNickname().get());
         }
