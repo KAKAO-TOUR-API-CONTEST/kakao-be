@@ -177,7 +177,7 @@ public class AlbumService {
         Optional<Album> optionalAlbum = albumRepository.findById(albumId);
         List<String> options = new ArrayList<>();
         //albumOption이 존재하지 않은 경우도 있으니까.
-        if(optionalAlbum.isPresent()){
+
             Album album = optionalAlbum.get();
             AlbumOption albumOption = albumOptionRepository.findByAlbum(album).get();
             if(albumOption.isOptionalPet()) options.add("동물");
@@ -207,12 +207,9 @@ public class AlbumService {
                     .options(options)
                     .build();
             return albumDetailResponse;
-        }else{
-            //album없을때
-            return null;
         }
 
-    }
+
 
 
     public ScheduleResponse getScheculeListByChild(Long childId){
