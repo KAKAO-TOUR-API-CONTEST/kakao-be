@@ -29,7 +29,7 @@ public class RecommendationController {
             if (tokenProvider.validToken(accessToken)) {
                 Long userId = tokenProvider.getUserId(accessToken);
                 try {
-                    recommendationService.saveRecommendations(userId, recommendRequest.getRecommendations());
+                    recommendationService.saveRecommendations(userId, recommendRequest.getRestaurants(), recommendRequest.getLeisures(), recommendRequest.getHotels());
                     return ResponseEntity.ok("선택ID저장");
                 } catch (IllegalArgumentException e) {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 데이터: " + e.getMessage());

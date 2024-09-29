@@ -16,17 +16,34 @@ public class RecommendationService {
     @Autowired
     private RecommendationRepository recommendationRepository;
 
-    @Transactional // 트랜잭션 처리 추가
-    public void saveRecommendations(Long userId, List<List<Long>> recommendIdsList) {
+    @Transactional
+    public void saveRecommendations(Long userId, List<Long> restaurantIds, List<Long> leisureIds, List<Long> hotelIds) {
         List<Recommendation> recommendations = new ArrayList<>();
-        for (List<Long> recommendIds : recommendIdsList) {
-            for (Long recommendId : recommendIds) {
-                recommendations.add(Recommendation.builder()
-                        .userId(userId)
-                        .recommendId(recommendId)
-                        .build());
-            }
+
+        // 음식점 리스트 저장
+        for (Long restaurantId : restaurantIds) {
+            recommendations.add(Recommendation.builder()
+                    .userId(userId)
+                    .recommendId(restaurantId)
+                    .build());
         }
-        recommendationRepository.saveAll(recommendations);  // 성능 개선을 위해 한번에 저장
+
+        // 레저 리스트 저장
+        for (Long leisureId : leisureIds) {
+            recommendations.add(Recommendation.builder()
+                    .userId(userId)
+                    .recommendId(leisureId)
+                    .build());
+        }
+
+        // 호텔 리스트 저장
+        for (Long hotelId : hotelIds) {
+            recommendations.add(Recommendation.builder()
+                    .userId(userId)
+                    .recommendId(hotelId)
+                    .build());
+        }
+
+        recommendationRepository.saveAll(recommendations);  // 성능 개선을 위해 한 번에 저장
     }
 }
