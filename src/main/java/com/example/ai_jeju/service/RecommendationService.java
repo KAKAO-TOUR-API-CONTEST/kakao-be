@@ -16,7 +16,7 @@ public class RecommendationService {
     @Autowired
     private RecommendationRepository recommendationRepository;
 
-    @Transactional // 트랜잭션 처리 추가
+    @Transactional
     public void saveRecommendations(Long userId, List<List<Long>> recommendIdsList) {
         List<Recommendation> recommendations = new ArrayList<>();
         for (List<Long> recommendIds : recommendIdsList) {
@@ -27,6 +27,6 @@ public class RecommendationService {
                         .build());
             }
         }
-        recommendationRepository.saveAll(recommendations);  // 성능 개선을 위해 한번에 저장
+        recommendationRepository.saveAll(recommendations);
     }
 }
