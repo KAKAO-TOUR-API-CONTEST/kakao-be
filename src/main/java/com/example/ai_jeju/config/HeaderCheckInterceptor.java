@@ -34,7 +34,6 @@ public class HeaderCheckInterceptor implements HandlerInterceptor {
         //System.out.println(token);
         // 가져온 토큰이 유효한지 확인하고, 유효한 때는 인증정보 설정한다.
         System.out.println("토큰 유효성 검사"+tokenProvider.validToken(token));
-
         // 헤더가 올바르면 요청을 진행
         return true;
     }
