@@ -21,8 +21,9 @@ public class HeaderCheckInterceptor implements HandlerInterceptor {
         // "X-Custom-Header" 확인
         String customHeader = request.getHeader("X-Custom-Header");
         if (customHeader != null) {
-            System.out.println(customHeader);
+            System.out.println("customHeader"+customHeader);
         }
+
 
         //String headerValue = request.getHeader("access-token");
 
