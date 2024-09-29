@@ -8,12 +8,16 @@ import com.example.ai_jeju.repository.ChildRepository;
 import com.example.ai_jeju.repository.UserRepository;
 import com.example.ai_jeju.service.AlbumService;
 import com.example.ai_jeju.service.ChildService;
+import com.example.ai_jeju.service.MyJejuService;
 import com.example.ai_jeju.util.ResponseDto;
 import com.example.ai_jeju.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -29,6 +33,9 @@ public class ChildController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private MyJejuService myJejuService;
 
     private final TokenProvider tokenProvider;
 
@@ -69,6 +76,43 @@ public class ChildController {
             return ResponseUtil.ERROR("존재하지 않는 회원입니다.", null);
         }
 
+    }
+
+    @PutMapping("/myjeju/mypage/child/profileimg")
+    public ResponseEntity<String> updateChildProfileImage(@RequestHeader("Authorization") String token, @RequestBody Map<String, String> request) {
+
+        String accessToken = token.replace("Bearer ", "");
+
+        // 토큰이 유효한지 확인
+        if (tokenProvider.validToken(accessToken)) {
+
+            Long userId = tokenProvider.getUserId(accessToken);
+
+
+            String profileimg = request.get("profileimg");
+            String childIdStr = request.get("childId");
+
+
+            if (profileimg == null || childIdStr == null) {
+                return ResponseEntity.badRequest().body("Invalid request parameters");
+            }
+
+            try {
+
+                Long childId = Long.parseLong(childIdStr);
+
+
+                myJejuService.updateChildProfile(childId, profileimg);
+
+                return ResponseEntity.ok("success");
+            } catch (NumberFormatException e) {
+
+                return ResponseEntity.badRequest().body("Invalid childId format");
+            }
+        } else {
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지않은토큰");
+        }
     }
 
 
