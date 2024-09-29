@@ -57,9 +57,6 @@ public class ChatController {
                 messageDto.setProfileImg(profileImg);
             }
 
-            if (messageDto.getTimestamp() == null) {
-                messageDto.setTimestamp(LocalDateTime.now());
-            }
 
 
 
