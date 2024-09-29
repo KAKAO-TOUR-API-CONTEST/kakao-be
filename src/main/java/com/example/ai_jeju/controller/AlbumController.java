@@ -5,6 +5,8 @@ import com.example.ai_jeju.config.UUIDOneTimeTokenManager;
 import com.example.ai_jeju.dto.AddAlbumRequest;
 import com.example.ai_jeju.dto.AlbumDetailResponse;
 import com.example.ai_jeju.dto.AlbumListResponse;
+import com.example.ai_jeju.dto.ModifyMyPageRequest;
+import com.example.ai_jeju.exception.UserNotFoundException;
 import com.example.ai_jeju.service.AlbumService;
 import com.example.ai_jeju.service.UUIDTokenService;
 import com.example.ai_jeju.util.ResponseDto;
@@ -34,6 +36,20 @@ public class AlbumController {
           return ResponseUtil.FAILURE(e.getMessage(),null);
       }
     }
+
+//    @PostMapping("/modify")
+//    public ResponseDto modifyAlbum(@RequestBody AddAlbumRequest){
+//
+//        try{
+//            albumService.addAlbum(addAlbumRequest);
+//            return ResponseUtil.SUCCESS("사진첩 등록에 성공하셨습니다",null);
+//        } catch (Exception e){
+//            return ResponseUtil.FAILURE(e.getMessage(),null);
+//        }
+//    }
+
+
+
 
     @GetMapping("")
     public ResponseDto getAlbumList(@RequestParam Long childId ,String rgtDate){
