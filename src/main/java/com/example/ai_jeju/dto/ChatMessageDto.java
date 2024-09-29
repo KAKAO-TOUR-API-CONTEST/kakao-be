@@ -23,5 +23,4 @@ public class ChatMessageDto {
     private String sender;
     private String message;
     private String profileImg;
-    //시간삭제
 }
