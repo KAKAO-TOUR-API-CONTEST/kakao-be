@@ -10,5 +10,6 @@ public class TasteOptionResponse {
 
     private Long storeId;
     private String imgSrc;
+    private String name;
 
 }

@@ -35,6 +35,7 @@ public class TasteService {
             TasteOptionResponse tasteOptionResponse = TasteOptionResponse.builder()
                     .storeId(store.getStoreId())
                     .imgSrc(store.getImgSrc())
+                    .name(store.getName())
                     .build();
 
             tasteOptionResponses.add(tasteOptionResponse);
