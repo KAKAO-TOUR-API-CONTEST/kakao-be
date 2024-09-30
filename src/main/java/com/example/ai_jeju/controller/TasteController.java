@@ -25,7 +25,7 @@ public class TasteController {
     }
 
     @GetMapping("/taste")
-    ResponseDto getTasteOptions(@RequestParam int category, int randomSeed) {
+    ResponseDto getTasteOptions(@RequestParam("category") int category, @RequestParam("randomSeed") int randomSeed) {
         return ResponseUtil.SUCCESS("", tasteService.getTasteOptions(category, randomSeed));
     }
 
