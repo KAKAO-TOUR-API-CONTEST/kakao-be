@@ -1,6 +1,7 @@
 package com.example.ai_jeju.controller;
 
 import com.example.ai_jeju.dto.ChildRequest;
+import com.example.ai_jeju.dto.ModifyChildProfileRequest;
 import com.example.ai_jeju.dto.ModifyMyPageRequest;
 import com.example.ai_jeju.exception.UserNotFoundException;
 import com.example.ai_jeju.jwt.TokenProvider;
@@ -24,8 +25,7 @@ public class MyJejuController {
     private MyJejuService myJejuService;
     @Autowired
     private UserService userService;
-//    @Autowired
-//    private S3Service s3Service;
+
     public MyJejuController(TokenProvider tokenProvider) {
         this.tokenProvider = tokenProvider;
     }
@@ -172,6 +172,72 @@ public class MyJejuController {
             return ResponseUtil.FAILURE("고객 정보를 찾지 못하였습니다.", null);
         }
     }
+
+    @PutMapping("/myjeju/mypage/child/profile")
+    public ResponseEntity<String> updateChildProfile(@RequestHeader("Authorization") String token,
+                                                     @RequestBody ModifyChildProfileRequest modifychildProfileRequest) {
+
+        String accessToken = token.replace("Bearer ", "");
+
+        // 토큰이 유효한지 확인
+        if (tokenProvider.validToken(accessToken)) {
+
+            Long childId = modifychildProfileRequest.getChildId();
+
+            if (childId == null) {
+                return ResponseEntity.badRequest().body("ChildID가 존재하지 않음");
+            }
+
+            // 서비스 호출하여 프로필 업데이트 수행
+            myJejuService.updateChildProfile(childId,
+                    modifychildProfileRequest.getBirthDate(),
+                    modifychildProfileRequest.getRealtion(),
+                    modifychildProfileRequest.getGender());
+
+            return ResponseEntity.ok("Profile updated successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+        }
+    }
+
+    @PutMapping("/myjeju/mypage/child/profileimg")
+    public ResponseEntity<String> updateChildProfileImage(@RequestHeader("Authorization") String token, @RequestBody Map<String, String> request) {
+
+        String accessToken = token.replace("Bearer ", "");
+
+        // 토큰이 유효한지 확인
+        if (tokenProvider.validToken(accessToken)) {
+
+            Long userId = tokenProvider.getUserId(accessToken);
+
+
+            String profileimg = request.get("profileimg");
+            String childIdStr = request.get("childId");
+
+
+            if (profileimg == null || childIdStr == null) {
+                return ResponseEntity.badRequest().body("Invalid request parameters");
+            }
+
+            try {
+
+                Long childId = Long.parseLong(childIdStr);
+
+
+                myJejuService.updateChildImgProfile(childId, profileimg);
+
+                return ResponseEntity.ok("success");
+            } catch (NumberFormatException e) {
+
+                return ResponseEntity.badRequest().body("Invalid childId format");
+            }
+        } else {
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지않은토큰");
+        }
+    }
+
+
 
 
 }

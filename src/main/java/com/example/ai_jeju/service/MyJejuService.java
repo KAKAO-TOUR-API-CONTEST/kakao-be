@@ -65,19 +65,36 @@ public class MyJejuService {
     }
 
     @Transactional
-    public void updateChildProfile(Long childId, String profileimg) {
-        // Find the child by childId
+    public void updateChildImgProfile(Long childId, String profileimg) {
         Child child = childRepository.findById(childId)
                 .orElseThrow(() -> new RuntimeException("Child not found"));
-
-        // Set the profile image URL
         child.setChildProfile(profileimg);
 
-        // Save the updated child entity
         childRepository.save(child);
     }
 
-    //프로필 이미지 반환
+    @Transactional
+    public void updateChildProfile(Long childId, String birthDate, String realtion, Boolean gender) {
+
+        Child child = childRepository.findById(childId)
+                .orElseThrow(() -> new RuntimeException("Child not found"));
+
+
+        if (birthDate != null && !birthDate.isEmpty()) {
+            child.setBirthDate(birthDate);
+        }
+
+        if (realtion != null && !realtion.isEmpty()) {
+            child.setRealtion(realtion);
+        }
+
+        if (gender != null) {
+            child.setGender(gender);
+        }
+        childRepository.save(child);
+    }
+
+
     public String getProfileUrl(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Profile not found"));
@@ -109,7 +126,6 @@ public class MyJejuService {
             user.setPhoneNum(modifyMyPageRequest.getPhoneNum().get());
         }
 
-        // 변경된 사용자 정보를 저장
         userRepository.save(user);
     }
 
@@ -185,4 +201,6 @@ public class MyJejuService {
         Optional<Child> child = childRepository.findByChildId(childId);
         childRepository.delete(child.get());
     }
+
+
 }
