@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Table(name="child")
 @NoArgsConstructor(access= AccessLevel.PROTECTED) //기본생성자
 @Getter
+@Setter
 @Entity
 @AllArgsConstructor // 모든 필드를 초기화하는 생성자
 @Builder // 빌더 패턴

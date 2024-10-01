@@ -159,8 +159,18 @@ public class MainVIewService {
     public List<MainListResponse> getMainList(){
 
         List<Store> storeList= storeRepository.findAllOrderByRandomNative();
+
+        System.out.println("Store List Size: " + storeList.size());  // 로그 확인
         //Optional<User> user = userRepository.findById(userId);
         List<MainListResponse> mainListResponses= new ArrayList<>();
+
+        for (Store store : storeList) {
+            if (store == null) {
+                System.out.println("Store is null");
+            } else {
+                System.out.println("Store ID: " + store.getStoreId());
+            }
+        }
 
         for(Store store : storeList){
 

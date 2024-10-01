@@ -1,20 +1,19 @@
 package com.example.ai_jeju.controller;
 
-import com.example.ai_jeju.domain.Child;
-import com.example.ai_jeju.domain.User;
-import com.example.ai_jeju.dto.AlbumResponse;
+import com.example.ai_jeju.dto.ModifyChildProfileRequest;
 import com.example.ai_jeju.jwt.TokenProvider;
-import com.example.ai_jeju.repository.ChildRepository;
 import com.example.ai_jeju.repository.UserRepository;
 import com.example.ai_jeju.service.AlbumService;
 import com.example.ai_jeju.service.ChildService;
+import com.example.ai_jeju.service.MyJejuService;
 import com.example.ai_jeju.util.ResponseDto;
 import com.example.ai_jeju.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -29,6 +28,9 @@ public class ChildController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private MyJejuService myJejuService;
 
     private final TokenProvider tokenProvider;
 
@@ -70,6 +72,8 @@ public class ChildController {
         }
 
     }
+
+
 
 
 
