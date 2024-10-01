@@ -43,6 +43,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath rgtDate = createString("rgtDate");
 
+    public final BooleanPath valid = createBoolean("valid");
+
     public QUser(String variable) {
         super(User.class, forVariable(variable));
     }

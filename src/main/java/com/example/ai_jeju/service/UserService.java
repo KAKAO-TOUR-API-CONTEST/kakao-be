@@ -67,19 +67,18 @@ public class UserService {
             return null;
         }
 
-        if (existingUser.isPresent()) {
+        if (existingUser.isPresent()&&existingUser.get().isValid()) {
             User user = existingUser.get();
             String accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_DURATION);
-
             Date expiredDate = tokenProvider.getExpiredDate(accessToken);
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             // Date를 String으로 변환
             String dateString = formatter.format(expiredDate);
             result[0] = accessToken;
             result[1] = dateString;
-
             return result;
         } else {
+
             return null;
         }
     }
@@ -127,6 +126,7 @@ public class UserService {
                 .rgtDate(date.toString())
                 .phoneNum(signUpRequest.getPhoneNum())
                 .ifRcmd(signUpRequest.getIfRcmd())
+                .valid(true)
                 .build();
         /*-------------------------------------------*/
 
@@ -165,7 +165,6 @@ public class UserService {
                         ()-> new IllegalArgumentException("unexpected user"));
     }
 
-
     public Optional<User> findById(Long userId){
         return userRepository.findById(userId);
     }
@@ -181,11 +180,10 @@ public class UserService {
         if(tokenProvider.validToken(accessToken)){
             Optional<User> delUser = userRepository.findById(tokenProvider.getUserId(accessToken));
             if(delUser.isPresent()){
-                childRepository.deleteByUser(delUser.get());
-                bookmarkRepository.deleteByUser(delUser.get());
-                userRepository.delete(delUser.get());
+                User user = delUser.get();
+                userRepository.updateUserByValid(user.getId(), false); // valid 항목을 변경하는 메서드 호출
+                // 변경사항 저장
                 // soft-delete
-
             }else{
                 // 존재하지 않는 회원입니다.
                 throw new RuntimeException("존재하지 않는 회원입니다.");
@@ -195,57 +193,6 @@ public class UserService {
             throw new RuntimeException("유효하지 않은 토큰입니다.");
         }
 
-//        User delUser = this.findByEmail(withDrawRequest.getEmail());
-//        String provider = delUser.getProvider();
-//        if(tokenProvider.validToken(withDrawRequest.getAccessToken())){
-//            userRepository.delete(delUser);
-//            ResponseUtil.SUCCESS("delete Success","")
-//            return("delete success");
-//        }else{
-//
-//        }
-//
-//
-//        /*--------------------------------------------------------------------------------------------------*/
-//        switch (provider){
-//            case "kakao":
-//                url = "https://kapi.kakao.com/v1/user/unlink";
-//                //헤더 만들기
-//                HttpHeaders headers = new HttpHeaders();
-//                headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-//                headers.set("Authorization", "Bearer " + accessToken);
-//                //전달할 Header 기반 HttpEntity 만들기
-//                HttpEntity<String> entity = new HttpEntity<>(headers);
-//                ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
-//                ResponseEntity<String> result = ResponseEntity.status(response.getStatusCode()).body(response.getBody());
-//                System.out.println("카카오 탈퇴 결과값 :"+result);
-//                //맞을때
-//                if(result.equals("200")){
-//                    userRepository.delete(delUser);
-//                    return("delete success");
-//                }
-//                //아니면 그냥 break..
-//                else{
-//                    return("delete fail");
-//                }
-//                /*--------------------------------------------------------------------------------------------------*/
-//            case "google":
-//                url  = "https://accounts.google.com/o/oauth2/revoke?token="+accessToken;
-//                ResponseEntity<String> googleRes = restTemplate.getForEntity(url, String.class);
-//                ResponseEntity<String> googleResult = ResponseEntity.status(googleRes.getStatusCode()).body(googleRes.getBody());
-//                System.out.println("구글 탈퇴 결과값 :"+googleResult);
-//                /*--------------------------------------------------------------------------------------------------*/
-//                //맞을때
-//                if(googleResult.equals("200")){
-//                    userRepository.delete(delUser);
-//                    return("delete success");
-//                }
-//                //아니면 그냥 break..
-//                else{
-//                    return("delete fail");
-//                }
-//        }
-//        return "result";
     }
 
     //생성된 리프레시 토큰을 전달받아 데이터베이스 저장

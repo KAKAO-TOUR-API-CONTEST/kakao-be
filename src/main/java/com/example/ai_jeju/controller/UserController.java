@@ -42,6 +42,7 @@ public class UserController {
     //탈퇴하기
     @DeleteMapping("/withdraw")
     public ResponseDto  signOut(@RequestHeader(value = "Authorization") String token, @RequestParam String email) {
+
         String accessToken = token.replace("Bearer ","");
 
         try {
