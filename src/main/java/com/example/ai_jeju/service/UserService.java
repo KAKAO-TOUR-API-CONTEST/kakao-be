@@ -114,7 +114,7 @@ public class UserService {
                 //일단 닉네임을 생성해보고.
                 nick = new NickNameGenerator().getNickname();
                 //만약 중복된 닉네임이 없을 때까지 재생성한다.
-                while (!userRepository.findUserByNickname(nick).isPresent()) {
+                while (userRepository.findUserByNickname(nick).isPresent()) {
                     nick = new NickNameGenerator().getNickname();
                 }
             }
@@ -170,7 +170,6 @@ public class UserService {
             if(existingUser.get().isValid()){
                 return ResponseUtil.FAILURE("이미 가입된 회원입니다.", "");
             }else{
-
                 // 한번 탈퇴한 회원일 경우에
                 User user = existingUser.get();
                 userRepository.delete(user);
@@ -179,7 +178,7 @@ public class UserService {
                     //일단 닉네임을 생성해보고.
                     nick = new NickNameGenerator().getNickname();
                     //만약 중복된 닉네임이 없을 때까지 재생성한다.
-                    while (!userRepository.findUserByNickname(nick).isPresent()) {
+                    while (userRepository.findUserByNickname(nick).isPresent()) {
                         nick = new NickNameGenerator().getNickname();
                     }
                 }
