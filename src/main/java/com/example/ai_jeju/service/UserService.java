@@ -163,6 +163,7 @@ public class UserService {
             return ResponseUtil.SUCCESS("로그인 완료되었습니다.", access_token);
         } else {
             User newUser = existingUser.get();
+            userRepository.updateUserByValid(newUser.getId(), true);
             String access_token = tokenProvider.generateToken(newUser, ACCESS_TOKEN_DURATION);
             return ResponseUtil.SUCCESS("로그인 완료되었습니다.",access_token);
 
