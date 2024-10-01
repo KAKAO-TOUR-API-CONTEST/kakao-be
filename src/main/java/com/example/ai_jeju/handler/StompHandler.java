@@ -1,6 +1,8 @@
 package com.example.ai_jeju.handler;
 
+import com.example.ai_jeju.domain.User;
 import com.example.ai_jeju.jwt.TokenProvider;
+import com.example.ai_jeju.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
@@ -21,6 +23,8 @@ import java.util.Map;
 @Component
 @Slf4j
 public class StompHandler implements ChannelInterceptor {
+
+    private final UserRepository userRepository;
 
     private final TokenProvider tokenProvider;
     private static final String BEARER_PREFIX = "Bearer ";
@@ -60,10 +64,13 @@ public class StompHandler implements ChannelInterceptor {
             if (isValid) {
                 log.info("JWT Token is valid. Proceeding with connection.");
 
-                // 토큰에서 nickname 추출
-                String nickname = tokenProvider.extractNickname(token);
+                Long userId = tokenProvider.getUserId(token);
 
-                String profileImg = tokenProvider.extractProfileImg(token);
+                User user = userRepository.findById(userId)
+                        .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+                String nickname = user.getNickname();
+                String profileImg = user.getProfileImg();
                 log.info("Extracted nickname: {}", nickname);
 
                 // WebSocket 세션에 nickname 저장
