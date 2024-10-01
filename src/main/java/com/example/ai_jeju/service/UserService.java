@@ -20,11 +20,13 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.awt.*;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.List;
 
 import static com.example.ai_jeju.handler.SignUpHandler.ACCESS_TOKEN_COOKIE_NAME;
 //import static com.example.ai_jeju.handler.SignUpHandler.REFRESH_TOKEN_COOKIE_NAME;
@@ -54,20 +56,21 @@ public class UserService {
 
     @Autowired
     private StoreRepository storeRepository;
+
     /**
      * login/signu up flow-1
      * checkIfUser : 기존 회원여부 확인
      * 기존 회원이라면 객체 (아이디만) 반환 , AccessToken 쿠키로 발급
      */
-    public String [] checkIfUser(String email, HttpServletRequest request, HttpServletResponse response) {
+    public String[] checkIfUser(String email, HttpServletRequest request, HttpServletResponse response) {
         Optional<User> existingUser = userRepository.findByEmail(email);
 
-        String [] result = new String [2];
-        if (result==null){
+        String[] result = new String[2];
+        if (result == null) {
             return null;
         }
 
-        if (existingUser.isPresent()&&existingUser.get().isValid()) {
+        if (existingUser.isPresent() && existingUser.get().isValid()) {
             User user = existingUser.get();
             String accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_DURATION);
             Date expiredDate = tokenProvider.getExpiredDate(accessToken);
@@ -83,7 +86,7 @@ public class UserService {
         }
     }
 
-    public void registerChild(Long userId, ChildRequest childRequest){
+    public void registerChild(Long userId, ChildRequest childRequest) {
         Child child = Child.builder()
                 .user(userRepository.findById(userId).get())
                 .childName(childRequest.getChildName())
@@ -101,63 +104,74 @@ public class UserService {
      * registerUser : 새로운 회원 DB 저장
      * 기존 회원이라면 객체 반환 , AccessToken 쿠키로 발급
      */
-    public ResponseDto registerUser( SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseDto registerUser(SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response) {
         // 닉네임 없을 때 생성
-
-        String nick = signUpRequest.getNickname();
-        if(nick==null){
-            //일단 닉네임을 생성해보고.
-            nick = new NickNameGenerator().getNickname();
-            //만약 중복된 닉네임이 없을 때까지 재생성한다.
-            while(!userRepository.findUserByNickname(nick).isPresent()){
+        Optional<User> existingUser = userRepository.findByEmail(signUpRequest.getEmail());
+        if (!existingUser.isPresent()) {
+            String nick = signUpRequest.getNickname();
+            if (nick == null) {
+                //일단 닉네임을 생성해보고.
                 nick = new NickNameGenerator().getNickname();
+                //만약 중복된 닉네임이 없을 때까지 재생성한다.
+                while (!userRepository.findUserByNickname(nick).isPresent()) {
+                    nick = new NickNameGenerator().getNickname();
+                }
             }
-        }
-        // 가입일자
-        LocalDate date = LocalDate.now();
-        // Save new user using builder pattern
-        User newUser = User.builder()
-                .name(signUpRequest.getName())
-                .nickname(nick)
-                .provider(signUpRequest.getProvider())
-                .email(signUpRequest.getEmail())
-                .profileImg(signUpRequest.getProfileImg())
-                .provider(signUpRequest.getProvider())
-                .rgtDate(date.toString())
-                .phoneNum(signUpRequest.getPhoneNum())
-                .ifRcmd(signUpRequest.getIfRcmd())
-                .valid(true)
-                .build();
-        /*-------------------------------------------*/
-
-        // 1. 부모정보 저장하기
-        userRepository.save(newUser);
-        Optional<User> registerdUser = userRepository.findByEmail(newUser.getEmail());
-
-        // 2. 동반아동 등록하기
-        List<ChildRequest> childList = signUpRequest.getChild();
-        for(int i=0; i<childList.size(); i++){
-            Child child = Child.builder()
-                    // 유저 아이디의 값 그대로 주기.
-                    .user(registerdUser.get())
-                    .childName(childList.get(i).getChildName())
-                    .birthDate(childList.get(i).getBirthDate())
-                    .gender(childList.get(i).getGender())
-                    .realtion(childList.get(i).getRelation())
+            // 가입일자
+            LocalDate date = LocalDate.now();
+            // Save new user using builder pattern
+            User newUser = User.builder()
+                    .name(signUpRequest.getName())
+                    .nickname(nick)
+                    .provider(signUpRequest.getProvider())
+                    .email(signUpRequest.getEmail())
+                    .profileImg(signUpRequest.getProfileImg())
+                    .provider(signUpRequest.getProvider())
+                    .rgtDate(date.toString())
+                    .phoneNum(signUpRequest.getPhoneNum())
+                    .ifRcmd(signUpRequest.getIfRcmd())
+                    .valid(true)
                     .build();
+            /*-------------------------------------------*/
 
-            childRepository.save(child);
+            // 1. 부모정보 저장하기
+            userRepository.save(newUser);
+            Optional<User> registerdUser = userRepository.findByEmail(newUser.getEmail());
+
+            // 2. 동반아동 등록하기
+            List<ChildRequest> childList = signUpRequest.getChild();
+            for (int i = 0; i < childList.size(); i++) {
+                Child child = Child.builder()
+                        // 유저 아이디의 값 그대로 주기.
+                        .user(registerdUser.get())
+                        .childName(childList.get(i).getChildName())
+                        .birthDate(childList.get(i).getBirthDate())
+                        .gender(childList.get(i).getGender())
+                        .realtion(childList.get(i).getRelation())
+                        .build();
+
+                childRepository.save(child);
+            }
+
+            String refresh_token = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
+            String access_token = tokenProvider.generateToken(newUser, ACCESS_TOKEN_DURATION);
+            // DB에 refreshToken 저장
+            saveRefreshToken(newUser.getId(), refresh_token);
+            // AccessToken 쿠키로 발급
+            addAccessTokenToCookie(request, response, access_token);
+
+            return ResponseUtil.SUCCESS("로그인 완료되었습니다.", access_token);
+        } else {
+            User newUser = existingUser.get();
+            String access_token = tokenProvider.generateToken(newUser, ACCESS_TOKEN_DURATION);
+            return ResponseUtil.SUCCESS("로그인 완료되었습니다.",access_token);
+
         }
 
-        String refresh_token = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
-        String access_token = tokenProvider.generateToken(newUser, ACCESS_TOKEN_DURATION);
-        // DB에 refreshToken 저장
-        saveRefreshToken(newUser.getId(), refresh_token);
-        // AccessToken 쿠키로 발급
-        addAccessTokenToCookie(request,response, access_token);
 
-        return  ResponseUtil.SUCCESS("로그인 완료되었습니다.", access_token);
-    }
+
+
+}
 
     public User findByEmail(String email){
         return userRepository.findByEmail(email)
