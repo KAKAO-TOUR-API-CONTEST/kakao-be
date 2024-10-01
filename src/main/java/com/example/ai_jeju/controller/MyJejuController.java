@@ -191,7 +191,7 @@ public class MyJejuController {
             // 서비스 호출하여 프로필 업데이트 수행
             myJejuService.updateChildProfile(childId,
                     modifychildProfileRequest.getBirthDate(),
-                    modifychildProfileRequest.getRealtion(),
+                    modifychildProfileRequest.getRelation(),
                     modifychildProfileRequest.getGender());
 
             return ResponseEntity.ok("Profile updated successfully");
