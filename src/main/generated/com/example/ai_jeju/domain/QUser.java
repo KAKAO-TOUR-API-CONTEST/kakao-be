@@ -19,12 +19,6 @@ public class QUser extends EntityPathBase<User> {
 
     public static final QUser user = new QUser("user");
 
-    public final BooleanPath ag1 = createBoolean("ag1");
-
-    public final BooleanPath ag2 = createBoolean("ag2");
-
-    public final BooleanPath ag3 = createBoolean("ag3");
-
     public final StringPath email = createString("email");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
@@ -42,6 +36,10 @@ public class QUser extends EntityPathBase<User> {
     public final StringPath provider = createString("provider");
 
     public final StringPath rgtDate = createString("rgtDate");
+
+    public final BooleanPath selectedCk1 = createBoolean("selectedCk1");
+
+    public final BooleanPath selectedCk2 = createBoolean("selectedCk2");
 
     public final BooleanPath valid = createBoolean("valid");
 
