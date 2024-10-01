@@ -20,7 +20,6 @@ public class RecommendationService {
     public void saveRecommendations(Long userId, List<Long> restaurantIds, List<Long> leisureIds, List<Long> hotelIds) {
         List<Recommendation> recommendations = new ArrayList<>();
 
-        // 음식점 리스트 저장
         for (Long restaurantId : restaurantIds) {
             recommendations.add(Recommendation.builder()
                     .userId(userId)
@@ -28,7 +27,6 @@ public class RecommendationService {
                     .build());
         }
 
-        // 레저 리스트 저장
         for (Long leisureId : leisureIds) {
             recommendations.add(Recommendation.builder()
                     .userId(userId)
@@ -36,7 +34,7 @@ public class RecommendationService {
                     .build());
         }
 
-        // 호텔 리스트 저장
+
         for (Long hotelId : hotelIds) {
             recommendations.add(Recommendation.builder()
                     .userId(userId)
@@ -44,6 +42,6 @@ public class RecommendationService {
                     .build());
         }
 
-        recommendationRepository.saveAll(recommendations);  // 성능 개선을 위해 한 번에 저장
+        recommendationRepository.saveAll(recommendations);
     }
 }

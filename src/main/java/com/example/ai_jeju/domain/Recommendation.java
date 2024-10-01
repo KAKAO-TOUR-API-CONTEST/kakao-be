@@ -8,8 +8,8 @@ import lombok.*;
 @Table(name = "Recommendation")
 @Getter
 @Setter
-@AllArgsConstructor // Constructor with all arguments
-@NoArgsConstructor  // No-args constructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class Recommendation {
 

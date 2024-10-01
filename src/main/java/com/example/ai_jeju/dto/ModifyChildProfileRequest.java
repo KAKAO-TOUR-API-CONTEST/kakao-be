@@ -4,10 +4,9 @@ public class ModifyChildProfileRequest {
 
     private Long childId;
     private String birthDate;
-    private String realtion;
+    private String relation;
     private boolean gender;
 
-    // Getter 메서드 수동 추가
     public Long getChildId() {
         return childId;
     }
@@ -16,8 +15,8 @@ public class ModifyChildProfileRequest {
         return birthDate;
     }
 
-    public String getRealtion() {
-        return realtion;
+    public String getRelation() {
+        return relation;
     }
 
     public Boolean getGender() {

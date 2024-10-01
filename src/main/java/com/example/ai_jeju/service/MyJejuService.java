@@ -74,7 +74,7 @@ public class MyJejuService {
     }
 
     @Transactional
-    public void updateChildProfile(Long childId, String birthDate, String realtion, Boolean gender) {
+    public void updateChildProfile(Long childId, String birthDate, String relation, Boolean gender) {
 
         Child child = childRepository.findById(childId)
                 .orElseThrow(() -> new RuntimeException("Child not found"));
@@ -84,8 +84,8 @@ public class MyJejuService {
             child.setBirthDate(birthDate);
         }
 
-        if (realtion != null && !realtion.isEmpty()) {
-            child.setRealtion(realtion);
+        if (relation != null && !relation.isEmpty()) {
+            child.setRealtion(relation);
         }
 
         if (gender != null) {
