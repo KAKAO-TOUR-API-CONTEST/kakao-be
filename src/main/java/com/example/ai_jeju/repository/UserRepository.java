@@ -1,6 +1,7 @@
 package com.example.ai_jeju.repository;
 
 import com.example.ai_jeju.domain.User;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,6 +22,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     void updateUserByValid(@Param("id") Long userId, @Param("valid") Boolean valid);
 
     @Modifying
+    @Transactional
     @Query("UPDATE User u set u.valid = :valid, u.nickname = :nickname, u.profileImg = :profileImg," +
             "u.provider = :provider , u.rgtDate = :rgtDate, u.phoneNum = :phoneNum," +
             "u.ifRcmd = :ifRcmd, u.selectedCk1 = :selectedCk1, u.selectedCk2 = :selectedCk2 WHERE u.id = :id")
