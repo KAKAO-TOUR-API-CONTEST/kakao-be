@@ -107,6 +107,7 @@ public class UserService {
     public ResponseDto registerUser(SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response) {
         // 닉네임 없을 때 생성
         Optional<User> existingUser = userRepository.findByEmail(signUpRequest.getEmail());
+
         if (!existingUser.isPresent()) {
             String nick = signUpRequest.getNickname();
             if (nick == null) {
@@ -164,65 +165,71 @@ public class UserService {
         } else {
 
             // 한번 탈퇴한 회원일 경우에, 혹은 있거나?
-
             //이미 있는 회원일 때
+
             if(existingUser.get().isValid()){
                 return ResponseUtil.FAILURE("이미 가입된 회원입니다.", "");
-            }
+            }else{
 
-            String nick = signUpRequest.getNickname();
-            if (nick == null) {
-                //일단 닉네임을 생성해보고.
-                nick = new NickNameGenerator().getNickname();
-                //만약 중복된 닉네임이 없을 때까지 재생성한다.
-                while (!userRepository.findUserByNickname(nick).isPresent()) {
+                // 한번 탈퇴한 회원일 경우에
+                User user = existingUser.get();
+                userRepository.delete(user);
+                String nick = signUpRequest.getNickname();
+                if (nick == null) {
+                    //일단 닉네임을 생성해보고.
                     nick = new NickNameGenerator().getNickname();
+                    //만약 중복된 닉네임이 없을 때까지 재생성한다.
+                    while (!userRepository.findUserByNickname(nick).isPresent()) {
+                        nick = new NickNameGenerator().getNickname();
+                    }
                 }
-            }
-            // 가입일자
-            LocalDate date = LocalDate.now();
-            // Save new user using builder pattern
-            User newUser = User.builder()
-                    .name(signUpRequest.getName())
-                    .nickname(nick)
-                    .provider(signUpRequest.getProvider())
-                    .email(signUpRequest.getEmail())
-                    .profileImg(signUpRequest.getProfileImg())
-                    .provider(signUpRequest.getProvider())
-                    .rgtDate(date.toString())
-                    .phoneNum(signUpRequest.getPhoneNum())
-                    .ifRcmd(signUpRequest.getIfRcmd())
-                    .valid(true)
-                    .build();
-            /*-------------------------------------------*/
-
-            // 1. 부모정보 저장하기
-            userRepository.save(newUser);
-            Optional<User> registerdUser = userRepository.findByEmail(newUser.getEmail());
-
-            // 2. 동반아동 등록하기
-            List<ChildRequest> childList = signUpRequest.getChild();
-            for (int i = 0; i < childList.size(); i++) {
-                Child child = Child.builder()
-                        // 유저 아이디의 값 그대로 주기.
-                        .user(registerdUser.get())
-                        .childName(childList.get(i).getChildName())
-                        .birthDate(childList.get(i).getBirthDate())
-                        .gender(childList.get(i).getGender())
-                        .realtion(childList.get(i).getRelation())
+                // 가입일자
+                LocalDate date = LocalDate.now();
+                // Save new user using builder pattern
+                User requestedUser = User.builder()
+                        .name(signUpRequest.getName())
+                        .nickname(nick)
+                        .provider(signUpRequest.getProvider())
+                        .email(signUpRequest.getEmail())
+                        .profileImg(signUpRequest.getProfileImg())
+                        .provider(signUpRequest.getProvider())
+                        .rgtDate(date.toString())
+                        .phoneNum(signUpRequest.getPhoneNum())
+                        .ifRcmd(signUpRequest.getIfRcmd())
+                        .valid(true)
                         .build();
+                /*-------------------------------------------*/
 
-                childRepository.save(child);
+                // 1. 부모정보 저장하기
+                User newUser = userRepository.save(requestedUser);
+                //Optional<User> registerdUser = userRepository.findByEmail(newUser.getEmail());
+                // 2. 동반아동 등록하기
+                List<ChildRequest> childList = signUpRequest.getChild();
+                for (int i = 0; i < childList.size(); i++) {
+                    Child child = Child.builder()
+                            // 유저 아이디의 값 그대로 주기.
+                            .user(newUser)
+                            .childName(childList.get(i).getChildName())
+                            .birthDate(childList.get(i).getBirthDate())
+                            .gender(childList.get(i).getGender())
+                            .realtion(childList.get(i).getRelation())
+                            .build();
+
+                    childRepository.save(child);
+                }
+
+                String refresh_token = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
+                String access_token = tokenProvider.generateToken(newUser, ACCESS_TOKEN_DURATION);
+                // DB에 refreshToken 저장
+                saveRefreshToken(newUser.getId(), refresh_token);
+                // AccessToken 쿠키로 발급
+                addAccessTokenToCookie(request, response, access_token);
+
+                return ResponseUtil.SUCCESS("로그인 완료되었습니다.", access_token);
+
             }
 
-            String refresh_token = tokenProvider.generateToken(newUser, REFRESH_TOKEN_DURATION);
-            String access_token = tokenProvider.generateToken(newUser, ACCESS_TOKEN_DURATION);
-            // DB에 refreshToken 저장
-            saveRefreshToken(newUser.getId(), refresh_token);
-            // AccessToken 쿠키로 발급
-            addAccessTokenToCookie(request, response, access_token);
 
-            return ResponseUtil.SUCCESS("로그인 완료되었습니다.", access_token);
         }
 
 }
