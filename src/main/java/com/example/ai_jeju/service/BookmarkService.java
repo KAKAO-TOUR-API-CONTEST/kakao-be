@@ -108,9 +108,10 @@ public class BookmarkService {
                                 .numOfBmk(bmks.size())
                                 .build();
                         bookMarkItems.add(bookMarkItem);
-                        return bookMarkItems;
+
                     }
                 }
+                return bookMarkItems;
             }
             return null;
         }

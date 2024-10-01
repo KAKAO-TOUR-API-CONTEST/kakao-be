@@ -47,6 +47,10 @@ public class User {
     @Column(name ="ifRcmd", nullable = false)
     private boolean ifRcmd;
 
+    @Column(name ="valid", nullable = true)
+    private boolean valid;
+
+
     //약관 1
     @Column(name ="ag1", nullable = false)
     private boolean ag1;
