@@ -40,7 +40,7 @@ public class MainVIewService {
                 return ("음식점");
 
             case 2:
-                return ("음식점");
+                return ("호텔");
 
             case 3:
                 return ("레저");
