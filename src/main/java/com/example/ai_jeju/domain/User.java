@@ -47,14 +47,11 @@ public class User {
     @Column(name ="ifRcmd", nullable = false)
     private boolean ifRcmd;
 
-    //약관 1
-    @Column(name ="ag1", nullable = false)
-    private boolean ag1;
-    //약관 2
-    @Column(name ="ag2", nullable = false)
-    private boolean ag2;
-    //약관 3
-    @Column(name ="ag3", nullable = false)
-    private boolean ag3;
+    @Column(name ="valid", nullable = true)
+    private boolean valid;
 
+    @Column(name ="selectedCk1", nullable = false)
+    private boolean selectedCk1;
+    @Column(name ="selectedCk2", nullable = false)
+    private boolean selectedCk2;
 }
