@@ -8,9 +8,11 @@ import com.example.ai_jeju.jwt.TokenProvider;
 import com.example.ai_jeju.repository.ChatMessageRepository;
 import com.example.ai_jeju.repository.ChatRoomRepository;
 import com.example.ai_jeju.service.ChatService;
+import com.example.ai_jeju.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -18,6 +20,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import software.amazon.ion.Timestamp;
 
 import java.time.LocalDateTime;
@@ -33,6 +36,7 @@ public class ChatController {
     private final ChatMessageRepository chatMessageRepository;
     private final TokenProvider tokenProvider;
     private final StompHandler stompHandler;
+    private final NotificationService notificationService;
 
     @Autowired
     private ChatService chatService;
@@ -96,6 +100,24 @@ public class ChatController {
             messagingTemplate.convertAndSend("/sub/chat/room/" + messageDto.getRoomId(), messageDto);
         } catch (Exception e) {
             log.error("Error processing message", e);
+        }
+    }
+
+
+    @GetMapping(value = "/api/chat/{roomId}/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter subscribeToRoom(@PathVariable("roomId") Long roomId, @RequestHeader(value = "Authorization", required = false) String token) {
+        if (token != null && !token.isEmpty()) {
+            String accessToken = token.replace("Bearer ", "");
+            if (tokenProvider.validToken(accessToken)) {
+                Long userId = tokenProvider.getUserId(accessToken);
+
+                return notificationService.subscribeToRoom(userId, roomId);
+            } else {
+                throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
+            }
+        } else {
+            // 비회원 처리: 비회원의 경우에도 특별한 경우 처리할 수 있다면 작성
+            throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
         }
     }
 
