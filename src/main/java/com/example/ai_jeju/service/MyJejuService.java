@@ -31,7 +31,7 @@ public class MyJejuService {
     @Autowired
     public static int calculateMonths(String birthDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
-       // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate date = LocalDate.parse(birthDate, formatter);
         LocalDate currentDate = LocalDate.now();
         // 생년월일부터 현재까지의 개월 수 계산
@@ -135,7 +135,7 @@ public class MyJejuService {
     public MyJejuResponse getMyJeju(Long userId){
         // 나 찾기
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
 
         // 내 아이 찾기
         List<Child> childs = childRepository.findAllByUser(user);
@@ -169,7 +169,7 @@ public class MyJejuService {
         }
 
         MyJejuResponse myJejuResponse = MyJejuResponse.builder()
-                        .myJejuMyDto(myJejuMyDto)
+                .myJejuMyDto(myJejuMyDto)
                 .myJejuChildDtos(myJejuChildDtos)
                 .build();
 

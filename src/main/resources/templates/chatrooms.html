@@ -5,123 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Rooms</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .room-list {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-        }
-        .room-item {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            cursor: pointer;
-            position: relative;
-        }
-        .room-item:last-child {
-            border-bottom: none;
-        }
-        .last-message {
-            font-size: 0.9em;
-            color: gray;
-            margin-top: 5px;
-        }
-        .user-count {
-            font-size: 0.8em;
-            color: blue;
-            position: absolute;
-            right: 10px;
-            top: 10px;
-        }
+        .room-list { max-width: 600px; margin: 0 auto; }
+        .room-item { padding: 10px; cursor: pointer; border: 1px solid #ddd; margin-bottom: 10px; }
     </style>
 </head>
 <body>
-<div class="room-list">
-    <div id="rooms">
-        <!-- 방 목록이 여기에 동적으로 추가됩니다 -->
-    </div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<div class="room-list" id="rooms"></div>
 
 <script>
-    let stompClient = null;
+    function connectRoomListSSE() {
+        const token = localStorage.getItem('jwtToken');
+        const bearerToken = `Bearer ${encodeURIComponent(token)}`;
+        const roomsContainer = document.getElementById('rooms');
 
-    function connect() {
-        let socket = new SockJS('/ws/chat');
-        stompClient = Stomp.over(socket);
+        fetch('/chat/rooms')
+            .then(response => response.json())
+            .then(rooms => {
+                rooms.forEach(room => {
+                    const roomElement = document.createElement('div');
+                    roomElement.className = 'room-item';
+                    roomElement.innerHTML = `<strong>${room.name}</strong>`;
 
-        let token = localStorage.getItem('jwtToken');
-        stompClient.connect({ 'Authorization': `Bearer ${token}` }, function (frame) {
-            console.log('Connected: ' + frame);
-            fetch('/chat/rooms')
-                .then(response => response.json())
-                .then(rooms => {
-                    const roomsContainer = document.getElementById('rooms');
+                    // SSE 연결
+                    const eventSource = new EventSource(`/api/chat/${room.roomId}/subscribe?token=${bearerToken}`);
+                    eventSource.addEventListener('chatMessage', function(event) {
+                        console.log("Message received: ", event.data);  // 메시지 수신 확인
+                        const parsedMessage = JSON.parse(event.data);
+                        roomElement.innerHTML = `<strong>${room.name}</strong><div>${parsedMessage.sender}: ${parsedMessage.message}</div>`;
+                    });
 
-                    // 유저 카운트를 한 번에 가져오는 요청
-                    fetch('/chat/users/count')
-                        .then(response => response.json())
-                        .then(allUserCounts => {
-                            rooms.forEach(room => {
-                                const roomElement = document.createElement('div');
-                                roomElement.className = 'room-item';
-                                roomElement.innerHTML = `<strong>${room.name}</strong>`;
+                    // SSE 연결 상태 확인 (오류 처리)
+                    eventSource.onerror = function(error) {
+                        console.error("Error in SSE connection: ", error);
+                    };
 
-                                const lastMessageElement = document.createElement('div');
-                                lastMessageElement.className = 'last-message';
-                                roomElement.appendChild(lastMessageElement);
+                    // 방 클릭 시 이동
+                    roomElement.addEventListener('click', function() {
+                        eventSource.close(); // SSE 연결 해제
+                        window.location.href = `/chatroom?roomId=${room.roomId}`;
+                    });
 
-                                const userCountElement = document.createElement('div');
-                                userCountElement.className = 'user-count';
-                                roomElement.appendChild(userCountElement);
-
-                                // 마지막 메시지
-                                fetch(`/chat/room/${room.roomId}/lastmessage`)
-                                    .then(response => response.json())
-                                    .then(message => {
-                                        if (message) {
-                                            lastMessageElement.innerText = `${message.sender}: ${message.message}`;
-                                        } else {
-                                            lastMessageElement.innerText = "No messages yet";
-                                        }
-                                    });
-
-                                // 유저 카운트 업데이트
-                                const count = allUserCounts[room.roomId];
-                                if (count !== undefined) {
-                                    userCountElement.innerText = `Users: ${count}`;
-                                } else {
-                                    userCountElement.innerText = `Users: 0`;
-                                }
-
-                                // 실시간 메시지 구독
-                                stompClient.subscribe(`/sub/chat/room/${room.roomId}`, function (message) {
-                                    const parsedMessage = JSON.parse(message.body);
-                                    lastMessageElement.innerText = `${parsedMessage.sender}: ${parsedMessage.message}`;
-                                });
-
-                                roomElement.addEventListener('click', function() {
-                                    window.location.href = `/chatroom?roomId=${room.roomId}`;
-                                });
-
-                                roomsContainer.appendChild(roomElement);
-                            });
-                        })
-                        .catch(error => {
-                            console.error('Error fetching user counts:', error);
-                        });
+                    roomsContainer.appendChild(roomElement);
                 });
-        }, function (error) {
-            console.log("Error during connection: ", error);
-        });
+            })
+            .catch(error => console.error('Error fetching rooms:', error));
     }
 
-    document.addEventListener('DOMContentLoaded', connect);
+    connectRoomListSSE();
 </script>
+
 </body>
 </html>
