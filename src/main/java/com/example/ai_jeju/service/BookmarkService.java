@@ -98,17 +98,19 @@ public class BookmarkService {
                     Optional<Store> store = storeRepository.findByStoreId(bookmark.getStoreId());
                     List<Bookmark> bmks = bookmarkRepository.findByStoreId(store.get().getStoreId());
                     //그리고 카테고리 아이디가 내가 제시한 카테고리 아이디랑 같다면,
-                    if(store.isPresent()&&categoryId==store.get().getCategoryId() ){
+                    if(categoryId == store.get().getCategoryId()){
+                        System.out.println("확인"+store.get().getCategoryId());
                         BookMarkItem bookMarkItem = BookMarkItem.builder()
                                 .storeId(bookmark.getStoreId())
                                 .storeName(store.get().getName())
+                                .imgsrc(store.get().getImgSrc())
                                 .noKidszone(store.get().getNoKidsZone())
                                 .numOfBmk(bmks.size())
                                 .build();
                         bookMarkItems.add(bookMarkItem);
-                        return bookMarkItems;
                     }
                 }
+                return bookMarkItems;
             }
             return null;
         }

@@ -24,4 +24,9 @@ public class TestController {
         model.addAttribute("tests", tests);
         return "imgtest"; // This will map to testImages.html in the templates folder
     }
+
+    @GetMapping("/sse-test")
+    public String sseTestPage() {
+        return "test"; // test.html 파일을 반환
+    }
 }

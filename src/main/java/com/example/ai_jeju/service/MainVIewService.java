@@ -40,7 +40,7 @@ public class MainVIewService {
                 return ("음식점");
 
             case 2:
-                return ("음식점");
+                return ("호텔");
 
             case 3:
                 return ("레저");
@@ -349,11 +349,12 @@ public class MainVIewService {
     public MainResponse getMain(FilterDto filterDto, int randomSeed, int page){
 
         Map<String, Object> result =storeRepositoryCustom.findByFilterDto(filterDto, randomSeed,page);
+
         List<MainListResponse> mainListResponses = new ArrayList<>();
 
         List<Store> stores = (List<Store>) result.get("stores");
-        for(Store store : stores){
 
+        for(Store store : stores){
             MainListResponse mainListResponse = MainListResponse.builder()
                     .storeId(store.getStoreId())
                     .name(store.getName())

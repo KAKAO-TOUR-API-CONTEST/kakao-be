@@ -81,9 +81,11 @@ public class Store {
 
 
     @Column(name = "checkin",updatable = false,nullable = true)
+    @ColumnDefault("0")
     String checkin;
 
     @Column(name = "checkout",updatable = false,nullable = true)
+    @ColumnDefault("0")
     String checkout;
 
     @Column(name = "bookmarks")
@@ -91,6 +93,7 @@ public class Store {
     int noBmk;
 
     @Column
+    @ColumnDefault("0")
     int rcmdType;
 
     @Column(name = "rcmd")

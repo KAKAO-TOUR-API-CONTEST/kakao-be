@@ -98,6 +98,8 @@ public class ChatController {
 
             log.info("Sending message to /sub/chat/room/" + messageDto.getRoomId() + ": " + messageDto.toString());
             messagingTemplate.convertAndSend("/sub/chat/room/" + messageDto.getRoomId(), messageDto);
+            notificationService.notifyAllSubscribers(messageDto);
+
         } catch (Exception e) {
             log.error("Error processing message", e);
         }
@@ -105,21 +107,40 @@ public class ChatController {
 
 
     @GetMapping(value = "/api/chat/{roomId}/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter subscribeToRoom(@PathVariable("roomId") Long roomId, @RequestHeader(value = "Authorization", required = false) String token) {
+    public SseEmitter subscribeToRoom(@PathVariable("roomId") Long roomId, @RequestParam(value = "token", required = false) String token) {
         if (token != null && !token.isEmpty()) {
+            log.info("Received token: " + token);
+
             String accessToken = token.replace("Bearer ", "");
+            log.info("Processed access token: " + accessToken);
+
             if (tokenProvider.validToken(accessToken)) {
                 Long userId = tokenProvider.getUserId(accessToken);
+                log.info("User ID extracted from token: " + userId);
 
-                return notificationService.subscribeToRoom(userId, roomId);
+                return notificationService.subscribeToRoom(userId);
             } else {
+                log.error("Invalid token: " + accessToken);
                 throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
             }
         } else {
-            // 비회원 처리: 비회원의 경우에도 특별한 경우 처리할 수 있다면 작성
+            log.error("No token provided.");
             throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
         }
     }
+
+
+
+    @PostMapping("/send-data/{id}")
+    public void sendData(@PathVariable("roomId") Long id) {
+        notificationService.notify(id, "data");
+    }
+
+    @GetMapping(value = "/notifications/subscribe/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter subscribe(@PathVariable("roomId") Long userId) {
+        return notificationService.subscribeToRoom(userId);
+    }
+
 
 
     @GetMapping("/chatroom")

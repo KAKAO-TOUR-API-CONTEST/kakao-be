@@ -1,52 +1,73 @@
 package com.example.ai_jeju.service;
 
+import com.example.ai_jeju.dto.ChatMessageDto;
 import com.example.ai_jeju.repository.EmitterRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationService {
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60; // 1시간 타임아웃
 
     private final EmitterRepository emitterRepository;
 
-    // 채팅방에 대한 구독 처리
-    public SseEmitter subscribeToRoom(Long userId, Long roomId) {
-        SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
+    public SseEmitter subscribeToRoom(Long userId) {
+        SseEmitter emitter = new SseEmitter((DEFAULT_TIMEOUT));
 
-        // 구독 정보 저장 (userId와 roomId로 구독 관리)
-        emitterRepository.save(userId, roomId, emitter);
+        emitterRepository.save(userId, emitter);
+
+        log.info("User with ID {} subscribed to room", userId);
 
         try {
-            // 구독이 성공적으로 이루어졌음을 알리는 메시지 전송
-            emitter.send(SseEmitter.event().name("subscription").data("채팅방 구독 성공: " + roomId));
+            emitter.send(SseEmitter.event().name("subscription").data("subscription"));
         } catch (IOException e) {
+            log.error("Error sending subscription success message to user with ID {}", userId, e);
             emitter.completeWithError(e);
         }
 
-        // Emitter가 완료되거나 타임아웃될 때 처리
-        emitter.onCompletion(() -> emitterRepository.deleteByRoomId(userId, roomId));
-        emitter.onTimeout(() -> emitterRepository.deleteByRoomId(userId, roomId));
+        emitter.onCompletion(() -> {
+            log.info("SSE connection completed for user {}", userId);
+            emitterRepository.deleteByUserId(userId);
+        });
+
+        emitter.onTimeout(() -> {
+            log.warn("SSE connection timed out for user {}", userId);
+            emitterRepository.deleteByUserId(userId);
+        });
 
         return emitter;
     }
 
-    // 특정 채팅방에 메시지 전송
-    public void sendMessageToRoom(Long roomId, String message) {
-        Map<Long, SseEmitter> emitters = emitterRepository.findAllEmittersByRoomId(roomId);
+    public void sendMessage(Long userId, String message) {
+        SseEmitter emitter = emitterRepository.findByUserId(userId);
 
-        // 방에 연결된 모든 구독자에게 메시지 전송
-        emitters.forEach((userId, emitter) -> {
+        if (emitter != null) {
             try {
+                log.info("Sending message '{}' to user with ID {}", message, userId);
                 emitter.send(SseEmitter.event().name("chatMessage").data(message));
             } catch (IOException e) {
                 emitter.completeWithError(e);
             }
-        });
+        }
     }
+
+    // 특정 사용자에게 이벤트를 알리는 메소드
+    public void notify(Long userId, Object event) {
+        sendMessage(userId, event.toString());
+    }
+
+    public void notifyAllSubscribers(ChatMessageDto messageDto) {
+        List<Long> allUserIds = emitterRepository.findAllUserIds();
+        for (Long userId : allUserIds) {
+            sendMessage(userId, messageDto.getMessage());
+        }
+    }
+
 }

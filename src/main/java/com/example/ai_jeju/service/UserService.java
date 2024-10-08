@@ -216,7 +216,7 @@ public class UserService {
                 return ResponseUtil.SUCCESS("로그인 완료되었습니다.", access_token);
             }
         }
-    }
+}
 
     public User findByEmail(String email){
         return userRepository.findByEmail(email)
@@ -263,7 +263,7 @@ public class UserService {
     }
     //생성된 액세스 토큰을 쿠키에 저장
     private void addAccessTokenToCookie(HttpServletRequest request,
-                                        HttpServletResponse response, String refreshToken) {
+                                         HttpServletResponse response, String refreshToken) {
         int cookieMaxAge = (int) ACCESS_TOKEN_DURATION.toSeconds();
         CookieUtil.deleteCookie(request, response, ACCESS_TOKEN_COOKIE_NAME);
         CookieUtil.addCookie(response, ACCESS_TOKEN_COOKIE_NAME, refreshToken, cookieMaxAge);

@@ -46,8 +46,6 @@ public class AlbumController {
     }
 
 
-
-
     @GetMapping("")
     public ResponseDto getAlbumList(@RequestParam Long childId ,String rgtDate){
         List<AlbumListResponse> albumResponses =albumService.getAlbumList(childId,rgtDate);
@@ -56,8 +54,10 @@ public class AlbumController {
 
     @GetMapping("/detail")
     public ResponseDto getDetailAlbumList(@RequestParam Long albumId){
+
         AlbumDetailResponse albumDetailResponse = albumService.getDetailAlbumList(albumId);
         return ResponseUtil.SUCCESS("사진첩 조회이 성공하셨습니다",albumDetailResponse);
+
     }
 
     @GetMapping("/shares")

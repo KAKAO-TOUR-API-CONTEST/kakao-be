@@ -136,7 +136,6 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 return response;
             }
 
-
         // 동적 쿼리 실행 (popularity가 null이거나 false인 경우)
         List<Store> stores = queryFactory.selectFrom(qStore)
                 .where(builder)
