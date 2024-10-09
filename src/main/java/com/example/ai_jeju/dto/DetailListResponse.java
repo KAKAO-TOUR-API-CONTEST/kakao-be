@@ -30,6 +30,7 @@ public class DetailListResponse {
     Boolean pet; //반려동물
 
     String noKidsZone;
+    String nokidsdetail;
     Integer categoryId;
     String operationTime;
     String tel;

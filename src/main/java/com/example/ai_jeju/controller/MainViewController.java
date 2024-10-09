@@ -33,7 +33,7 @@ public class MainViewController {
     }
 
     @GetMapping("/main/detail")
-    public ResponseDto getUserById(@RequestHeader(value = "Authorization", required = false) String token,@RequestParam Long storeId) {
+    public ResponseDto getUserById(@RequestHeader(value = "Authorization", required = false) String token,@RequestParam("storeId") Long storeId) {
         if (token != null) {
             String accessToken = token.replace("Bearer ", "");
             if (tokenProvider.validToken(accessToken)) {
