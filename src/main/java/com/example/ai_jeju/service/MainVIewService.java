@@ -78,6 +78,7 @@ public class MainVIewService {
                     .strollerVal(innerStore.getStrollerVal())
 
                     .noKidsZone(innerStore.getNoKidsZone())
+                    .nokidsdetail(innerStore.getNokidsdetail())
                     .categoryId(innerStore.getCategoryId())
                     .operationTime(innerStore.getOperationTime())
                     .checkin(innerStore.getCheckin())
