@@ -109,7 +109,6 @@ public class ChatController {
     }
 
 
-    @CrossOrigin(origins = "https://www.ijeju.shop/")
     @GetMapping(value = "/api/chat/{roomId}/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribeToRoom(@PathVariable("roomId") Long roomId, @RequestParam(value = "token", required = false) String token) {
         if (token != null && !token.isEmpty()) {
