@@ -126,6 +126,7 @@ public class ChatController {
                 HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
                 if (response != null) {
                     response.setHeader("X-Accel-Buffering", "no");
+                    response.setContentType("text/event-stream;charset=UTF-8");
                 }
 
                 return notificationService.subscribeToRoom(userId);
