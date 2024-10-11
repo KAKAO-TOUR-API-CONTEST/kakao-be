@@ -9,6 +9,7 @@ import com.example.ai_jeju.repository.ChatMessageRepository;
 import com.example.ai_jeju.repository.ChatRoomRepository;
 import com.example.ai_jeju.service.ChatService;
 import com.example.ai_jeju.service.NotificationService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import software.amazon.ion.Timestamp;
 
@@ -115,9 +118,15 @@ public class ChatController {
             String accessToken = token.replace("Bearer ", "");
             log.info("Processed access token: " + accessToken);
 
+
             if (tokenProvider.validToken(accessToken)) {
                 Long userId = tokenProvider.getUserId(accessToken);
                 log.info("User ID extracted from token: " + userId);
+
+                HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+                if (response != null) {
+                    response.setHeader("X-Accel-Buffering", "no");
+                }
 
                 return notificationService.subscribeToRoom(userId);
             } else {
