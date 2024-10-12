@@ -109,7 +109,7 @@ public class ChatController {
     }
 
 
-    @CrossOrigin(origins = "https://www.ijeju.shop", allowCredentials = "true")
+
     @GetMapping(value = "/api/chat/{roomId}/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribeToRoom(@PathVariable("roomId") Long roomId, @RequestParam(value = "token", required = false) String token) {
         if (token != null && !token.isEmpty()) {
@@ -127,6 +127,9 @@ public class ChatController {
                 if (response != null) {
                     response.setHeader("X-Accel-Buffering", "no");
                     response.setContentType("text/event-stream;charset=UTF-8");
+                    response.setHeader("Access-Control-Allow-Origin", "https://www.ijeju.shop");
+                    response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+                    response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
                 }
 
                 return notificationService.subscribeToRoom(userId);
