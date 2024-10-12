@@ -127,7 +127,7 @@ public class ChatController {
                 if (response != null) {
                     response.setHeader("X-Accel-Buffering", "no");
                     response.setContentType("text/event-stream;charset=UTF-8");
-                    response.setHeader("Access-Control-Allow-Origin", "https://www.ijeju.shop");
+                    response.setHeader("Access-Control-Allow-Origin", "*");
                     response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
                     response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
                 }
