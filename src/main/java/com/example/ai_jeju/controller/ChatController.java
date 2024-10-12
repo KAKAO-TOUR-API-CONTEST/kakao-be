@@ -56,7 +56,7 @@ public class ChatController {
             String profileImg = (String) sessionAttributes.get("profileImg");
             log.info("Received message: " + messageDto.toString());
 
-            // sender가 null일 경우 세션에서 추출한 nickname을 sender로 설정
+
             if (messageDto.getSender() == null) {
                 messageDto.setSender(nickname);
             }
@@ -132,7 +132,7 @@ public class ChatController {
                     response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
                 }
 
-                return notificationService.subscribeToRoom(userId);
+                return notificationService.subscribeToRoom(userId, roomId.toString());
             } else {
                 log.error("Invalid token: " + accessToken);
                 throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
@@ -150,10 +150,6 @@ public class ChatController {
         notificationService.notify(id, "data");
     }
 
-    @GetMapping(value = "/notifications/subscribe/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter subscribe(@PathVariable("roomId") Long userId) {
-        return notificationService.subscribeToRoom(userId);
-    }
 
 
 
