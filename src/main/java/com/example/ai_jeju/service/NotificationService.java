@@ -6,13 +6,17 @@ import com.example.ai_jeju.dto.ChatMessageDto;
 import com.example.ai_jeju.repository.ChatMessageRepository;
 import com.example.ai_jeju.repository.ChatRoomRepository;
 import com.example.ai_jeju.repository.EmitterRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -70,8 +74,20 @@ public class NotificationService {
                 if (lastMessage.isPresent()) {
                     try {
                         String message = lastMessage.get().getMessage();
+                        String sender = lastMessage.get().getSender();
+
+                        log.info("Resending message. Sender: {}, Message: {}", sender, message);
+
+                        Map<String, String> messageData = new HashMap<>();
+                        messageData.put("sender", sender);
+                        messageData.put("message", message);
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        String jsonMessage = objectMapper.writeValueAsString(messageData);
                         log.info("Resending last message '{}' to user {} in room {}", message, userId, roomId);
-                        emitter.send(SseEmitter.event().name("chatMessage").data(message));
+                        emitter.send(SseEmitter.event()
+                                .name("ChatMessage")
+                                .data(jsonMessage));
+
                     } catch (IOException e) {
                         log.error("Error resending last message to user with ID {}", userId, e);
                         emitter.completeWithError(e);
@@ -85,26 +101,34 @@ public class NotificationService {
         }
     }
 
-    public void sendMessage(Long userId, String message) {
+    public void sendMessage(Long userId, ChatMessageDto messageDto) {
         SseEmitter emitter = emitterRepository.findByUserId(userId);
         if (emitter != null) {
             try {
-                log.info("Sending message '{}' to user with ID {}", message, userId);
-                emitter.send(SseEmitter.event().name("chatMessage").data(message));
+                log.info("Sending message '{}' from '{}' to user with ID {}", messageDto.getMessage(), messageDto.getSender(), userId);
+
+
+                Map<String, String> messageData = new HashMap<>();
+                messageData.put("sender", messageDto.getSender());
+                messageData.put("message", messageDto.getMessage());
+
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                String jsonMessage = objectMapper.writeValueAsString(messageData);
+
+
+                emitter.send(SseEmitter.event().name("chatMessage").data(jsonMessage));
             } catch (IOException e) {
                 emitter.completeWithError(e);
             }
         }
     }
 
-    public void notify(Long userId, Object event) {
-        sendMessage(userId, event.toString());
-    }
 
     public void notifyAllSubscribers(ChatMessageDto messageDto) {
         List<Long> allUserIds = emitterRepository.findAllUserIds();
         for (Long userId : allUserIds) {
-            sendMessage(userId, messageDto.getMessage());
+            sendMessage(userId, messageDto);
         }
     }
 }

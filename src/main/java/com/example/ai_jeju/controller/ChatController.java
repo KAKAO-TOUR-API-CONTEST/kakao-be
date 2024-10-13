@@ -145,13 +145,6 @@ public class ChatController {
 
 
 
-    @PostMapping("/send-data/{id}")
-    public void sendData(@PathVariable("roomId") Long id) {
-        notificationService.notify(id, "data");
-    }
-
-
-
 
     @GetMapping("/chatroom")
     public String chat(@RequestParam("roomId") String roomId, Model model) {
