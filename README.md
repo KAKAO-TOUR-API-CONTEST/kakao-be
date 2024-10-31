@@ -13,7 +13,14 @@
 | [박해인](https://github.com/femmefatalehaein) | 로그인/회원가입/마이페이지, api 활용 데이터 수집, 업체 정보 개요/상세, 사진첩(마이제주), 추천시스템, 관심목록 |
 | [이유진](https://github.com/yyujin1231) | 크롤링 기반 데이터 수집, 사용자 채팅(반갑수다), 응급지도|
 
-## 상세
+## 🔗 Backend URL
+- BACK </br>
+  https://back.ijeju.shop
+- swagger </br>
+  https://back.ijeju.shop/swagger-ui/index.html
+
+
+## ⚡️ 상세
 **① 로그인/회원가입**
 - JWT 토큰을 이용한 사용자 인증/인가 처리
 - Interceptor를 이용한 로그인 인증처리
