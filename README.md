@@ -6,19 +6,19 @@
 | <img src="https://avatars.githubusercontent.com/u/75514808?v=4" width="100">  |<img src="https://avatars.githubusercontent.com/u/118620724?v=4" width="100">|
 |BACKEND| BACKEND |
 
-
 ## 🪴 역할
 | 이름 | 포지션 |
 | --- | --- | 
 | [박해인](https://github.com/femmefatalehaein) | 로그인/회원가입/마이페이지, api 활용 데이터 수집, 업체 정보 개요/상세, 사진첩(마이제주), 추천시스템, 관심목록 |
 | [이유진](https://github.com/yyujin1231) | 크롤링 기반 데이터 수집, 사용자 채팅(반갑수다), 응급지도|
 
+
 ## 🔗 Backend URL
 - BACK </br>
   https://back.ijeju.shop
 - swagger </br>
   https://back.ijeju.shop/swagger-ui/index.html
-
+  
 
 ## ⚡️ 상세
 **① 로그인/회원가입**
@@ -35,15 +35,15 @@
 </br>
 
 **④ 추천시스템**  [Recommend Repository](https://github.com/KAKAO-TOUR-API-CONTEST/kakao-recommendation)
-- `kafka`를 이용한 사용자의 이벤트 수집,
-- `spark`를 이용하여 유사도가 높은 업체의 정보를 제공
+- `kafka`를 이용한 사용자 이벤트 수집
+-  수집한 사용자 이벤트 기반으로 `spark`를 통해 유사도가 높은 업체의 정보를 제공
 </br>
 
 **⑤ 검색 / 필터링**
-- `QueryDSL'을 이용하여 검색/필터링 기능 구현
+- `QueryDSL`을 이용하여 검색/필터링 기능 구현
 
 
-## SETTING
+## ⚙️ SETTING
 - Spring boot3
 - JDK 21
 - Spring JPA
