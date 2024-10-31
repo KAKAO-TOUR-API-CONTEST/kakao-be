@@ -27,10 +27,13 @@
 - UUID 토큰 기반 비회원도 볼 수 있는 공유링크 생성
 </br>
 
-**③ 추천시스템**
+**④ 추천시스템**  [Recommend Repository](https://github.com/KAKAO-TOUR-API-CONTEST/kakao-recommendation)
 - `kafka`를 이용한 사용자의 이벤트 수집,
 - `spark`를 이용하여 유사도가 높은 업체의 정보를 제공
+</br>
 
+**⑤ 검색 / 필터링**
+- `QueryDSL'을 이용하여 검색/필터링 기능 구현
 
 
 ## SETTING
