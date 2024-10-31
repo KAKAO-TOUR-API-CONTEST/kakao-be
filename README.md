@@ -1,5 +1,5 @@
 # KAKAO-TOUR-API BACKEND
-
+<!--①②③④⑤⑥⑦⑧⑨⑩-->
 ##  🍊 back-end developers
 |[박해인](https://github.com/femmefatalehaein)|[이유진](https://github.com/yyujin1231)|
 |:---:|:---:|
@@ -12,6 +12,26 @@
 | --- | --- | 
 | [박해인](https://github.com/femmefatalehaein) | 로그인/회원가입/마이페이지, api 활용 데이터 수집, 업체 정보 개요/상세, 사진첩(마이제주), 추천시스템, 관심목록 |
 | [이유진](https://github.com/yyujin1231) | 크롤링 기반 데이터 수집, 사용자 채팅(반갑수다), 응급지도|
+
+## 상세
+**① 로그인/회원가입**
+- JWT 토큰을 이용한 사용자 인증/인가 처리
+- Interceptor를 이용한 로그인 인증처리
+</br>
+
+**② Open API 활용 데이터 수집**
+- Open API를 활용하여 효용성 있는 데이터 수집
+</br>
+
+**③ 사진첩 (마이제주)**
+- UUID 토큰 기반 비회원도 볼 수 있는 공유링크 생성
+</br>
+
+**③ 추천시스템**
+- `kafka`를 이용한 사용자의 이벤트 수집,
+- `spark`를 이용하여 유사도가 높은 업체의 정보를 제공
+
+
 
 ## SETTING
 - Spring boot3
