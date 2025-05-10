@@ -10,4 +10,4 @@ FROM openjdk:21-jdk-slim
 WORKDIR /app
 COPY --from=build /app/build/libs/*.war app.war
 
-ENTRYPOINT ["java", "-war", "app.war"]
+ENTRYPOINT ["java", "-jar", "app.war"]
